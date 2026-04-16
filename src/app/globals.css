@@ -186,13 +186,19 @@
 
   html[data-landing-snap] {
     scroll-snap-type: y mandatory;
-    scroll-padding-top: var(--site-header-height);
   }
 }
 
 @media (min-width: 1024px) and (prefers-reduced-motion: reduce) {
   html[data-landing-snap] {
     scroll-snap-type: none;
+  }
+}
+
+/* Mobile: corpo secundário um pouco mais claro — melhor leitura sobre fundos muted/baixo contraste */
+@media (max-width: 1023px) {
+  .dark {
+    --muted-foreground: oklch(0.78 0 0);
   }
 }
 
@@ -213,6 +219,12 @@
     @apply font-sans;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    /**
+     * Header fixo + `href="#..."`: o ponto de ancoragem respeita a altura da navbar
+     * (mobile e desktop). `--site-header-height` já inclui safe-area superior.
+     */
+    scroll-padding-top: var(--site-header-height);
+    scroll-padding-bottom: env(safe-area-inset-bottom, 0px);
   }
   body {
     @apply min-w-0 overflow-x-hidden bg-background text-foreground antialiased;

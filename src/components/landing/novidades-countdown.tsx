@@ -114,7 +114,7 @@ export function NovidadesCountdown({ className }: NovidadesCountdownProps) {
       </div>
 
       <div
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/93 via-background/78 to-background/92"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/93 via-background/78 to-background/92 max-lg:from-background/96 max-lg:via-background/84 max-lg:to-background/95"
         aria-hidden
       />
       <div

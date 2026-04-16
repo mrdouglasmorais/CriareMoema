@@ -1,9 +1,19 @@
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import type { NextConfig } from "next";
 
+/** Sempre a pasta do app (onde está este arquivo), não `process.cwd()`. */
+const projectRoot = path.dirname(fileURLToPath(import.meta.url));
+
 const nextConfig: NextConfig = {
-  /** Evita inferência do monorepo quando há outro lockfile no diretório pai. */
+  /**
+   * Ancora PostCSS/Tailwind e resolução de módulos no projeto real.
+   * Por quê: com `package.json` em diretórios pai (ex.: home) ou workspace
+   * aberto em `Desktop/`, o cwd vira `.../Desktop` e o bundler tenta resolver
+   * `tailwindcss` a partir dali — onde não existe `node_modules`.
+   */
   turbopack: {
-    root: process.cwd(),
+    root: projectRoot,
   },
 };
 

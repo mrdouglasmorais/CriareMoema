@@ -30,15 +30,21 @@ const diferenciaisList = [
 
 export function CriareLanding() {
   return (
-    <main id="conteudo-principal" className="min-w-0 overflow-x-clip">
+    <main
+      id="conteudo-principal"
+      className="min-w-0 overflow-x-clip max-lg:pb-[max(7.5rem,env(safe-area-inset-bottom,0px))]"
+    >
       <HeroSection />
 
       <section
         id="novidades"
-        className={cn(landingSection(), "relative overflow-hidden bg-muted/5")}
+        className={cn(
+          landingSection(),
+          "relative overflow-hidden bg-muted/10 max-lg:bg-muted/25",
+        )}
         aria-labelledby="novidades-heading"
       >
-        <div className="mx-auto w-full max-w-[min(100%,88rem)] px-3 sm:px-6">
+        <div className="mx-auto w-full max-w-[min(100%,88rem)] px-4 sm:px-6">
           <h2 id="novidades-heading" className="sr-only">
             Contagem regressiva para novidades
           </h2>
@@ -48,7 +54,7 @@ export function CriareLanding() {
 
       <section
         id="ambientes"
-        className={cn(landingSection(), "bg-muted/20")}
+        className={cn(landingSection(), "bg-muted/20 max-lg:bg-muted/30")}
         aria-labelledby="ambientes-heading"
       >
         <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 sm:grid-cols-2 sm:items-center sm:px-6">
@@ -85,7 +91,7 @@ export function CriareLanding() {
 
       <section
         id="beneficios"
-        className={landingSection()}
+        className={cn(landingSection(), "max-lg:bg-muted/12")}
         aria-labelledby="beneficios-heading"
       >
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
@@ -103,7 +109,7 @@ export function CriareLanding() {
           <Stagger className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {benefits.map((text) => (
               <StaggerItem key={text}>
-                <div className="group flex h-full gap-3 rounded-2xl border border-border/60 bg-card/50 p-5 backdrop-blur transition-all duration-500 hover:border-amber-500/35 hover:bg-card/80 hover:shadow-lg hover:shadow-amber-950/20">
+                <div className="group flex h-full gap-3 rounded-2xl border border-white/12 bg-card/75 p-5 shadow-md shadow-black/25 backdrop-blur-md transition-all duration-500 max-lg:border-border/70 hover:border-amber-500/35 hover:bg-card/90 hover:shadow-lg hover:shadow-amber-950/20">
                   <Check
                     className="mt-0.5 size-5 shrink-0 text-amber-500 transition-transform duration-500 group-hover:scale-110"
                     aria-hidden
@@ -118,7 +124,7 @@ export function CriareLanding() {
 
       <section
         id="quem-somos"
-        className={cn(landingSection(), "bg-muted/15")}
+        className={cn(landingSection(), "bg-muted/15 max-lg:bg-muted/28")}
         aria-labelledby="quem-somos-heading"
       >
         <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 sm:grid-cols-2 sm:items-start sm:px-6">
@@ -167,7 +173,7 @@ export function CriareLanding() {
                 width={brandImages.showcase1.width}
                 height={brandImages.showcase1.height}
                 sizes="(min-width: 640px) 45vw, 100vw"
-                className="h-auto max-h-[min(520px,50vh)] w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.02] lg:max-h-none"
+                className="h-auto max-h-[min(560px,62svh)] w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.02] sm:max-h-[min(520px,50vh)] lg:max-h-none"
               />
             </div>
           </ScaleReveal>
@@ -176,7 +182,7 @@ export function CriareLanding() {
 
       <section
         id="diferenciais"
-        className={cn(landingSection(), "bg-muted/20")}
+        className={cn(landingSection(), "bg-muted/20 max-lg:bg-muted/30")}
         aria-labelledby="diferenciais-heading"
       >
         <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 sm:grid-cols-2 sm:items-start sm:px-6">
@@ -215,7 +221,7 @@ export function CriareLanding() {
                 width={brandImages.showcase2.width}
                 height={brandImages.showcase2.height}
                 sizes="(min-width: 640px) 45vw, 100vw"
-                className="h-auto max-h-[min(560px,55vh)] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03] lg:max-h-none"
+                className="h-auto max-h-[min(580px,62svh)] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03] sm:max-h-[min(560px,55vh)] lg:max-h-none"
               />
             </div>
           </ScaleReveal>
@@ -224,7 +230,7 @@ export function CriareLanding() {
 
       <section
         id="pagamento"
-        className={landingSection()}
+        className={cn(landingSection(), "max-lg:bg-muted/12")}
         aria-labelledby="pagamento-heading"
       >
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
@@ -234,7 +240,7 @@ export function CriareLanding() {
               className="font-heading text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl"
             >
               Conheça nossas{" "}
-              <span className="bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 bg-clip-text text-transparent drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
                 condições de pagamento
               </span>
             </h2>
@@ -258,7 +264,7 @@ export function CriareLanding() {
               },
             ].map((card) => (
               <StaggerItem key={card.t}>
-                <Card className="group h-full border-border/60 bg-gradient-to-b from-card/90 to-card/40 shadow-xl backdrop-blur transition-all duration-500 hover:-translate-y-1 hover:border-amber-500/30 hover:shadow-2xl hover:shadow-amber-950/30">
+                <Card className="group h-full border-white/12 bg-gradient-to-b from-card/95 to-card/55 shadow-xl shadow-black/30 backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:border-amber-500/30 hover:shadow-2xl hover:shadow-amber-950/30 max-lg:border-border/80">
                   <CardHeader className="pb-2">
                     <CardTitle className="font-heading text-xl font-bold leading-snug tracking-tight transition-colors duration-300 group-hover:text-amber-100 sm:text-2xl">
                       {card.t}
@@ -278,7 +284,7 @@ export function CriareLanding() {
         id="faq"
         className={cn(
           landingSection(),
-          "bg-muted/10 lg:justify-start lg:overflow-y-auto lg:py-16 lg:[scrollbar-gutter:stable]",
+          "bg-muted/10 max-lg:bg-muted/22 lg:justify-start lg:overflow-y-auto lg:py-16 lg:[scrollbar-gutter:stable]",
         )}
         aria-labelledby="faq-heading"
       >

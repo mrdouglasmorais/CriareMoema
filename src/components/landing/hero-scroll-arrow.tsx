@@ -22,7 +22,7 @@ export function HeroScrollArrow({ className }: HeroScrollArrowProps) {
       animate={reduce ? {} : { opacity: 1, y: 0 }}
       transition={{ delay: 0.85, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
     >
-      <span className="font-heading text-[10px] font-medium uppercase tracking-[0.42em] text-stone-300/75 sm:text-[11px]">
+      <span className="font-heading text-[11px] font-medium uppercase tracking-[0.38em] text-stone-300/85 sm:text-xs sm:tracking-[0.42em]">
         Explorar
       </span>
       <Link

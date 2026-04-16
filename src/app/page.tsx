@@ -1,7 +1,22 @@
+import type { Metadata } from "next";
 import { CriareLanding } from "@/components/landing/criare-landing";
 import { JsonLd } from "@/components/seo/json-ld";
 import { brandImages } from "@/lib/brand-assets";
+import { createPageMetadata } from "@/lib/metadata";
 import { siteConfig } from "@/lib/site-config";
+
+/**
+ * Metadados da home com canonical explícito.
+ * Por quê: `alternates.canonical` concentra autoridade na URL oficial; útil se no futuro
+ * existirem campanhas com query strings ou espelhos de conteúdo.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  return createPageMetadata({
+    title: `${siteConfig.name} | ${siteConfig.titleSuffix}`,
+    description: siteConfig.description,
+    path: "/",
+  });
+}
 
 export default function HomePage() {
   const storeId = `${siteConfig.url}#furniturestore`;
