@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { CriareLanding } from "@/components/landing/criare-landing";
 import { JsonLd } from "@/components/seo/json-ld";
 import { brandImages } from "@/lib/brand-assets";
-import { createPageMetadata } from "@/lib/metadata";
+import { createPageMetadata, defaultSeoTitle } from "@/lib/metadata";
 import { siteConfig } from "@/lib/site-config";
+
+const ogImagePath = "/opengraph-image";
 
 /**
  * Metadados da home com canonical explícito.
@@ -12,14 +14,38 @@ import { siteConfig } from "@/lib/site-config";
  */
 export async function generateMetadata(): Promise<Metadata> {
   return createPageMetadata({
-    title: `${siteConfig.name} | ${siteConfig.titleSuffix}`,
+    title: defaultSeoTitle,
     description: siteConfig.description,
     path: "/",
+    ogImage: ogImagePath,
+    ogImageAlt: siteConfig.ogImageAlt,
+    keywords: siteConfig.seoKeywords,
   });
 }
 
 export default function HomePage() {
   const storeId = `${siteConfig.url}#furniturestore`;
+  const websiteId = `${siteConfig.url}#website`;
+  const webPageId = `${siteConfig.url}#webpage`;
+  const ogImageUrl = new URL(ogImagePath, siteConfig.url).toString();
+
+  const webPageLd = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": webPageId,
+    name: defaultSeoTitle,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    inLanguage: siteConfig.language,
+    isPartOf: { "@id": websiteId },
+    primaryImageOfPage: {
+      "@type": "ImageObject",
+      url: ogImageUrl,
+      width: 1200,
+      height: 630,
+      caption: siteConfig.ogImageAlt,
+    },
+  };
 
   const furnitureStoreLd = {
     "@context": "https://schema.org",
@@ -47,7 +73,7 @@ export default function HomePage() {
 
   return (
     <>
-      <JsonLd data={furnitureStoreLd} />
+      <JsonLd data={[webPageLd, furnitureStoreLd]} />
       <CriareLanding />
     </>
   );

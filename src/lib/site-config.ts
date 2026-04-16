@@ -10,6 +10,25 @@ export const siteConfig = {
   tagline: "Manifeste sua personalidade",
   description:
     "Móveis planejados em Moema, São Paulo. Cozinhas, dormitórios, closets e ambientes sob medida com alto padrão de execução.",
+  /**
+   * Palavras-chave para `<meta name="keywords">` e consistência editorial (Google dá pouco peso,
+   * mas ajuda outras ferramentas e reforça o tema da página).
+   */
+  seoKeywords: [
+    "móveis planejados",
+    "móveis planejados Moema",
+    "móveis sob medida São Paulo",
+    "cozinha planejada",
+    "closet planejado",
+    "dormitório planejado",
+    "Criare Moema",
+    "loja de móveis planejados Moema",
+    "marcenaria planejada",
+    "projeto de móveis",
+  ] as const,
+  /** Texto descritivo para `og:image:alt` / acessibilidade em previews. */
+  ogImageAlt:
+    "Criare Moema — móveis planejados em Moema, São Paulo: cozinhas, dormitórios e ambientes sob medida.",
   referenceLandingUrl: "https://ads.criaremoema.com.br/",
   whatsappUrl:
     "https://wa.me/5511942703131?text=Ol%C3%A1%21%20Vim%20pelo%20site%20da%20Criare%20Moema.",

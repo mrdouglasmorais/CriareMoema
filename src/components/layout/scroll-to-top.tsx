@@ -26,6 +26,11 @@ export function ScrollToTop({ className }: ScrollToTopProps) {
 
   const goTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+    const { pathname, search } = window.location;
+    window.history.replaceState(null, "", `${pathname}${search}#top`);
+    requestAnimationFrame(() => {
+      document.getElementById("top")?.focus({ preventScroll: true });
+    });
   }, [reduce]);
 
   return (

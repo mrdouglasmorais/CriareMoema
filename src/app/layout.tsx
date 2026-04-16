@@ -72,6 +72,9 @@ export default function RootLayout({
           />
           <SiteHeader />
           <div className="flex flex-1 flex-col pt-[var(--site-header-height)]">
+            <span id="top" className="sr-only" tabIndex={-1}>
+              Topo da página
+            </span>
             {children}
             <SiteFooter />
           </div>
