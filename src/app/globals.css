@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
+  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+  --font-heading: var(--font-display), ui-sans-serif, system-ui, sans-serif;
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -81,6 +81,9 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  /** Altura útil do header (logo + nav); safe-area entra no total via --site-header-height */
+  --site-header-inner: 5.5rem;
+  --site-header-height: calc(env(safe-area-inset-top, 0px) + var(--site-header-inner));
 }
 
 .dark {
@@ -117,14 +120,107 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Hero: zoom + pan suave na foto (mais “vida” que o Ken Burns simples) */
+@keyframes hero-ken-burns {
+  0% {
+    transform: scale(1.1) translate(0%, 0%);
+  }
+  28% {
+    transform: scale(1.06) translate(-1.1%, -0.6%);
+  }
+  55% {
+    transform: scale(1.08) translate(-0.4%, -1.1%);
+  }
+  78% {
+    transform: scale(1.05) translate(-1.8%, -0.3%);
+  }
+  100% {
+    transform: scale(1.09) translate(-2.2%, -0.9%);
+  }
+}
+
+@keyframes hero-grain-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  20% {
+    transform: translate(-1.2%, 1.8%) rotate(0.02deg);
+  }
+  45% {
+    transform: translate(1.5%, -0.8%) rotate(-0.02deg);
+  }
+  70% {
+    transform: translate(0.6%, 1.2%) rotate(0.015deg);
+  }
+}
+
+@layer utilities {
+  .animate-hero-ken-burns {
+    animation: hero-ken-burns 32s cubic-bezier(0.45, 0.05, 0.25, 1) infinite alternate;
+  }
+
+  .hero-film-grain {
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: hero-grain-drift 11s linear infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-hero-ken-burns {
+      animation: none;
+      transform: scale(1.05);
+    }
+
+    .hero-film-grain {
+      animation: none;
+      opacity: 0.035;
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --site-header-inner: 7rem;
+  }
+
+  html[data-landing-snap] {
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: var(--site-header-height);
+  }
+}
+
+@media (min-width: 1024px) and (prefers-reduced-motion: reduce) {
+  html[data-landing-snap] {
+    scroll-snap-type: none;
+  }
+}
+
+/* Transição visual entre seções (desktop): vinheta + linha superior suave */
+@media (min-width: 1024px) {
+  #conteudo-principal > section:not(:first-of-type) {
+    box-shadow:
+      inset 0 88px 64px -72px rgba(245, 158, 11, 0.1),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   html {
     @apply font-sans;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+  body {
+    @apply min-w-0 overflow-x-hidden bg-background text-foreground antialiased;
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-heading;
   }
 }
