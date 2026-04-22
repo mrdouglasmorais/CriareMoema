@@ -252,7 +252,7 @@ export function CriareLanding() {
             {[
               {
                 t: "Parcelamento em até 36x",
-                d: "Flexibilidade para adequar o investimento ao seu fluxo e ao projeto.",
+                d: "Flexibilidade para adequar o investimento ao seu fluxo financeiro e ao projeto.",
               },
               {
                 t: "Primeira parcela em até 90 dias",
