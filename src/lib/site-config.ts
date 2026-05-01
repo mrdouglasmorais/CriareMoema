@@ -50,8 +50,8 @@ export const siteConfig = {
   },
   /** Horários exibidos em “Venha nos visitar” (ajuste conforme a loja). */
   openingHoursLines: [
-    "Segunda a sexta: 10h às 20h",
-    "Sábado: 10h às 18h",
+    "Segunda a sexta: 10h às 19h",
+    "Sábado: 10h às 16h",
     "Domingo: fechado",
   ] as const,
   /** Navegação no app Waze (coordenadas da loja). */
