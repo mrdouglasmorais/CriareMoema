@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { CriareLanding } from "@/components/landing/criare-landing";
 import { JsonLd } from "@/components/seo/json-ld";
 import { brandImages } from "@/lib/brand-assets";
+import { faqItems } from "@/data/faq";
 import { createPageMetadata, defaultSeoTitle } from "@/lib/metadata";
 import { siteConfig } from "@/lib/site-config";
 
@@ -55,6 +56,8 @@ export default function HomePage() {
     description: siteConfig.description,
     url: siteConfig.url,
     image: new URL(brandImages.hero.src, siteConfig.url).toString(),
+    email: siteConfig.email,
+    sameAs: siteConfig.sameAs,
     address: {
       "@type": "PostalAddress",
       streetAddress: siteConfig.address.streetAddress,
@@ -68,12 +71,40 @@ export default function HomePage() {
       latitude: siteConfig.geo.latitude,
       longitude: siteConfig.geo.longitude,
     },
-    hasMap: siteConfig.mapEmbedUrl,
+    hasMap: siteConfig.googleMapsUrl,
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "10:00",
+        closes: "19:00",
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Saturday"],
+        opens: "10:00",
+        closes: "16:00",
+      },
+    ],
+    priceRange: "$$",
+  };
+
+  const faqPageLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
   };
 
   return (
     <>
-      <JsonLd data={[webPageLd, furnitureStoreLd]} />
+      <JsonLd data={[webPageLd, furnitureStoreLd, faqPageLd]} />
       <CriareLanding />
     </>
   );

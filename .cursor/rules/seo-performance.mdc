@@ -1,0 +1,65 @@
+---
+description: SEO técnico, metadata, JSON-LD, performance e Core Web Vitals
+globs: src/app/**
+alwaysApply: false
+---
+
+# SEO Técnico e Performance
+
+## Metadata por página
+```tsx
+// Sempre use createPageMetadata() de @/lib/metadata
+export async function generateMetadata(): Promise<Metadata> {
+  return createPageMetadata({
+    title: "Título da Página",          // sem sufixo — template cuida
+    description: "...",                 // 120–160 chars
+    path: "/rota-da-pagina",            // canonical
+    keywords: ["palavra-chave"],
+  });
+}
+```
+
+## Estrutura de headings
+- **Um único `<h1>`** por página — a headline principal.
+- `<h2>` por seção — alinhados com intenção de busca.
+- Nunca pule níveis (h1 → h3 sem h2).
+
+## JSON-LD
+```tsx
+// Use <JsonLd data={[...]} /> de @/components/seo/json-ld
+// Adicione schemas relevantes: WebPage, FurnitureStore, FAQPage, BreadcrumbList
+```
+
+## Imagens
+```tsx
+// Sempre next/image com sizes explícito
+<Image
+  src={brandImages.hero.src}
+  alt="Descrição real do conteúdo da imagem"
+  width={brandImages.hero.width}
+  height={brandImages.hero.height}
+  sizes="(min-width: 640px) 50vw, 100vw"
+  priority  // somente above-the-fold
+/>
+```
+
+## Performance
+- Server Components por padrão — Client Component apenas com justificativa.
+- `priority` apenas na primeira imagem visível (hero).
+- `loading="lazy"` em iframes (`<iframe loading="lazy">`).
+- Fontes via `next/font` — já configuradas (Syne + DM Sans).
+- Sem bibliotecas desnecessárias — verifique o bundle antes de instalar.
+
+## Sitemap
+Ao criar nova rota pública, adicionar em `src/app/sitemap.ts`:
+```ts
+{ url: `${base}/nova-rota`, lastModified: now, changeFrequency: "weekly", priority: 0.8 }
+```
+
+## Metas de Lighthouse
+| Métrica | Alvo |
+|---------|------|
+| Performance | 90+ |
+| SEO | 100 |
+| Acessibilidade | 90+ |
+| Boas práticas | 90+ |

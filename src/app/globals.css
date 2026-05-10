@@ -2,6 +2,12 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@property --shimmer-pos {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: -60%;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -48,76 +54,120 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/*
+ * Light mode — paleta inspirada em Apple.com:
+ * fundo off-white levemente quente, texto quase-preto (não pure black),
+ * borders sutis, acento amber preservado.
+ */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  /* Superficie */
+  --background: oklch(0.985 0.004 80);       /* off-white quente — F7F5F2 equiv */
+  --foreground: oklch(0.13 0.008 60);        /* quase-preto quente — 1D1D1F equiv */
+
+  /* Cards e popovers: branco puro sobre fundo off-white */
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.13 0.008 60);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.13 0.008 60);
+
+  /* Primary = contraste máximo */
+  --primary: oklch(0.13 0.008 60);
+  --primary-foreground: oklch(0.985 0.004 80);
+
+  /* Secondary / Muted */
+  --secondary: oklch(0.93 0.006 80);
+  --secondary-foreground: oklch(0.13 0.008 60);
+  --muted: oklch(0.93 0.006 80);
+  --muted-foreground: oklch(0.48 0.010 60);  /* #6E6E73 Apple equiv */
+
+  /* Accent */
+  --accent: oklch(0.93 0.006 80);
+  --accent-foreground: oklch(0.13 0.008 60);
+
+  /* Bordas e inputs */
+  --border: oklch(0.86 0.006 80);
+  --input: oklch(0.86 0.006 80);
+  --ring: oklch(0.60 0.010 60);
+
+  /* Destructive */
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+
+  /* Charts */
+  --chart-1: oklch(0.75 0.010 80);
+  --chart-2: oklch(0.55 0.008 60);
+  --chart-3: oklch(0.42 0.008 60);
+  --chart-4: oklch(0.32 0.006 60);
+  --chart-5: oklch(0.22 0.006 60);
+
+  /* Sidebar */
+  --radius: 0.75rem;
+  --sidebar: oklch(0.97 0.004 80);
+  --sidebar-foreground: oklch(0.13 0.008 60);
+  --sidebar-primary: oklch(0.13 0.008 60);
+  --sidebar-primary-foreground: oklch(0.985 0.004 80);
+  --sidebar-accent: oklch(0.93 0.006 80);
+  --sidebar-accent-foreground: oklch(0.13 0.008 60);
+  --sidebar-border: oklch(0.86 0.006 80);
+  --sidebar-ring: oklch(0.60 0.010 60);
+
   /** Altura útil do header (logo + nav); safe-area entra no total via --site-header-height */
   --site-header-inner: 5.5rem;
   --site-header-height: calc(env(safe-area-inset-top, 0px) + var(--site-header-inner));
 }
 
+/*
+ * Dark mode — rich near-black com calor, inspirado em Apple Pro products.
+ * Mais profundidade e temperatura que o cinza puro genérico.
+ */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  /* Superficie */
+  --background: oklch(0.10 0.008 60);        /* near-black quente */
+  --foreground: oklch(0.97 0.004 80);        /* off-white quente */
+
+  /* Cards */
+  --card: oklch(0.16 0.008 60);
+  --card-foreground: oklch(0.97 0.004 80);
+  --popover: oklch(0.16 0.008 60);
+  --popover-foreground: oklch(0.97 0.004 80);
+
+  /* Primary */
+  --primary: oklch(0.93 0.006 80);
+  --primary-foreground: oklch(0.16 0.008 60);
+
+  /* Secondary / Muted */
+  --secondary: oklch(0.22 0.008 60);
+  --secondary-foreground: oklch(0.97 0.004 80);
+  --muted: oklch(0.22 0.008 60);
+  --muted-foreground: oklch(0.72 0.008 70);
+
+  /* Accent */
+  --accent: oklch(0.22 0.008 60);
+  --accent-foreground: oklch(0.97 0.004 80);
+
+  /* Bordas */
+  --border: oklch(1 0 0 / 11%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.55 0.008 60);
+
+  /* Destructive */
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+
+  /* Charts */
   --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --chart-2: oklch(0.60 0 0);
+  --chart-3: oklch(0.45 0 0);
+  --chart-4: oklch(0.35 0 0);
+  --chart-5: oklch(0.26 0 0);
+
+  /* Sidebar */
+  --sidebar: oklch(0.16 0.008 60);
+  --sidebar-foreground: oklch(0.97 0.004 80);
+  --sidebar-primary: oklch(0.93 0.006 80);
+  --sidebar-primary-foreground: oklch(0.16 0.008 60);
+  --sidebar-accent: oklch(0.22 0.008 60);
+  --sidebar-accent-foreground: oklch(0.97 0.004 80);
+  --sidebar-border: oklch(1 0 0 / 11%);
+  --sidebar-ring: oklch(0.55 0.008 60);
 }
 
 /* Hero: zoom + pan suave na foto (mais “vida” que o Ken Burns simples) */
@@ -156,6 +206,7 @@
 }
 
 @layer utilities {
+  /* Hero animations */
   .animate-hero-ken-burns {
     animation: hero-ken-burns 32s cubic-bezier(0.45, 0.05, 0.25, 1) infinite alternate;
   }
@@ -171,13 +222,413 @@
       animation: none;
       transform: scale(1.05);
     }
-
     .hero-film-grain {
       animation: none;
       opacity: 0.035;
     }
   }
+
+  /*
+   * Texto com gradiente amber — reutilizável em headings de seção.
+   * Uso: <span class="text-gradient-amber">texto</span>
+   */
+  .text-gradient-amber {
+    background: linear-gradient(135deg, #fde68a 0%, #f59e0b 45%, #d97706 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /*
+   * Label eyebrow — linha de contexto acima de headings (estilo Apple).
+   * Uso: <p class="label-eyebrow">Criare Moema · São Paulo</p>
+   */
+  .label-eyebrow {
+    font-family: var(--font-heading);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: oklch(0.72 0.12 55);  /* amber médio — funciona em dark e light */
+  }
+
+  /*
+   * Card premium: borda sutil + sombra de profundidade.
+   * Adaptativo light/dark via border-border.
+   */
+  .card-premium {
+    background: var(--card);
+    border: 1px solid color-mix(in oklch, var(--border) 60%, transparent);
+    border-radius: var(--radius-2xl);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.06) inset,
+      0 4px 24px -6px rgba(0,0,0,0.12),
+      0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  :root:not(.dark) .card-premium {
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.8) inset,
+      0 4px 24px -4px rgba(0,0,0,0.08),
+      0 1px 3px rgba(0,0,0,0.05);
+  }
+
+  /*
+   * Glow amber — aura de brilho para CTAs e elementos de destaque.
+   */
+  .glow-amber {
+    box-shadow: 0 0 32px -4px rgba(245,158,11,0.4);
+  }
+
+  .glow-amber-sm {
+    box-shadow: 0 0 16px -4px rgba(245,158,11,0.3);
+  }
+
+  /* ─────────────────────────────────────────
+   * LIQUID GLASS — sistema de efeito vitral cinematográfico
+   * Fundo escuro sólido + blur + borda âmbar gradiente linear.
+   * Sem animações de cor rotacionantes — efeito premium e sóbrio.
+   * ───────────────────────────────────────── */
+
+  /*
+   * Base glassmorphism adaptativa light/dark.
+   * Aplica blur + saturate — cria profundidade real.
+   */
+  .liquid-glass {
+    background: oklch(1 0 0 / 0.06);
+    backdrop-filter: blur(28px) saturate(200%) brightness(1.01);
+    -webkit-backdrop-filter: blur(28px) saturate(200%) brightness(1.01);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  :root:not(.dark) .liquid-glass {
+    background: oklch(1 0 0 / 0.65);
+    border-color: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(28px) saturate(180%) brightness(1.02);
+    -webkit-backdrop-filter: blur(28px) saturate(180%) brightness(1.02);
+  }
+
+  /*
+   * Vitral card — liquid glass cinematográfico.
+   * Fundo quase-preto quente + blur profundo + borda âmbar gradiente.
+   * Efeito de profundidade e sofisticação cinematográfica.
+   */
+  .vitral-card {
+    position: relative;
+    background: oklch(0.14 0.008 52);
+    backdrop-filter: blur(32px) saturate(200%) brightness(1.02);
+    -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.02);
+    border-radius: var(--radius-2xl);
+    isolation: isolate;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.07) inset,
+      0 -1px 0 rgba(0, 0, 0, 0.3) inset,
+      0 12px 48px -8px rgba(0, 0, 0, 0.6),
+      0 4px 16px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(0, 0, 0, 0.4),
+      0 0 48px -16px rgba(245, 158, 11, 0.1);
+  }
+
+  :root:not(.dark) .vitral-card {
+    background: oklch(0.99 0.002 80);
+    backdrop-filter: blur(32px) saturate(160%);
+    -webkit-backdrop-filter: blur(32px) saturate(160%);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 1) inset,
+      0 8px 40px -8px rgba(0, 0, 0, 0.08),
+      0 2px 8px rgba(0, 0, 0, 0.04),
+      0 0 0 1px rgba(0, 0, 0, 0.05);
+  }
+
+  /* Borda sólida âmbar com gradiente linear — cinematográfica */
+  .vitral-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(245, 158, 11, 0.65) 0%,
+      rgba(245, 158, 11, 0.25) 30%,
+      rgba(255, 255, 255, 0.06) 50%,
+      rgba(245, 158, 11, 0.18) 70%,
+      rgba(245, 158, 11, 0.55) 100%
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .vitral-card:hover::before {
+    background: linear-gradient(
+      135deg,
+      rgba(245, 158, 11, 0.85) 0%,
+      rgba(245, 158, 11, 0.40) 30%,
+      rgba(255, 255, 255, 0.10) 50%,
+      rgba(245, 158, 11, 0.30) 70%,
+      rgba(245, 158, 11, 0.75) 100%
+    );
+  }
+
+  /* Halo de luz interna — reflexo cinematográfico no vidro */
+  .vitral-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background:
+      radial-gradient(ellipse 90% 35% at 50% 0%, rgba(255, 255, 255, 0.06), transparent 55%),
+      radial-gradient(ellipse 50% 20% at 50% 100%, rgba(245, 158, 11, 0.06), transparent 60%);
+    pointer-events: none;
+  }
+
+  /*
+   * Shimmer light sweep — relance de luz passando pela superfície.
+   * Aplique em botões e cards para microinteração on-hover.
+   */
+  .vitral-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vitral-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 40%,
+      rgba(255, 255, 255, 0.18) 50%,
+      transparent 60%
+    );
+    background-size: 200% 100%;
+    background-position-x: var(--shimmer-pos);
+    pointer-events: none;
+    transition: none;
+  }
+
+  .vitral-shimmer:hover::after {
+    animation: shimmer-sweep 0.7s ease-out forwards;
+  }
+
+  /*
+   * Card sólido premium — fundo opaco, sem glassmorphism.
+   * Uso: cards de conteúdo, info-cards, seções de formulário.
+   * Dark: quase-preto quente com borda âmbar sutil.
+   * Light: branco puro com borda leve.
+   */
+  .card-solid {
+    background: oklch(0.15 0.009 52);
+    border: 1px solid rgba(245, 158, 11, 0.18);
+    border-radius: var(--radius-2xl);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.06) inset,
+      0 8px 40px -8px rgba(0, 0, 0, 0.55),
+      0 0 0 1px rgba(0, 0, 0, 0.25);
+  }
+
+  :root:not(.dark) .card-solid {
+    background: oklch(1 0 0);
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 1) inset,
+      0 4px 24px -4px rgba(0, 0, 0, 0.07),
+      0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+
+  /*
+   * Card sólido com acento âmbar no topo.
+   * Igual ao card-solid mas com faixa decorativa.
+   * Aplique o pseudo-before para a faixa ou adicione manualmente.
+   */
+  .card-solid-amber {
+    background: oklch(0.15 0.009 52);
+    border: 1px solid rgba(245, 158, 11, 0.22);
+    border-top: 2px solid rgba(245, 158, 11, 0.7);
+    border-radius: var(--radius-2xl);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.06) inset,
+      0 8px 40px -8px rgba(0, 0, 0, 0.55),
+      0 0 40px -16px rgba(245, 158, 11, 0.12);
+  }
+
+  :root:not(.dark) .card-solid-amber {
+    background: oklch(1 0 0);
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    border-top: 2px solid rgba(245, 158, 11, 0.7);
+    box-shadow:
+      0 4px 24px -4px rgba(0, 0, 0, 0.07),
+      0 0 32px -12px rgba(245, 158, 11, 0.1);
+  }
+
+  /*
+   * Botão âmbar sólido — CTA primário do site.
+   * Gradiente vertical Apple-style com highlight superior e sombra âmbar.
+   */
+  .btn-amber {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-xl);
+    padding: 0.875rem 1.75rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    background: linear-gradient(to bottom, #fcd34d 0%, #f59e0b 55%, #d97706 100%);
+    color: #1c1410;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.38) inset,
+      0 -1px 0 rgba(0, 0, 0, 0.12) inset,
+      0 4px 24px rgba(245, 158, 11, 0.38);
+    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    outline: none;
+    white-space: nowrap;
+  }
+
+  .btn-amber:hover {
+    background: linear-gradient(to bottom, #fde68a 0%, #fcd34d 50%, #f59e0b 100%);
+    transform: translateY(-1px);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.45) inset,
+      0 -1px 0 rgba(0, 0, 0, 0.1) inset,
+      0 8px 36px rgba(245, 158, 11, 0.55);
+  }
+
+  .btn-amber:active {
+    transform: translateY(0);
+    background: linear-gradient(to bottom, #f59e0b 0%, #d97706 100%);
+    box-shadow:
+      0 0 0 rgba(255, 255, 255, 0) inset,
+      0 2px 8px rgba(245, 158, 11, 0.25);
+  }
+
+  .btn-amber:focus-visible {
+    outline: 2px solid rgba(245, 158, 11, 0.6);
+    outline-offset: 2px;
+  }
+
+  .btn-amber:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /*
+   * Botão ghost — CTA secundário com borda translúcida.
+   * Para uso sobre fundos escuros.
+   */
+  .btn-ghost-dark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-xl);
+    padding: 0.875rem 1.75rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .btn-ghost-dark:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.32);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost-dark:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.4);
+    outline-offset: 2px;
+  }
+
+  /*
+   * Mesh ambient background — fundo cinematográfico com orbs de luz.
+   * Use no body ou em seções escuras de alto impacto.
+   */
+  .mesh-ambient {
+    background:
+      radial-gradient(ellipse 90% 70% at 15% 10%,  rgba(245, 158,  11, 0.18), transparent 55%),
+      radial-gradient(ellipse 70% 60% at 85% 90%,  rgba(139,  92, 246, 0.14), transparent 50%),
+      radial-gradient(ellipse 80% 50% at 50% 50%,  rgba(16,  185, 129, 0.07), transparent 60%),
+      radial-gradient(ellipse 100% 80% at 50% 100%, rgba(17,  24,  39, 0.95),  transparent 70%);
+  }
+
+  /*
+   * Prismatic ring — anel âmbar sólido para badges e pills.
+   */
+  .prismatic-ring {
+    position: relative;
+  }
+
+  .prismatic-ring::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(245, 158, 11, 0.9) 0%,
+      rgba(245, 158, 11, 0.45) 40%,
+      rgba(255, 255, 255, 0.15) 60%,
+      rgba(245, 158, 11, 0.7) 100%
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
 }
+
+/* ─── Keyframes ──────────────────────────────── */
+
+@keyframes shimmer-sweep {
+  from { --shimmer-pos: -60%; }
+  to   { --shimmer-pos: 160%; }
+}
+
+/* Pulso suave para elementos de destaque */
+@keyframes vitral-pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.02); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vitral-card::before,
+  .prismatic-ring::before {
+    animation: none;
+  }
+  .vitral-shimmer::after {
+    display: none;
+  }
+}
+
+/* ─── Media queries ──────────────────────────── */
 
 @media (min-width: 1024px) {
   :root {
@@ -195,11 +646,18 @@
   }
 }
 
-/* Mobile: corpo secundário um pouco mais claro — melhor leitura sobre fundos muted/baixo contraste */
+/* Mobile dark: corpo secundário ligeiramente mais claro */
 @media (max-width: 1023px) {
   .dark {
-    --muted-foreground: oklch(0.78 0 0);
+    --muted-foreground: oklch(0.78 0.006 70);
   }
+}
+
+/* Light mode: glow de fundo muda para tons quentes sutis */
+:root:not(.dark) #conteudo-principal > section:not(:first-of-type) {
+  box-shadow:
+    inset 0 88px 64px -72px rgba(217, 119, 6, 0.06),
+    inset 0 1px 0 0 rgba(0, 0, 0, 0.04);
 }
 
 /* Transição visual entre seções (desktop): vinheta + linha superior suave */
@@ -215,24 +673,60 @@
   * {
     @apply border-border outline-ring/50;
   }
+
+  /* Transição suave entre light/dark — como Apple.com */
   html {
     @apply font-sans;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
-    /**
-     * Header fixo + `href="#..."`: o ponto de ancoragem respeita a altura da navbar
-     * (mobile e desktop). `--site-header-height` já inclui safe-area superior.
-     */
     scroll-padding-top: var(--site-header-height);
     scroll-padding-bottom: env(safe-area-inset-bottom, 0px);
   }
+
+  /* Transição de cor aplicada ao body para não incluir imagens e transforms */
   body {
     @apply min-w-0 overflow-x-hidden bg-background text-foreground antialiased;
+    transition:
+      background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  h1,
-  h2,
-  h3,
+
+  /*
+   * Escala tipográfica Apple-like:
+   * Headlines grandes, tracking negativo, leitura forte.
+   * Usa clamp() para fluir entre mobile e desktop sem breakpoints manuais.
+   */
+  h1 {
+    @apply font-heading font-bold tracking-tight;
+    font-size: clamp(2.75rem, 7vw + 0.5rem, 6rem);
+    line-height: 1.04;
+    letter-spacing: -0.025em;
+  }
+
+  h2 {
+    @apply font-heading font-bold;
+    font-size: clamp(2rem, 4vw + 0.5rem, 3.75rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+  }
+
+  h3 {
+    @apply font-heading font-semibold;
+    font-size: clamp(1.35rem, 2.5vw + 0.25rem, 2rem);
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+
   h4 {
-    @apply font-heading;
+    @apply font-heading font-semibold;
+    font-size: clamp(1.1rem, 1.5vw + 0.25rem, 1.5rem);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+
+  /* Corpo de texto Apple-like: 17px base, leitura confortável */
+  p, li {
+    font-size: clamp(1rem, 1.2vw + 0.1rem, 1.125rem);
+    line-height: 1.65;
   }
 }

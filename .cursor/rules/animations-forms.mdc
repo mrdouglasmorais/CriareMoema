@@ -1,0 +1,68 @@
+---
+description: Padrões de animação com Framer Motion e formulários de captura de lead
+globs: src/components/**/*.tsx
+alwaysApply: false
+---
+
+# Animações e Formulários
+
+## Framer Motion — Primitivos disponíveis
+Use os wrappers de `@/components/landing/reveal.tsx`:
+
+| Componente | Quando usar |
+|------------|-------------|
+| `<Reveal>` | Fade + slide em qualquer bloco de texto ou conteúdo |
+| `<ScaleReveal>` | Fade + zoom em imagens e cards |
+| `<Stagger>` + `<StaggerItem>` | Listas de cards com entrada escalonada |
+
+```tsx
+// ✅ CORRETO — respeita prefers-reduced-motion automaticamente
+<Reveal delay={0.08}>
+  <h2>Título da seção</h2>
+</Reveal>
+
+<Stagger className="grid gap-4 sm:grid-cols-3">
+  {items.map((item) => (
+    <StaggerItem key={item.id}>
+      <Card>...</Card>
+    </StaggerItem>
+  ))}
+</Stagger>
+```
+
+## Animações custom com Framer Motion
+```tsx
+// ✅ Sempre verifique useReducedMotion()
+const reduce = useReducedMotion();
+<motion.div
+  initial={reduce ? false : { opacity: 0, y: 24 }}
+  animate={reduce ? {} : { opacity: 1, y: 0 }}
+  transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+/>
+```
+
+## Regras de animação
+- Easing padrão: `[0.22, 1, 0.36, 1]` (ease-out natural).
+- Duração: 0.55–0.85s. Nunca acima de 1.2s.
+- `will-change-transform` apenas em elementos que realmente usam transform.
+- Sem animações que causem layout shift.
+- No mobile: animações mais sutis ou desativadas com `prefers-reduced-motion`.
+
+## Formulários de lead
+```tsx
+// Server Action em arquivo isolado: src/lib/actions/lead.ts com "use server"
+// Componente client: src/components/forms/lead-form.tsx com "use client"
+// useActionState para estado (idle | success | error)
+```
+
+Campos obrigatórios: **Nome, E-mail, WhatsApp**.  
+Campo opcional: Mensagem.
+
+Estados obrigatórios:
+- `idle` — formulário limpo
+- `pending` — loading no botão (`<Loader2 className="animate-spin">`)
+- `success` — mensagem de confirmação + CTA WhatsApp
+- `error` — mensagem de erro inline com `role="alert" aria-live="assertive"`
+
+## Webhook de leads
+Configure `LEAD_WEBHOOK_URL` no `.env.local` para integrar com CRM, Make, Zapier ou n8n. A Server Action em `src/lib/actions/lead.ts` já está preparada.

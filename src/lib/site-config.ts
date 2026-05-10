@@ -15,16 +15,19 @@ export const siteConfig = {
    * mas ajuda outras ferramentas e reforça o tema da página).
    */
   seoKeywords: [
-    "móveis planejados",
     "móveis planejados Moema",
+    "móveis planejados de alto padrão",
     "móveis sob medida São Paulo",
-    "cozinha planejada",
-    "closet planejado",
+    "cozinha planejada Moema",
+    "cozinha sob medida alto padrão",
+    "closet planejado de luxo",
     "dormitório planejado",
+    "home office planejado",
     "Criare Moema",
     "loja de móveis planejados Moema",
-    "marcenaria planejada",
-    "projeto de móveis",
+    "marcenaria alto padrão",
+    "projeto de móveis sob medida",
+    "móveis planejados para arquitetos",
   ] as const,
   /** Texto descritivo para `og:image:alt` / acessibilidade em previews. */
   ogImageAlt:
@@ -51,7 +54,7 @@ export const siteConfig = {
   /** Horários exibidos em “Venha nos visitar” (ajuste conforme a loja). */
   openingHoursLines: [
     "Segunda a sexta: 10h às 19h",
-    "Sábado: 10h às 15h",
+    "Sábado: 10h às 16h",
     "Domingo: fechado",
   ] as const,
   /** Navegação no app Waze (coordenadas da loja). */
@@ -71,12 +74,13 @@ export const siteConfig = {
   countdownTarget: process.env.NEXT_PUBLIC_NOVIDADES_AT ?? "",
   /** Dias do contador quando não há `countdownTarget` definido. */
   countdownDurationDays: 7,
-  /** Links da landing no rodapé (descoberta além do menu principal). */
+  /** Links do rodapé — inclui páginas internas e âncoras da landing. */
   footerQuickLinks: [
-    { href: "/#novidades", label: "Novidades" },
-    { href: "/#ambientes", label: "Ambientes" },
-    { href: "/#beneficios", label: "Benefícios" },
-    { href: "/#quem-somos", label: "Quem somos" },
+    { href: "/ambientes", label: "Ambientes" },
+    { href: "/catalogo", label: "Catálogo" },
+    { href: "/para-profissionais", label: "Para Profissionais" },
+    { href: "/blog", label: "Blog / Tendências" },
+    { href: "/#quem-somos", label: "Quem Somos" },
     { href: "/#faq", label: "FAQ" },
     { href: "/#localizacao", label: "Localização" },
   ] as const,

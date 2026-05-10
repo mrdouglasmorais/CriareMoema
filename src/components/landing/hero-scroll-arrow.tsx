@@ -5,7 +5,7 @@ import { motion, useReducedMotion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useCallback, type MouseEvent } from "react";
 
-const NOVIDADES_SECTION_ID = "novidades";
+const TARGET_SECTION_ID = "ambientes";
 
 export interface HeroScrollArrowProps {
   className?: string;
@@ -14,16 +14,22 @@ export interface HeroScrollArrowProps {
 export function HeroScrollArrow({ className }: HeroScrollArrowProps) {
   const reduce = useReducedMotion();
 
-  const scrollToNovidades = useCallback(
-    (e: MouseEvent<HTMLAnchorElement>) => {
+  const scrollToNext = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
-      const el = document.getElementById(NOVIDADES_SECTION_ID);
+      const el = document.getElementById(TARGET_SECTION_ID);
       if (!el) return;
+      // Desativa scroll-snap temporariamente para não bloquear scrollIntoView
+      const html = document.documentElement;
+      const prev = html.style.scrollSnapType;
+      html.style.scrollSnapType = "none";
       el.scrollIntoView({
         behavior: reduce ? "auto" : "smooth",
         block: "start",
       });
-      window.history.replaceState(null, "", `#${NOVIDADES_SECTION_ID}`);
+      setTimeout(() => {
+        html.style.scrollSnapType = prev;
+      }, 900);
     },
     [reduce],
   );
@@ -38,11 +44,11 @@ export function HeroScrollArrow({ className }: HeroScrollArrowProps) {
       animate={reduce ? {} : { opacity: 1, y: 0 }}
       transition={{ delay: 0.85, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
     >
-      <a
-        href={`#${NOVIDADES_SECTION_ID}`}
-        onClick={scrollToNovidades}
+      <button
+        type="button"
+        onClick={scrollToNext}
         className="group flex flex-col items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
-        aria-label="Ir para a próxima seção: novidades"
+        aria-label="Ir para a próxima seção: ambientes"
       >
         <span className="font-heading text-[11px] font-medium uppercase tracking-[0.38em] text-stone-300/85 sm:text-xs sm:tracking-[0.42em]">
           Explorar
@@ -61,7 +67,7 @@ export function HeroScrollArrow({ className }: HeroScrollArrowProps) {
           </motion.span>
         </span>
         <span className="mt-2 h-8 w-px bg-gradient-to-b from-amber-500/50 to-transparent opacity-80 transition-opacity duration-500 group-hover:from-amber-400 group-hover:opacity-100" />
-      </a>
+      </button>
     </motion.div>
   );
 }

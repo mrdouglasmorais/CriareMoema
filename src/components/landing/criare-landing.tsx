@@ -1,32 +1,19 @@
 import Image from "next/image";
 import { FaqSection } from "@/components/landing/faq-section";
 import { HeroSection } from "@/components/landing/hero-section";
-import { NovidadesCountdown } from "@/components/landing/novidades-countdown";
 import { Reveal, ScaleReveal, Stagger, StaggerItem } from "@/components/landing/reveal";
 import { landingSection } from "@/components/landing/section-styles";
+import { AmbientesGrid } from "@/components/sections/ambientes-grid";
+import { ParaProfissionaisTeaser } from "@/components/sections/para-profissionais-teaser";
+import { ProjetosAssinadosSection } from "@/components/sections/projetos-assinados-section";
+import { CtaSection } from "@/components/sections/cta-section";
+import { TestimonialsSection } from "@/components/sections/testimonials-section";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { benefits, diferenciais, paymentCards } from "@/data/home";
 import { brandImages } from "@/lib/brand-assets";
 import { siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 import { Check, Clock, MapPin, Navigation } from "lucide-react";
-
-const benefits = [
-  "Processo organizado do briefing à instalação",
-  "Maior fábrica de móveis da América Latina",
-  "Flexibilidade financeira, até 36x",
-  "Personalização de alto padrão com ótimo custo-benefício",
-  "5 anos de garantia após instalação",
-  "Projeto personalizado junto ao arquiteto",
-] as const;
-
-const diferenciaisList = [
-  "Processo organizado do briefing à instalação.",
-  "Maior fábrica de móveis planejados da América Latina.",
-  "Flexibilidade financeira, com parcelamento em até 36x e possibilidade de 90 dias para o primeiro pagamento.",
-  "5 anos de garantia após a instalação.",
-  "Projeto personalizado junto ao arquiteto.",
-  "Personalização de alto padrão com ótimo custo-benefício.",
-] as const;
 
 export function CriareLanding() {
   return (
@@ -36,58 +23,17 @@ export function CriareLanding() {
     >
       <HeroSection />
 
-      <section
-        id="novidades"
-        className={cn(
-          landingSection(),
-          "relative overflow-hidden bg-muted/10 max-lg:bg-muted/25",
-        )}
-        aria-labelledby="novidades-heading"
-      >
-        <div className="mx-auto w-full max-w-[min(100%,88rem)] px-4 sm:px-6">
-          <h2 id="novidades-heading" className="sr-only">
-            Contagem regressiva para novidades
-          </h2>
-          <NovidadesCountdown />
-        </div>
-      </section>
-
+      {/* Ambientes — carrossel full-width */}
       <section
         id="ambientes"
-        className={cn(landingSection(), "bg-muted/20 max-lg:bg-muted/30")}
+        className={cn(landingSection(), "bg-muted/20 max-lg:bg-muted/30 overflow-hidden")}
         aria-labelledby="ambientes-heading"
       >
-        <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 sm:grid-cols-2 sm:items-center sm:px-6">
-          <ScaleReveal>
-            <div className="group relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl ring-1 ring-white/5 transition-all duration-700 hover:ring-amber-500/25">
-              <Image
-                src={brandImages.ambientes.src}
-                alt="Ambientes planejados Criare: cozinha, sala e dormitório em alto padrão."
-                width={brandImages.ambientes.width}
-                height={brandImages.ambientes.height}
-                sizes="(min-width: 640px) 50vw, 100vw"
-                className="h-auto w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
-              />
-            </div>
-          </ScaleReveal>
-          <Reveal delay={0.08}>
-            <div>
-              <p className="font-heading text-xs font-semibold uppercase tracking-[0.25em] text-amber-500/90">
-                {siteConfig.brandFocusLine}
-              </p>
-              <h2
-                id="ambientes-heading"
-                className="mt-3 font-heading text-3xl font-bold tracking-tighter text-foreground sm:text-4xl md:text-5xl"
-              >
-                Conheça de perto a excelência e qualidade da Criare.
-              </h2>
-              <p className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">
-                Cozinha • Sala • Lavanderia • Dormitório • Closet • Lavabo • Home Office
-              </p>
-            </div>
-          </Reveal>
-        </div>
+        <AmbientesGrid />
       </section>
+
+      {/* Projetos assinados — vitrine de parceria com arquitetos */}
+      <ProjetosAssinadosSection />
 
       <section
         id="beneficios"
@@ -96,31 +42,34 @@ export function CriareLanding() {
       >
         <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
           <Reveal>
-            <p className="font-heading text-xs font-semibold uppercase tracking-[0.25em] text-amber-500/90">
+            <p className="label-eyebrow">
               {siteConfig.brandFocusLine}
             </p>
             <h2
               id="beneficios-heading"
-              className="mt-3 font-heading text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl"
+              className="mt-3 font-heading font-bold"
             >
               Por que escolher a <span className="text-primary">Criare Moema</span>?
             </h2>
           </Reveal>
           <Stagger className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {benefits.map((text) => (
-              <StaggerItem key={text}>
-                <div className="group flex h-full gap-3 rounded-2xl border border-white/12 bg-card/75 p-5 shadow-md shadow-black/25 backdrop-blur-md transition-all duration-500 max-lg:border-border/70 hover:border-amber-500/35 hover:bg-card/90 hover:shadow-lg hover:shadow-amber-950/20">
+            {benefits.map((item) => (
+              <StaggerItem key={item.id}>
+                <div className="vitral-card vitral-shimmer group flex h-full gap-3 p-5 transition-all duration-500 hover:-translate-y-1">
                   <Check
                     className="mt-0.5 size-5 shrink-0 text-amber-500 transition-transform duration-500 group-hover:scale-110"
                     aria-hidden
                   />
-                  <span className="text-sm font-medium leading-relaxed text-foreground/90">{text}</span>
+                  <span className="text-sm font-medium leading-relaxed text-foreground/90">{item.text}</span>
                 </div>
               </StaggerItem>
             ))}
           </Stagger>
         </div>
       </section>
+
+      {/* Portal do Arquiteto — teaser para /para-profissionais */}
+      <ParaProfissionaisTeaser />
 
       <section
         id="quem-somos"
@@ -129,12 +78,12 @@ export function CriareLanding() {
       >
         <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 sm:grid-cols-2 sm:items-start sm:px-6">
           <Reveal delay={0.05} className="order-2 space-y-5 sm:order-1">
-            <p className="font-heading text-xs font-semibold uppercase tracking-[0.25em] text-amber-500/90">
+            <p className="label-eyebrow">
               {siteConfig.brandFocusLine}
             </p>
             <h2
               id="quem-somos-heading"
-              className="font-heading text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl"
+              className="font-heading font-bold"
             >
               Quem somos
             </h2>
@@ -166,7 +115,7 @@ export function CriareLanding() {
             <p className="text-sm text-muted-foreground">Estacionamento no local para sua comodidade.</p>
           </Reveal>
           <ScaleReveal delay={0.1} className="relative order-1 sm:order-2">
-            <div className="group relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl transition-all duration-700 hover:border-amber-500/20">
+            <div className="vitral-card group relative overflow-hidden transition-all duration-700 hover:-translate-y-1">
               <Image
                 src={brandImages.showcase1.src}
                 alt="Projeto de móveis planejados — ambientes integrados."
@@ -187,12 +136,12 @@ export function CriareLanding() {
       >
         <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 sm:grid-cols-2 sm:items-start sm:px-6">
           <Reveal>
-            <p className="font-heading text-xs font-semibold uppercase tracking-[0.25em] text-amber-500/90">
+            <p className="label-eyebrow">
               {siteConfig.brandFocusLine}
             </p>
             <h2
               id="diferenciais-heading"
-              className="mt-3 font-heading text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl"
+              className="mt-3 font-heading font-bold"
             >
               Diferenciais Criare Moema
             </h2>
@@ -206,15 +155,15 @@ export function CriareLanding() {
               decisões importantes.
             </p>
             <ul className="mt-8 list-disc space-y-3 pl-5 text-sm leading-relaxed text-muted-foreground sm:text-base">
-              {diferenciaisList.map((item) => (
-                <li key={item} className="transition-colors duration-300 hover:text-foreground/80">
-                  {item}
+              {diferenciais.map((item) => (
+                <li key={item.id} className="transition-colors duration-300 hover:text-foreground/80">
+                  {item.text}
                 </li>
               ))}
             </ul>
           </Reveal>
           <ScaleReveal delay={0.12}>
-            <div className="group relative overflow-hidden rounded-2xl border border-white/10 shadow-2xl transition-all duration-700 hover:border-amber-500/25">
+            <div className="vitral-card group relative overflow-hidden transition-all duration-700 hover:-translate-y-1">
               <Image
                 src={brandImages.showcase2.src}
                 alt="Detalhe de marcenaria e acabamento — móveis planejados."
@@ -237,7 +186,7 @@ export function CriareLanding() {
           <Reveal>
             <h2
               id="pagamento-heading"
-              className="font-heading text-3xl font-bold tracking-tighter sm:text-5xl md:text-6xl"
+              className="font-heading font-bold"
             >
               Conheça nossas{" "}
               <span className="bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 bg-clip-text text-transparent drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
@@ -249,29 +198,16 @@ export function CriareLanding() {
             </p>
           </Reveal>
           <Stagger className="mt-12 grid gap-6 sm:grid-cols-3">
-            {[
-              {
-                t: "Parcelamento em até 36x",
-                d: "Flexibilidade para adequar o investimento ao seu fluxo e ao projeto.",
-              },
-              {
-                t: "Primeira parcela em até 90 dias",
-                d: "Possibilidade de alongar o início das parcelas, conforme análise.",
-              },
-              {
-                t: "5 anos de garantia",
-                d: "Tranquilidade após a instalação, alinhada às políticas da loja.",
-              },
-            ].map((card) => (
-              <StaggerItem key={card.t}>
-                <Card className="group h-full border-white/12 bg-gradient-to-b from-card/95 to-card/55 shadow-xl shadow-black/30 backdrop-blur-md transition-all duration-500 hover:-translate-y-1 hover:border-amber-500/30 hover:shadow-2xl hover:shadow-amber-950/30 max-lg:border-border/80">
+            {paymentCards.map((card) => (
+              <StaggerItem key={card.id}>
+                <Card className="vitral-card vitral-shimmer group h-full transition-all duration-500 hover:-translate-y-1">
                   <CardHeader className="pb-2">
                     <CardTitle className="font-heading text-xl font-bold leading-snug tracking-tight transition-colors duration-300 group-hover:text-amber-100 sm:text-2xl">
-                      {card.t}
+                      {card.title}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm leading-relaxed text-muted-foreground">{card.d}</p>
+                    <p className="text-sm leading-relaxed text-muted-foreground">{card.description}</p>
                   </CardContent>
                 </Card>
               </StaggerItem>
@@ -279,6 +215,10 @@ export function CriareLanding() {
           </Stagger>
         </div>
       </section>
+
+      <TestimonialsSection />
+
+      <CtaSection />
 
       <section
         id="faq"
@@ -307,7 +247,7 @@ export function CriareLanding() {
           <Reveal>
             <h2
               id="localizacao-heading"
-              className="font-heading text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl"
+              className="font-heading font-bold"
             >
               Venha nos visitar
             </h2>

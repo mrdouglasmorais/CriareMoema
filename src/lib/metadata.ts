@@ -138,7 +138,9 @@ export function createPageMetadata({
 
   return {
     metadataBase: new URL(siteConfig.url),
-    title,
+    // `absolute` ignora o template `%s | Criare Moema` do layout raiz,
+    // evitando títulos duplos como "Blog | Criare Moema | Criare Moema".
+    title: { absolute: title },
     description,
     keywords: keywordList,
     alternates: {
