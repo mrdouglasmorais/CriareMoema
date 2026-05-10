@@ -1,7 +1,6 @@
 "use client";
 
 import { WhatsAppOfficialLogo } from "@/components/icons/whatsapp-official-logo";
-import { siteConfig } from "@/lib/site-config";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Check, Copy, Share2, X } from "lucide-react";
 import { usePathname } from "next/navigation";
@@ -81,7 +80,10 @@ export function FloatingSocialShare() {
   const pathname = usePathname();
   const ref = useRef<HTMLDivElement>(null);
 
-  const pageUrl = `${siteConfig.url}${pathname}`;
+  const pageUrl =
+    typeof window !== "undefined"
+      ? `${window.location.origin}${pathname}`
+      : pathname;
 
   const copyLink = useCallback(async () => {
     try {
