@@ -1,7 +1,19 @@
 /**
- * URL canônica e identidade da marca para metadata, Open Graph e JSON-LD.
- * Defina NEXT_PUBLIC_SITE_URL em produção para canonical, sitemap e og:url corretos.
+ * Resolve a URL canônica em ordem de prioridade:
+ * 1. NEXT_PUBLIC_SITE_URL   — domínio de produção (configure no painel Vercel)
+ * 2. VERCEL_URL             — URL automática de cada deploy Vercel (preview/prod)
+ * 3. localhost              — fallback local durante desenvolvimento
  */
+function resolveBaseUrl(): string {
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  return "http://localhost:3000";
+}
+
 export const siteConfig = {
   name: "Criare Moema",
   titleSuffix: "Móveis Planejados Criare",
@@ -35,7 +47,7 @@ export const siteConfig = {
   referenceLandingUrl: "https://ads.criaremoema.com.br/",
   whatsappUrl:
     "https://wa.me/5511942703131?text=Ol%C3%A1%21%20Vim%20pelo%20site%20da%20Criare%20Moema.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  url: resolveBaseUrl(),
   locale: "pt_BR",
   language: "pt-BR",
   twitterHandle: "@criaremoema",

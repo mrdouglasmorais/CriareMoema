@@ -6,6 +6,7 @@ import { SnapManager } from "@/components/layout/snap-manager";
 import { SiteHeader } from "@/components/layout/site-header";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { ThemeScript } from "@/components/layout/theme-script";
+import { Analytics } from "@/components/analytics/analytics";
 import { FloatingSocialShare } from "@/components/layout/floating-social-share";
 import { WhatsAppFab } from "@/components/layout/whatsapp-fab";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -70,6 +71,7 @@ export default function RootLayout({
       <head>
         {/* Inline antes da hidratação — evita flash de tema errado (FOUC) */}
         <ThemeScript />
+        <Analytics />
       </head>
       <body className="min-h-full bg-background text-foreground">
         <JsonLd data={[organizationJsonLd, websiteJsonLd]} />
