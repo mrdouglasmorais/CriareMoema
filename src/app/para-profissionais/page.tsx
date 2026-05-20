@@ -115,7 +115,7 @@ export default function ParaProfissionaisPage() {
 
         {/* ── Hero cinematográfico ─────────────────────────────────────── */}
         <section
-          className="relative min-h-[65svh] overflow-hidden border-b border-border/30"
+          className="relative flex min-h-[100dvh] flex-col overflow-hidden border-b border-border/30"
           aria-labelledby="profissionais-hero-heading"
         >
           <Image
@@ -131,7 +131,7 @@ export default function ParaProfissionaisPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-amber-950/20 to-transparent" />
 
-          <div className="relative z-10 mx-auto flex min-h-[65svh] max-w-6xl flex-col justify-end px-4 pb-16 sm:px-6 sm:pb-24">
+          <div className="relative z-10 mx-auto flex flex-1 max-w-6xl flex-col justify-end px-4 pb-16 sm:px-6 sm:pb-24">
             <Reveal className="max-w-2xl space-y-5">
               <nav aria-label="Navegação estrutural">
                 <ol className="flex flex-wrap items-center gap-2 font-heading text-[11px] font-semibold uppercase tracking-[0.18em] text-white/50">
@@ -145,37 +145,34 @@ export default function ParaProfissionaisPage() {
                 </ol>
               </nav>
 
-              {/* Badge */}
-              <span className="inline-flex items-center rounded-full border border-amber-500/40 bg-amber-950/60 px-4 py-1.5 font-heading text-[11px] font-semibold uppercase tracking-[0.18em] text-amber-300 backdrop-blur-sm">
-                Portal do Arquiteto · {siteConfig.name}
-              </span>
+              <span className="section-tag text-white/28">Portal do Arquiteto · {siteConfig.name}</span>
 
               <h1
                 id="profissionais-hero-heading"
-                className="font-heading font-bold tracking-tight text-white"
+                className="font-heading font-bold tracking-tight text-white/85"
                 style={{ fontSize: "clamp(2.6rem, 5.5vw, 4.8rem)", lineHeight: 1.05 }}
               >
                 Você projeta.{" "}
-                <span className="text-gradient-amber">Nós executamos.</span>
+                <span className="text-white/50">Nós executamos.</span>
               </h1>
               <p className="text-base leading-relaxed text-white/75 sm:text-lg">
                 A Criare Moema é parceira de arquitetos e designers de interiores que exigem precisão
                 milimétrica na execução. Suporte técnico completo para que seus projetos ganhem vida
                 com o mais alto padrão de acabamento.
               </p>
-              <div className="flex flex-wrap gap-3 pt-2">
+              <div className="flex flex-wrap gap-4 pt-2">
                 <a
                   href="#cadastro"
-                  className="inline-flex h-12 items-center gap-2 rounded-2xl bg-gradient-to-b from-amber-300 via-amber-400 to-amber-500 px-8 text-sm font-semibold text-stone-950 shadow-[0_1px_0_rgba(255,255,255,0.35)_inset,0_4px_24px_rgba(245,158,11,0.45)] transition-all duration-300 hover:-translate-y-0.5 hover:from-amber-200 hover:to-amber-400 hover:shadow-[0_1px_0_rgba(255,255,255,0.4)_inset,0_8px_32px_rgba(245,158,11,0.6)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60 sm:h-14 sm:px-10 sm:text-base"
+                  className="inline-flex h-11 items-center gap-2.5 rounded-xl border border-amber-500/28 bg-amber-500/7 px-7 font-heading text-[0.78rem] font-semibold uppercase tracking-[0.06em] text-amber-400/78 transition-all duration-400 hover:border-amber-500/45 hover:bg-amber-500/12 hover:text-amber-400/96 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/40 sm:h-12 sm:px-8"
                 >
                   Cadastrar-me gratuitamente
-                  <ArrowRight className="size-4 shrink-0" aria-hidden />
+                  <ArrowRight className="size-3.5 shrink-0" aria-hidden />
                 </a>
                 <a
                   href={siteConfig.whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-12 items-center gap-2 rounded-2xl border border-white/25 bg-white/10 px-8 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:border-white/40 hover:bg-white/18 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:h-14 sm:px-10 sm:text-base"
+                  className="inline-flex h-11 items-center gap-2 rounded-xl border border-white/15 bg-white/6 px-7 font-heading text-[0.78rem] font-semibold uppercase tracking-[0.06em] text-white/55 backdrop-blur-sm transition-all duration-400 hover:border-white/28 hover:bg-white/10 hover:text-white/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30 sm:h-12 sm:px-8"
                 >
                   Falar pelo WhatsApp
                 </a>
@@ -194,7 +191,7 @@ export default function ParaProfissionaisPage() {
                 className="mt-3 font-heading text-3xl font-bold tracking-tighter sm:text-4xl"
               >
                 Tudo que você precisa para{" "}
-                <span className="text-gradient-amber">especificar</span>
+                <span className="text-white/50">especificar</span>
               </h2>
               <p className="mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground">
                 Desde os materiais técnicos até o acompanhamento pós-venda — a Criare Moema garante
@@ -202,20 +199,35 @@ export default function ParaProfissionaisPage() {
               </p>
             </Reveal>
 
-            <Stagger className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {beneficios.map((item) => (
+            <Stagger className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {beneficios.map((item, i) => (
                 <StaggerItem key={item.id}>
-                  <div className="vitral-card vitral-shimmer group flex h-full flex-col gap-4 p-6 transition-all duration-500 hover:-translate-y-0.5">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-amber-500/30 bg-amber-950/30 text-amber-400 transition-all duration-500 group-hover:border-amber-500/55 group-hover:bg-amber-950/55 group-hover:shadow-[0_0_20px_rgba(245,158,11,0.2)]">
-                      <item.icon className="size-5" aria-hidden />
+                  <article className="vitral-card group relative flex h-full flex-col overflow-hidden p-6 transition-all duration-500 hover:-translate-y-1">
+
+                    {/* Número editorial */}
+                    <span
+                      className="mb-5 block font-heading text-[0.58rem] font-semibold uppercase tracking-[0.3em] text-amber-500/38"
+                      aria-hidden
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+
+                    {/* Ícone */}
+                    <div className="mb-5 flex h-10 w-10 items-center justify-center rounded-xl border border-amber-500/20 bg-amber-500/8 text-amber-400 transition-all duration-500 group-hover:border-amber-500/40 group-hover:bg-amber-500/15 group-hover:shadow-[0_0_18px_rgba(245,158,11,0.18)]">
+                      <item.icon className="size-[18px]" aria-hidden />
                     </div>
-                    <div>
-                      <p className="font-heading text-base font-bold text-foreground">{item.title}</p>
-                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                        {item.description}
-                      </p>
-                    </div>
-                  </div>
+
+                    {/* Texto */}
+                    <p className="font-heading text-[0.93rem] font-bold leading-snug text-white/90">
+                      {item.title}
+                    </p>
+                    <p className="mt-2.5 flex-1 text-sm leading-relaxed text-white/48">
+                      {item.description}
+                    </p>
+
+                    {/* Linha âmbar que cresce no hover */}
+                    <div className="mt-5 h-px w-0 bg-gradient-to-r from-amber-500/55 via-amber-400/25 to-transparent transition-[width] duration-500 group-hover:w-full" />
+                  </article>
                 </StaggerItem>
               ))}
             </Stagger>
@@ -237,20 +249,34 @@ export default function ParaProfissionaisPage() {
                 Como funciona a parceria
               </h2>
             </Reveal>
-            <Stagger className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            <Stagger className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {comoFunciona.map((item, i) => (
                 <StaggerItem key={item.step}>
-                  <div className="relative flex flex-col gap-4">
+                  <article className="vitral-card group relative flex flex-col gap-4 p-6">
                     {/* Connector line (desktop) */}
                     {i < comoFunciona.length - 1 && (
-                      <div className="absolute left-full top-6 hidden h-px w-8 bg-gradient-to-r from-amber-500/40 to-transparent lg:block" aria-hidden />
+                      <div
+                        className="absolute left-full top-8 z-10 hidden h-px w-4 bg-gradient-to-r from-amber-500/30 to-transparent lg:block"
+                        aria-hidden
+                      />
                     )}
-                    <span className="font-heading text-5xl font-bold text-amber-500/25 lg:text-6xl">
+
+                    {/* Número grande âmbar — decorativo */}
+                    <span
+                      className="font-heading text-5xl font-bold leading-none text-amber-500/20 transition-colors duration-500 group-hover:text-amber-500/35 lg:text-6xl"
+                      aria-hidden
+                    >
                       {item.step}
                     </span>
-                    <p className="font-heading text-lg font-bold text-foreground">{item.title}</p>
-                    <p className="text-sm leading-relaxed text-muted-foreground">{item.description}</p>
-                  </div>
+
+                    {/* Linha âmbar fina abaixo do número */}
+                    <div className="h-px w-8 bg-gradient-to-r from-amber-500/40 to-transparent" />
+
+                    <p className="font-heading text-base font-bold leading-snug text-white/88">
+                      {item.title}
+                    </p>
+                    <p className="text-sm leading-relaxed text-white/48">{item.description}</p>
+                  </article>
                 </StaggerItem>
               ))}
             </Stagger>
@@ -272,7 +298,7 @@ export default function ParaProfissionaisPage() {
                 className="font-heading text-3xl font-bold tracking-tighter sm:text-4xl"
               >
                 Cadastre-se como{" "}
-                <span className="text-gradient-amber">parceiro</span>
+                <span className="text-white/50">parceiro</span>
               </h2>
               <p className="text-base leading-relaxed text-muted-foreground">
                 Preencha o formulário e em até 24 horas úteis um consultor dedicado entrará em contato
@@ -312,8 +338,6 @@ export default function ParaProfissionaisPage() {
 
             <Reveal delay={0.1}>
               <div className="vitral-card overflow-hidden">
-                {/* Accent bar */}
-                <div className="h-1 w-full bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500" aria-hidden />
                 <div className="p-6 sm:p-8">
                   <p className="mb-1 label-eyebrow">portal do arquiteto</p>
                   <p className="mb-6 font-heading text-xl font-bold text-foreground sm:text-2xl">

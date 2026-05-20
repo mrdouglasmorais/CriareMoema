@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { startTransition, useEffect, useState } from "react";
 import { ArrowDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -13,7 +13,7 @@ function useCountUp(target: number, duration = 1400, delay = 600) {
   const reduce = useReducedMotion();
 
   useEffect(() => {
-    if (reduce) { setValue(target); return; }
+    if (reduce) { startTransition(() => setValue(target)); return; }
     const t = setTimeout(() => {
       let start: number | null = null;
       function step(ts: number) {
@@ -120,12 +120,11 @@ function ScrollCTA() {
         type="button"
         onClick={scrollToGallery}
         className={cn(
-          "inline-flex items-center gap-3 rounded-2xl px-8 py-4 text-base font-semibold",
-          "bg-gradient-to-b from-amber-300 via-amber-400 to-amber-500 text-stone-950",
-          "shadow-[0_1px_0_rgba(255,255,255,0.35)_inset,0_4px_24px_rgba(245,158,11,0.4)]",
-          "transition-all duration-200 hover:-translate-y-0.5",
-          "hover:shadow-[0_1px_0_rgba(255,255,255,0.4)_inset,0_8px_32px_rgba(245,158,11,0.55)]",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/60",
+          "inline-flex cursor-pointer items-center gap-3 rounded-xl px-7 py-3.5",
+          "font-heading text-[0.78rem] font-semibold uppercase tracking-[0.06em]",
+          "border border-amber-500/28 bg-amber-500/7 text-amber-400/78",
+          "transition-all duration-400 hover:border-amber-500/45 hover:bg-amber-500/12 hover:text-amber-400/96",
+          "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/40",
         )}
       >
         Explorar projetos
@@ -160,7 +159,7 @@ export function CatalogHero() {
 
   return (
     <section
-      className="relative flex min-h-[92svh] flex-col justify-center overflow-hidden"
+      className="relative flex min-h-[100dvh] flex-col justify-center overflow-hidden"
       aria-labelledby="catalogo-heading"
     >
       {/* ── Fundo — orbs animados ──────────────────────────────────────── */}

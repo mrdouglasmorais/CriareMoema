@@ -4,7 +4,7 @@ import { WhatsAppOfficialLogo } from "@/components/icons/whatsapp-official-logo"
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Check, Copy, Share2, X } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { startTransition, useCallback, useEffect, useState } from "react";
 
 function IconFacebook({ className }: { className?: string }) {
   return (
@@ -33,8 +33,8 @@ function IconLinkedIn({ className }: { className?: string }) {
 interface Network {
   id: string;
   label: string;
+  shortLabel: string;
   icon: React.ElementType;
-  iconClass?: string;
   getUrl: (url: string) => string;
 }
 
@@ -42,43 +42,41 @@ const NETWORKS: Network[] = [
   {
     id: "whatsapp",
     label: "WhatsApp",
+    shortLabel: "WhatsApp",
     icon: WhatsAppOfficialLogo,
-    iconClass: "text-[#25D366]",
-    getUrl: (url) =>
-      `https://api.whatsapp.com/send?text=${encodeURIComponent(url)}`,
+    getUrl: (url) => `https://api.whatsapp.com/send?text=${encodeURIComponent(url)}`,
   },
   {
     id: "facebook",
     label: "Facebook",
+    shortLabel: "Facebook",
     icon: IconFacebook,
-    iconClass: "text-[#1877f2]",
-    getUrl: (url) =>
-      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+    getUrl: (url) => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
   },
   {
     id: "twitter",
     label: "X (Twitter)",
+    shortLabel: "Twitter",
     icon: IconXTwitter,
-    iconClass: "text-foreground/85",
-    getUrl: (url) =>
-      `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent("Confira:")}`,
+    getUrl: (url) => `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent("Confira:")}`,
   },
   {
     id: "linkedin",
     label: "LinkedIn",
+    shortLabel: "LinkedIn",
     icon: IconLinkedIn,
-    iconClass: "text-[#0a66c2]",
-    getUrl: (url) =>
-      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
+    getUrl: (url) => `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`,
   },
 ];
+
+const EASE = [0.22, 1, 0.36, 1] as const;
+const SPRING = { type: "spring", stiffness: 340, damping: 30 } as const;
 
 export function FloatingSocialShare() {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const reduce = useReducedMotion();
   const pathname = usePathname();
-  const ref = useRef<HTMLDivElement>(null);
 
   const pageUrl =
     typeof window !== "undefined"
@@ -89,183 +87,194 @@ export function FloatingSocialShare() {
     try {
       await navigator.clipboard.writeText(pageUrl);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      setTimeout(() => setCopied(false), 2200);
     } catch {
       /* silent */
     }
   }, [pageUrl]);
 
-  /* fecha ao clicar fora */
   useEffect(() => {
-    if (!open) return;
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, [open]);
-
-  /* fecha ao navegar */
-  useEffect(() => {
-    setOpen(false);
+    startTransition(() => setOpen(false));
   }, [pathname]);
 
-  const EASE = [0.22, 1, 0.36, 1] as const;
-
-  function itemAnimate(i: number) {
-    return {
-      initial: reduce ? {} : { opacity: 0, x: 24, scale: 0.85 },
-      animate: reduce ? {} : { opacity: 1, x: 0, scale: 1 },
-      exit: reduce ? {} : { opacity: 0, x: 20, scale: 0.88 },
-      transition: reduce
-        ? {}
-        : { delay: i * 0.055, duration: 0.3, ease: EASE },
-    };
-  }
+  /* bloqueia scroll quando o painel está aberto */
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
 
   return (
-    <div
-      ref={ref}
-      className="fixed right-0 top-1/2 z-[88] -translate-y-1/2"
-      aria-label="Compartilhar esta página"
-    >
-      <div className="flex flex-col items-end gap-2 pr-3 sm:pr-4">
+    <>
+      {/* ── Backdrop blur ────────────────────────────────────────────── */}
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            key="backdrop"
+            className="fixed inset-0 z-[88] touch-none"
+            style={{ backdropFilter: "blur(14px) brightness(0.55)", WebkitBackdropFilter: "blur(14px) brightness(0.55)" }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4, ease: EASE }}
+            onClick={() => setOpen(false)}
+            aria-hidden
+          />
+        )}
+      </AnimatePresence>
 
-        {/* Rede sociais — surgem acima do botão principal */}
+      {/* ── Bottom-right anchor — stacked above WhatsApp FAB ───────── */}
+      <div
+        className="fixed z-[105] flex flex-col items-end gap-3"
+        style={{
+          bottom: "calc(max(1.25rem, env(safe-area-inset-bottom, 0px)) + 4rem)",
+          right: "max(1.25rem, env(safe-area-inset-right, 1.25rem))",
+        }}
+        aria-label="Compartilhar esta página"
+      >
+
+        {/* ── Share panel ─────────────────────────────────────────────── */}
         <AnimatePresence>
           {open && (
-            <motion.div className="flex flex-col items-end gap-2">
-              {NETWORKS.map((net, i) => {
-                const Icon = net.icon;
-                const href = net.getUrl(pageUrl);
-                const anim = itemAnimate(i);
-                return (
-                  <motion.a
-                    key={net.id}
-                    href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`Compartilhar no ${net.label}`}
-                    initial={anim.initial}
-                    animate={anim.animate}
-                    exit={anim.exit}
-                    transition={anim.transition}
-                    className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-background/80 shadow-lg shadow-black/30 backdrop-blur-xl transition-all duration-300 hover:-translate-x-0.5 hover:border-amber-500/30 hover:shadow-amber-950/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/50"
-                    title={net.label}
-                  >
-                    <Icon
-                      className={`size-[18px] shrink-0 transition-transform duration-200 group-hover:scale-110 ${net.iconClass ?? "text-foreground/80"}`}
-                      aria-hidden
-                    />
-                  </motion.a>
-                );
-              })}
+            <motion.div
+              key="panel"
+              className="w-[min(22rem,calc(100vw-3rem))] overflow-hidden rounded-2xl border border-white/12 bg-background/95 shadow-2xl shadow-black/60"
+              style={{ backdropFilter: "blur(40px)", WebkitBackdropFilter: "blur(40px)", transformOrigin: "right bottom" }}
+              initial={reduce ? {} : { opacity: 0, scale: 0.82, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={reduce ? {} : { opacity: 0, scale: 0.82, y: 16 }}
+              transition={reduce ? {} : SPRING}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-4">
+                <p className="font-heading text-[10px] font-semibold uppercase tracking-[0.22em] text-white/30">
+                  Compartilhar página
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  aria-label="Fechar"
+                  className="flex h-7 w-7 items-center justify-center rounded-full border border-white/10 text-white/30 transition-all duration-300 hover:border-white/20 hover:text-white/65 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25"
+                >
+                  <X className="size-3.5" aria-hidden />
+                </button>
+              </div>
 
-              {/* Copiar link */}
-              {(() => {
-                const anim = itemAnimate(NETWORKS.length);
-                return (
+              {/* Networks grid */}
+              <div className="grid grid-cols-5 gap-3 p-5">
+                {NETWORKS.map((net, i) => {
+                  const Icon = net.icon;
+                  return (
+                    <motion.a
+                      key={net.id}
+                      href={net.getUrl(pageUrl)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Compartilhar no ${net.label}`}
+                      title={net.label}
+                      initial={reduce ? {} : { opacity: 0, y: 14, scale: 0.75 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ delay: 0.05 + i * 0.055, duration: 0.45, ease: EASE }}
+                      className="group flex flex-col items-center gap-2 focus-visible:outline-none"
+                    >
+                      <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-white/10 bg-white/[0.05] transition-all duration-400 group-hover:border-white/22 group-hover:bg-white/[0.09] group-focus-visible:ring-1 group-focus-visible:ring-white/30">
+                        <Icon className="size-5 text-white/38 transition-colors duration-400 group-hover:text-white/78" aria-hidden />
+                      </span>
+                      <span className="font-heading text-[9px] font-semibold uppercase tracking-[0.10em] text-white/22 transition-colors duration-300 group-hover:text-white/50">
+                        {net.shortLabel}
+                      </span>
+                    </motion.a>
+                  );
+                })}
+
+                {/* Copy link */}
                 <motion.button
                   type="button"
-                  aria-label="Copiar link da página"
-                  initial={anim.initial}
-                  animate={anim.animate}
-                  exit={anim.exit}
-                  transition={anim.transition}
                   onClick={copyLink}
+                  aria-label="Copiar link da página"
                   title="Copiar link"
-                  className="group flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-background/80 shadow-lg shadow-black/30 backdrop-blur-xl transition-all duration-300 hover:-translate-x-0.5 hover:border-amber-500/30 hover:shadow-amber-950/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/50"
+                  initial={reduce ? {} : { opacity: 0, y: 14, scale: 0.75 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ delay: 0.05 + NETWORKS.length * 0.055, duration: 0.45, ease: EASE }}
+                  className="group flex flex-col items-center gap-2 focus-visible:outline-none"
                 >
-                <AnimatePresence mode="wait">
-                  {copied ? (
-                    <motion.span
-                      key="check"
-                      initial={{ opacity: 0, scale: 0.6 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.6 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <Check className="size-[18px] text-amber-400" aria-hidden />
-                    </motion.span>
-                  ) : (
-                    <motion.span
-                      key="copy"
-                      initial={{ opacity: 0, scale: 0.6 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.6 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <Copy
-                        className="size-[18px] shrink-0 text-foreground/70 transition-transform duration-200 group-hover:scale-110 group-hover:text-amber-400"
-                        aria-hidden
-                      />
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </motion.button>
-                );
-              })()}
+                  <span className={[
+                    "flex h-12 w-12 items-center justify-center rounded-xl border transition-all duration-400",
+                    copied
+                      ? "border-amber-500/35 bg-amber-500/8"
+                      : "border-white/10 bg-white/[0.05] group-hover:border-white/22 group-hover:bg-white/[0.09]",
+                  ].join(" ")}>
+                    <AnimatePresence mode="wait">
+                      {copied ? (
+                        <motion.span key="check" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }} transition={{ duration: 0.2 }}>
+                          <Check className="size-5 text-amber-400" aria-hidden />
+                        </motion.span>
+                      ) : (
+                        <motion.span key="copy" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }} transition={{ duration: 0.2 }}>
+                          <Copy className="size-5 text-white/38 transition-colors duration-400 group-hover:text-white/78" aria-hidden />
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </span>
+                  <span className={[
+                    "font-heading text-[9px] font-semibold uppercase tracking-[0.10em] transition-colors duration-300",
+                    copied ? "text-amber-400/70" : "text-white/22 group-hover:text-white/50",
+                  ].join(" ")}>
+                    {copied ? "Copiado" : "Link"}
+                  </span>
+                </motion.button>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Botão principal — toggle */}
+        {/* ── Toggle button ────────────────────────────────────────────── */}
         <motion.button
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
-          aria-label={open ? "Fechar menu de compartilhamento" : "Compartilhar esta página"}
-          whileHover={reduce ? {} : { scale: 1.06 }}
-          whileTap={reduce ? {} : { scale: 0.94 }}
+          aria-label={open ? "Fechar compartilhamento" : "Compartilhar página"}
+          animate={reduce ? {} : { scale: open ? 1.14 : 1 }}
+          whileHover={reduce ? {} : { scale: open ? 1.14 : 1.07 }}
+          whileTap={reduce ? {} : { scale: 0.9 }}
+          transition={{ duration: 0.4, ease: EASE }}
           className={[
-            "relative flex h-11 w-11 items-center justify-center rounded-full shadow-lg shadow-black/40 backdrop-blur-xl transition-all duration-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+            "flex h-12 w-12 items-center justify-center rounded-full shadow-xl shadow-black/45 transition-all duration-500",
+            "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
             open
-              ? "border border-amber-500/50 bg-amber-500/15 shadow-amber-500/20"
-              : "border border-white/15 bg-background/80 hover:border-amber-500/35 hover:bg-amber-500/8",
+              ? "border border-white/22 bg-background/95"
+              : "border border-white/12 bg-background/82 hover:border-white/22 hover:bg-background/92",
           ].join(" ")}
+          style={{ backdropFilter: "blur(24px)", WebkitBackdropFilter: "blur(24px)" }}
         >
-          {/* Anel âmbar pulsante quando aberto */}
-          <AnimatePresence>
-            {open && (
-              <motion.span
-                key="ring"
-                className="absolute inset-0 rounded-full border border-amber-500/30"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: [0.5, 0, 0.5], scale: [1, 1.5, 1] }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                aria-hidden
-              />
-            )}
-          </AnimatePresence>
-
           <AnimatePresence mode="wait">
             {open ? (
               <motion.span
                 key="x"
-                initial={{ opacity: 0, rotate: -45, scale: 0.7 }}
+                initial={{ opacity: 0, rotate: -90, scale: 0.5 }}
                 animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                exit={{ opacity: 0, rotate: 45, scale: 0.7 }}
-                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                exit={{ opacity: 0, rotate: 90, scale: 0.5 }}
+                transition={{ duration: 0.32, ease: EASE }}
               >
-                <X className="size-[18px] text-amber-400" aria-hidden />
+                <X className="size-[17px] text-white/55" aria-hidden />
               </motion.span>
             ) : (
               <motion.span
                 key="share"
-                initial={{ opacity: 0, rotate: 45, scale: 0.7 }}
+                initial={{ opacity: 0, rotate: 90, scale: 0.5 }}
                 animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                exit={{ opacity: 0, rotate: -45, scale: 0.7 }}
-                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                exit={{ opacity: 0, rotate: -90, scale: 0.5 }}
+                transition={{ duration: 0.32, ease: EASE }}
               >
-                <Share2 className="size-[18px] text-foreground/80" aria-hidden />
+                <Share2 className="size-[17px] text-white/38" aria-hidden />
               </motion.span>
             )}
           </AnimatePresence>
         </motion.button>
       </div>
-    </div>
+    </>
   );
 }

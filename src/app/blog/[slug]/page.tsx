@@ -83,13 +83,11 @@ function BlogContent({ blocks }: { blocks: BlogBlock[] }) {
           return (
             <div
               key={i}
-              className="vitral-card relative my-8 overflow-hidden"
+              className="my-8 border-l-2 border-amber-500/28 pl-6 py-1"
             >
-              {/* Accent stripe */}
-              <div className="absolute left-0 top-0 h-full w-1 bg-gradient-to-b from-amber-400 via-amber-300 to-amber-500" aria-hidden />
-              <div className="px-6 py-5 pl-8 text-sm leading-relaxed text-foreground/90 sm:text-base">
+              <p className="text-base italic leading-relaxed text-white/55 sm:text-lg">
                 {block.text}
-              </div>
+              </p>
             </div>
           );
         }
@@ -147,7 +145,7 @@ export default async function BlogPostPage({ params }: Props) {
       <main id="conteudo-principal" className="min-w-0 overflow-x-clip">
 
         {/* ── Hero cinematográfico ─────────────────────────────────────── */}
-        <section className="relative min-h-[55svh] overflow-hidden border-b border-border/30">
+        <section className="relative min-h-[100dvh] overflow-hidden border-b border-border/30">
           <Image
             src={post.coverImage}
             alt={post.coverImageAlt}
@@ -160,7 +158,7 @@ export default async function BlogPostPage({ params }: Props) {
           <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-amber-950/15 to-transparent" />
 
-          <div className="relative z-10 mx-auto flex min-h-[55svh] max-w-3xl flex-col justify-end px-4 pb-14 sm:px-6 sm:pb-20">
+          <div className="relative z-10 mx-auto flex min-h-[100dvh] max-w-3xl flex-col justify-end px-4 pb-14 sm:px-6 sm:pb-20">
             <Reveal className="space-y-4">
               <nav aria-label="Navegação estrutural">
                 <ol className="flex flex-wrap items-center gap-2 font-heading text-[11px] font-semibold uppercase tracking-[0.18em] text-white/50">
@@ -179,9 +177,7 @@ export default async function BlogPostPage({ params }: Props) {
               </nav>
 
               <div className="flex flex-wrap items-center gap-3">
-                <span className="rounded-full border border-amber-500/40 bg-black/60 px-3 py-1 font-heading text-[11px] font-semibold uppercase tracking-[0.15em] text-amber-300 backdrop-blur-sm">
-                  {post.category}
-                </span>
+                <span className="section-tag text-white/38">{post.category}</span>
                 <span className="flex items-center gap-1.5 text-xs text-white/55">
                   <Clock className="size-3.5" aria-hidden />
                   {post.readingMinutes} min de leitura
@@ -236,22 +232,19 @@ export default async function BlogPostPage({ params }: Props) {
                   })}
                 </time>
               </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link
-                  href="/blog"
-                  className="inline-flex items-center gap-2 rounded-xl border border-border/60 bg-muted/30 px-4 py-2.5 text-sm font-semibold text-foreground/85 transition-all duration-300 hover:border-amber-500/35 hover:bg-muted/50"
-                >
-                  <ArrowLeft className="size-4" aria-hidden />
+              <div className="mt-6 flex flex-wrap gap-6">
+                <Link href="/blog" className="editorial-link group">
+                  <ArrowLeft className="size-3.5 transition-transform duration-300 group-hover:-translate-x-0.5" aria-hidden />
                   Ver todos os artigos
                 </Link>
                 <Link
                   href={siteConfig.whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-b from-amber-300 via-amber-400 to-amber-500 px-4 py-2.5 text-sm font-semibold text-stone-950 shadow-[0_1px_0_rgba(255,255,255,0.3)_inset,0_4px_16px_rgba(245,158,11,0.4)] transition-all duration-300 hover:-translate-y-0.5 hover:from-amber-200 hover:to-amber-400"
+                  className="editorial-link group"
                 >
                   Solicitar diagnóstico gratuito
-                  <ArrowRight className="size-4" aria-hidden />
+                  <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1" aria-hidden />
                 </Link>
               </div>
             </Reveal>
@@ -274,35 +267,31 @@ export default async function BlogPostPage({ params }: Props) {
                   Mais artigos
                 </h2>
               </Reveal>
-              <div className="mt-8 grid gap-5 sm:grid-cols-2">
+              <div className="mt-8 grid gap-6 sm:grid-cols-2">
                 {outrosPosts.map((other) => (
                   <Link
                     key={other.slug}
                     href={`/blog/${other.slug}`}
-                    className="vitral-card vitral-shimmer group flex overflow-hidden transition-all duration-500 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60"
+                    className="group block focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25 rounded-sm"
                   >
-                    <div className="relative h-auto w-32 shrink-0 overflow-hidden sm:w-40">
+                    <div className="relative aspect-[16/10] overflow-hidden rounded-xl">
                       <Image
                         src={other.coverImage}
                         alt={other.coverImageAlt}
                         fill
-                        sizes="160px"
-                        className="object-cover object-center transition-transform duration-700 group-hover:scale-[1.06]"
+                        sizes="(min-width: 640px) 50vw, 100vw"
+                        className="object-cover object-center transition-transform duration-600 group-hover:scale-[1.04]"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/20" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
                     </div>
-                    <div className="flex flex-col justify-between gap-2 p-4 sm:p-5">
-                      <div>
-                        <span className="font-heading text-[11px] font-semibold uppercase tracking-[0.15em] text-amber-500/80">
-                          {other.category}
-                        </span>
-                        <p className="mt-1.5 font-heading text-sm font-bold leading-snug text-foreground transition-colors group-hover:text-amber-100 sm:text-base">
-                          {other.title}
-                        </p>
-                      </div>
-                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-amber-400 transition-all group-hover:gap-1.5">
+                    <div className="mt-4 space-y-1.5">
+                      <span className="section-tag text-white/28">{other.category}</span>
+                      <p className="font-heading text-sm font-bold leading-snug text-white/75 transition-colors duration-300 group-hover:text-white/95 sm:text-base">
+                        {other.title}
+                      </p>
+                      <span className="editorial-link mt-1 inline-flex">
                         Ler
-                        <ArrowRight className="size-3" aria-hidden />
+                        <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1" aria-hidden />
                       </span>
                     </div>
                   </Link>

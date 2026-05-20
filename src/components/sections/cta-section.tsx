@@ -9,7 +9,6 @@ import { landingSection } from "@/components/landing/section-styles";
 import { WhatsAppOfficialLogo } from "@/components/icons/whatsapp-official-logo";
 import { siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
-import { CheckCircle } from "lucide-react";
 
 export interface CtaSectionProps {
   className?: string;
@@ -46,53 +45,29 @@ function BenefitsStack() {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <ul ref={ref} className="flex flex-col gap-2.5">
+    <ul ref={ref} className="flex flex-col border-t border-white/[0.06]">
       {BENEFITS.map((item, i) => (
         <motion.li
           key={item.text}
-          initial={{ y: 56 + i * 12, opacity: 0, scale: 0.94 }}
-          animate={
-            isInView
-              ? { y: 0, opacity: 1, scale: 1 }
-              : { y: 56 + i * 12, opacity: 0, scale: 0.94 }
-          }
-          transition={{
-            duration: 0.65,
-            delay: i * 0.11,
-            ease: EASE,
-          }}
-          style={{ zIndex: BENEFITS.length - i, position: "relative" }}
-          className="vitral-card group flex items-center gap-4 px-5 py-4"
+          initial={{ opacity: 0, y: 18 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }}
+          transition={{ duration: 0.55, delay: i * 0.09, ease: EASE }}
+          className="group flex items-center gap-5 border-b border-white/[0.055] py-5"
         >
-          {/* Number */}
           <span
-            className="shrink-0 font-heading text-[11px] font-bold tabular-nums text-amber-500/50 group-hover:text-amber-400/70 transition-colors duration-300"
+            className="shrink-0 font-heading text-[10px] font-bold tabular-nums text-white/18 transition-colors duration-400 group-hover:text-white/35"
             aria-hidden
           >
             {String(i + 1).padStart(2, "0")}
           </span>
-
-          {/* Icon */}
-          <CheckCircle
-            className="size-5 shrink-0 text-amber-400 transition-transform duration-300 group-hover:scale-110"
-            aria-hidden
-          />
-
-          {/* Text */}
           <div className="flex flex-1 flex-col gap-0.5 min-w-0">
-            <span className="text-sm font-semibold leading-snug text-white/90">
+            <span className="text-sm font-semibold leading-snug text-white/70 transition-colors duration-400 group-hover:text-white/90">
               {item.text}
             </span>
-            <span className="text-[11px] leading-none text-white/35">
+            <span className="text-[11px] leading-none text-white/28">
               {item.detail}
             </span>
           </div>
-
-          {/* Amber accent line — cresce no hover */}
-          <div
-            className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] rounded-r-full bg-amber-500/0 group-hover:bg-amber-500/70 transition-all duration-300 group-hover:h-[60%] h-0"
-            aria-hidden
-          />
         </motion.li>
       ))}
     </ul>
@@ -132,11 +107,11 @@ export function CtaSection({ className, compact = false }: CtaSectionProps) {
               <p className="label-eyebrow">{siteConfig.brandFocusLine}</p>
               <h2
                 id="cta-heading"
-                className="font-heading font-bold text-white"
+                className="font-heading font-bold text-white/75"
                 style={{ fontSize: "clamp(2rem, 4vw, 3.25rem)", lineHeight: 1.1 }}
               >
                 Pronto para transformar{" "}
-                <span className="text-gradient-amber">seus ambientes?</span>
+                <span className="text-white/45">seus ambientes?</span>
               </h2>
               <p className="text-base leading-relaxed text-white/55 sm:text-lg">
                 Solicite um diagnóstico gratuito com um dos nossos especialistas. Em minutos,
@@ -160,10 +135,10 @@ export function CtaSection({ className, compact = false }: CtaSectionProps) {
               href={siteConfig.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex w-fit items-center gap-2.5 rounded-2xl border border-[#25D366]/35 bg-[#1a2e22] px-6 py-3.5 text-sm font-semibold text-[#4ade80] transition-all duration-300 hover:border-[#25D366]/60 hover:bg-[#1f3628] hover:text-[#86efac] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]/50"
+              className="editorial-link group w-fit"
             >
-              <WhatsAppOfficialLogo className="size-4 shrink-0" aria-hidden />
-              Conversar diretamente no WhatsApp
+              <WhatsAppOfficialLogo className="size-3.5 shrink-0" aria-hidden />
+              Conversar pelo WhatsApp
             </Link>
           </Reveal>
 

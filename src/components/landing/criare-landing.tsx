@@ -1,7 +1,6 @@
-import Image from "next/image";
 import { FaqSection } from "@/components/landing/faq-section";
 import { HeroSection } from "@/components/landing/hero-section";
-import { Reveal, ScaleReveal, Stagger, StaggerItem } from "@/components/landing/reveal";
+import { Reveal, Stagger, StaggerItem } from "@/components/landing/reveal";
 import { landingSection } from "@/components/landing/section-styles";
 import { AmbientesGrid } from "@/components/sections/ambientes-grid";
 import { ParaProfissionaisTeaser } from "@/components/sections/para-profissionais-teaser";
@@ -10,7 +9,6 @@ import { CtaSection } from "@/components/sections/cta-section";
 import { TestimonialsSection } from "@/components/sections/testimonials-section";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { benefits, diferenciais, paymentCards } from "@/data/home";
-import { brandImages } from "@/lib/brand-assets";
 import { siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 import { Check, Clock, MapPin, Navigation } from "lucide-react";
@@ -21,64 +19,68 @@ export function CriareLanding() {
       id="conteudo-principal"
       className="min-w-0 overflow-x-clip max-lg:pb-[max(7.5rem,env(safe-area-inset-bottom,0px))]"
     >
+      {/* ── Hero ────────────────────────────────────────────────────── */}
       <HeroSection />
 
-      {/* Ambientes — carrossel full-width */}
+      {/* ── 01 Ambientes — carousel full-viewport ───────────────────── */}
       <section
         id="ambientes"
-        className={cn(landingSection(), "bg-muted/20 max-lg:bg-muted/30 overflow-hidden")}
+        className={cn(
+          "border-t border-white/[0.055]",
+          "lg:min-h-[calc(100dvh-var(--site-header-height))]",
+          "lg:snap-start lg:snap-always lg:flex lg:flex-col",
+        )}
         aria-labelledby="ambientes-heading"
       >
+        {/* heading sr-only para SEO/acessibilidade */}
+        <h2 id="ambientes-heading" className="sr-only">Ambientes sob medida — Criare Moema</h2>
         <AmbientesGrid />
       </section>
 
-      {/* Projetos assinados — vitrine de parceria com arquitetos */}
+      {/* ── 02 Projetos assinados ───────────────────────────────────── */}
       <ProjetosAssinadosSection />
 
-      <section
-        id="beneficios"
-        className={cn(landingSection(), "max-lg:bg-muted/12")}
-        aria-labelledby="beneficios-heading"
-      >
-        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-          <Reveal>
-            <p className="label-eyebrow">
-              {siteConfig.brandFocusLine}
-            </p>
-            <h2
-              id="beneficios-heading"
-              className="mt-3 font-heading font-bold"
-            >
-              Por que escolher a <span className="text-primary">Criare Moema</span>?
-            </h2>
-          </Reveal>
-          <Stagger className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {benefits.map((item) => (
-              <StaggerItem key={item.id}>
-                <div className="vitral-card vitral-shimmer group flex h-full gap-3 p-5 transition-all duration-500 hover:-translate-y-1">
-                  <Check
-                    className="mt-0.5 size-5 shrink-0 text-amber-500 transition-transform duration-500 group-hover:scale-110"
-                    aria-hidden
-                  />
-                  <span className="text-sm font-medium leading-relaxed text-foreground/90">{item.text}</span>
-                </div>
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </div>
-      </section>
-
-      {/* Portal do Arquiteto — teaser para /para-profissionais */}
-      <ParaProfissionaisTeaser />
-
+      {/* ── 03 Quem somos — split: texto esquerda | imagem direita ──── */}
       <section
         id="quem-somos"
-        className={cn(landingSection(), "bg-muted/15 max-lg:bg-muted/28")}
+        className={cn(landingSection(), "!p-0 overflow-hidden")}
         aria-labelledby="quem-somos-heading"
       >
-        <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 sm:grid-cols-2 sm:items-start sm:px-6">
-          <Reveal delay={0.05} className="order-2 space-y-5 sm:order-1">
-            <p className="label-eyebrow">
+        <div className="flex flex-col lg:flex-row-reverse lg:min-h-[calc(100dvh-var(--site-header-height))]">
+
+          {/* Vídeo — 58% espaço desktop */}
+          <div className="relative h-[55svh] w-full shrink-0 overflow-hidden lg:h-auto lg:w-[58%]">
+            <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+              <iframe
+                src="https://www.youtube.com/embed/nIRm5am0OTg?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&fs=0&iv_load_policy=3&disablekb=1&playlist=nIRm5am0OTg"
+                allow="autoplay; encrypted-media"
+                title="Fundo vídeo — Quem somos"
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  width: "max(100%, calc(177.78 * 1vh))",
+                  height: "max(100%, calc(56.25 * 1vw))",
+                  transform: "translate(-50%, -50%)",
+                  filter: "brightness(0.85) saturate(0.90) contrast(1.04)",
+                }}
+              />
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-background/85 via-background/8 to-transparent lg:bg-gradient-to-l lg:from-transparent lg:via-transparent lg:to-background/70" />
+
+            <div className="absolute left-8 top-8 z-10 sm:left-10 lg:left-12">
+              <span className="section-tag text-white/35">03 — Sobre</span>
+            </div>
+          </div>
+
+          {/* Texto — 42% espaço desktop */}
+          <Reveal
+            delay={0.1}
+            y={24}
+            blur={0}
+            className="flex flex-1 flex-col justify-center px-8 py-14 sm:px-12 sm:py-16 lg:px-16 lg:py-20 xl:px-20"
+          >
+            <p className="label-eyebrow mb-5 text-amber-400/55">
               {siteConfig.brandFocusLine}
             </p>
             <h2
@@ -87,117 +89,121 @@ export function CriareLanding() {
             >
               Quem somos
             </h2>
-            <p className="leading-relaxed text-muted-foreground">
-              Na Criare Moema, nós desenhamos e entregamos projetos planejados sob medida{" "}
-              <strong className="font-semibold text-foreground">
-                para quem não aceita improviso na execução.
-              </strong>
+            <p className="mt-6 max-w-sm text-base leading-relaxed text-white/45">
+              Desenhamos e entregamos projetos planejados sob medida para quem não aceita improviso na execução.
+              Alta tecnologia no processo fabril, garantindo qualidade em cada detalhe.
             </p>
-            <p className="leading-relaxed text-muted-foreground">
-              Foco em aproveitamento inteligente de espaço, estética consistente e instalação fiel ao
-              projeto. Alta tecnologia no processo fabril, garantindo qualidade em cada detalhe.
+            <ul className="mt-10 space-y-5 border-t border-white/[0.07] pt-10">
+              {[
+                "Atendimento com arquiteto do início ao fim",
+                "Fidelidade total ao projeto aprovado",
+                "Estacionamento no local para sua comodidade",
+              ].map((item) => (
+                <li key={item} className="flex items-start gap-4 text-sm leading-relaxed text-white/38">
+                  <span className="mt-[0.55em] h-px w-5 shrink-0 bg-amber-500/35" aria-hidden />
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <p className="mt-10 font-heading text-base font-semibold text-white/75">
+              Alto padrão não é adjetivo. É método.
             </p>
-            <p className="leading-relaxed text-muted-foreground">
-              Sempre começamos pelo que importa: rotina, medidas, circulação e prioridades do seu dia
-              a dia. A partir disso, o projeto evolui para materiais, acabamentos e soluções que façam
-              sentido para seu estilo de vida.
-            </p>
-            <p className="font-heading text-lg font-semibold text-foreground">
-              Aqui, alto padrão não é adjetivo. É método!
-            </p>
-            <p className="leading-relaxed text-muted-foreground">
-              Projeto executivo, acompanhamento e pós-venda para você ter previsibilidade, evitar
-              atraso e frustração na entrega.
-            </p>
-            <p className="leading-relaxed text-muted-foreground">
-              Manifeste a sua personalidade em ambientes únicos, assim como você.
-            </p>
-            <p className="text-sm text-muted-foreground">Estacionamento no local para sua comodidade.</p>
           </Reveal>
-          <ScaleReveal delay={0.1} className="relative order-1 sm:order-2">
-            <div className="vitral-card group relative overflow-hidden transition-all duration-700 hover:-translate-y-1">
-              <Image
-                src={brandImages.showcase1.src}
-                alt="Projeto de móveis planejados — ambientes integrados."
-                width={brandImages.showcase1.width}
-                height={brandImages.showcase1.height}
-                sizes="(min-width: 640px) 45vw, 100vw"
-                className="h-auto max-h-[min(560px,62svh)] w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.02] sm:max-h-[min(520px,50vh)] lg:max-h-none"
-              />
-            </div>
-          </ScaleReveal>
         </div>
       </section>
 
+      {/* ── 04 Diferenciais — split: imagem esquerda | texto direita ── */}
       <section
         id="diferenciais"
-        className={cn(landingSection(), "bg-muted/20 max-lg:bg-muted/30")}
+        className={cn(landingSection(), "!p-0 overflow-hidden")}
         aria-labelledby="diferenciais-heading"
       >
-        <div className="mx-auto grid w-full max-w-6xl gap-12 px-4 sm:grid-cols-2 sm:items-start sm:px-6">
-          <Reveal>
-            <p className="label-eyebrow">
+        <div className="flex flex-col lg:flex-row lg:min-h-[calc(100dvh-var(--site-header-height))]">
+
+          {/* Vídeo — 52% */}
+          <div className="relative h-[55svh] w-full shrink-0 overflow-hidden lg:h-auto lg:w-[52%]">
+            <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+              <iframe
+                src="https://www.youtube.com/embed/IOPxvJObk-M?autoplay=1&mute=1&loop=1&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&fs=0&iv_load_policy=3&disablekb=1&playlist=IOPxvJObk-M"
+                allow="autoplay; encrypted-media"
+                title="Fundo vídeo — Diferenciais"
+                style={{
+                  position: "absolute",
+                  top: "50%",
+                  left: "50%",
+                  width: "max(100%, calc(177.78 * 1vh))",
+                  height: "max(100%, calc(56.25 * 1vw))",
+                  transform: "translate(-50%, -50%)",
+                  filter: "brightness(0.85) saturate(0.90) contrast(1.04)",
+                }}
+              />
+            </div>
+            <div className="absolute inset-0 bg-gradient-to-t from-background/85 via-background/8 to-transparent lg:bg-gradient-to-r lg:from-transparent lg:via-transparent lg:to-background/75" />
+
+            <div className="absolute left-8 top-8 z-10 sm:left-10 lg:left-12">
+              <span className="section-tag text-white/35">04 — Método</span>
+            </div>
+          </div>
+
+          {/* Texto — 48% */}
+          <Reveal
+            delay={0.1}
+            y={24}
+            blur={0}
+            className="flex flex-1 flex-col justify-center px-8 py-14 sm:px-12 sm:py-16 lg:px-16 lg:py-20 xl:px-20"
+          >
+            <p className="label-eyebrow mb-5 text-amber-400/55">
               {siteConfig.brandFocusLine}
             </p>
             <h2
               id="diferenciais-heading"
-              className="mt-3 font-heading font-bold"
+              className="font-heading font-bold"
             >
               Diferenciais Criare Moema
             </h2>
-            <p className="mt-5 leading-relaxed text-muted-foreground">
-              Na Criare Moema, o foco é entregar projetos planejados de alto padrão com execução fiel ao
-              que foi aprovado.
+            <p className="mt-6 max-w-sm text-base leading-relaxed text-white/40">
+              Maior fábrica de móveis planejados da América Latina combinada com
+              atendimento personalizado com arquiteto.
             </p>
-            <p className="mt-4 leading-relaxed text-muted-foreground">
-              Unimos atendimento com arquiteto, a estrutura da maior fábrica de móveis planejados da
-              América Latina e condições de pagamento que ajudam a viabilizar o projeto sem atropelar
-              decisões importantes.
-            </p>
-            <ul className="mt-8 list-disc space-y-3 pl-5 text-sm leading-relaxed text-muted-foreground sm:text-base">
+            <ul className="mt-10 space-y-5 border-t border-white/[0.07] pt-10">
               {diferenciais.map((item) => (
-                <li key={item.id} className="transition-colors duration-300 hover:text-foreground/80">
+                <li key={item.id} className="flex items-start gap-4 text-sm leading-relaxed text-white/38">
+                  <span className="mt-[0.55em] h-px w-5 shrink-0 bg-amber-500/35" aria-hidden />
                   {item.text}
                 </li>
               ))}
             </ul>
           </Reveal>
-          <ScaleReveal delay={0.12}>
-            <div className="vitral-card group relative overflow-hidden transition-all duration-700 hover:-translate-y-1">
-              <Image
-                src={brandImages.showcase2.src}
-                alt="Detalhe de marcenaria e acabamento — móveis planejados."
-                width={brandImages.showcase2.width}
-                height={brandImages.showcase2.height}
-                sizes="(min-width: 640px) 45vw, 100vw"
-                className="h-auto max-h-[min(580px,62svh)] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03] sm:max-h-[min(560px,55vh)] lg:max-h-none"
-              />
-            </div>
-          </ScaleReveal>
         </div>
       </section>
 
+      {/* ── 05 Para Profissionais ────────────────────────────────────── */}
+      <ParaProfissionaisTeaser />
+
+      {/* ── 06 Depoimentos ──────────────────────────────────────────── */}
+      <TestimonialsSection />
+
+      {/* ── 07 Pagamento ────────────────────────────────────────────── */}
       <section
         id="pagamento"
-        className={cn(landingSection(), "max-lg:bg-muted/12")}
+        className={cn(landingSection(), "bg-muted/8 max-lg:bg-muted/14")}
         aria-labelledby="pagamento-heading"
       >
-        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
           <Reveal>
+            <span className="section-tag">07 — Condições</span>
             <h2
               id="pagamento-heading"
-              className="font-heading font-bold"
+              className="mt-5 font-heading font-bold"
             >
-              Conheça nossas{" "}
-              <span className="bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 bg-clip-text text-transparent drop-shadow-[0_2px_14px_rgba(0,0,0,0.55)]">
-                condições de pagamento
-              </span>
+              Condições de{" "}
+              <span className="text-gradient-amber">pagamento</span>
             </h2>
-            <p className="mt-4 max-w-2xl text-sm text-muted-foreground italic sm:text-base">
+            <p className="mt-4 max-w-lg text-sm text-white/28 italic">
               *Condições sujeitas à análise e às políticas comerciais da Criare Moema.
             </p>
           </Reveal>
-          <Stagger className="mt-12 grid gap-6 sm:grid-cols-3">
+          <Stagger className="mt-14 grid gap-6 sm:grid-cols-3">
             {paymentCards.map((card) => (
               <StaggerItem key={card.id}>
                 <Card className="vitral-card vitral-shimmer group h-full transition-all duration-500 hover:-translate-y-1">
@@ -207,7 +213,7 @@ export function CriareLanding() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-sm leading-relaxed text-muted-foreground">{card.description}</p>
+                    <p className="text-sm leading-relaxed text-white/38">{card.description}</p>
                   </CardContent>
                 </Card>
               </StaggerItem>
@@ -216,118 +222,138 @@ export function CriareLanding() {
         </div>
       </section>
 
-      <TestimonialsSection />
+      {/* ── 08 Benefícios — strip horizontal ────────────────────────── */}
+      <section
+        id="beneficios"
+        className={cn(landingSection(), "max-lg:bg-muted/8")}
+        aria-labelledby="beneficios-heading"
+      >
+        <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
+          <Reveal>
+            <span className="section-tag">08 — Por que a Criare</span>
+            <h2
+              id="beneficios-heading"
+              className="mt-5 font-heading font-bold"
+            >
+              Por que escolher a Criare Moema?
+            </h2>
+          </Reveal>
+          <Stagger className="mt-14 grid gap-x-8 gap-y-0 sm:grid-cols-2 lg:grid-cols-3">
+            {benefits.map((item) => (
+              <StaggerItem key={item.id}>
+                <div className="group flex items-start gap-4 border-t border-white/[0.065] py-6 transition-colors duration-400 hover:border-amber-500/20">
+                  <Check
+                    className="mt-[0.2em] size-3.5 shrink-0 text-amber-500/50 transition-colors duration-400 group-hover:text-amber-400"
+                    aria-hidden
+                  />
+                  <span className="text-sm leading-relaxed text-white/42 transition-colors duration-400 group-hover:text-white/68">
+                    {item.text}
+                  </span>
+                </div>
+              </StaggerItem>
+            ))}
+          </Stagger>
+        </div>
+      </section>
 
+      {/* ── 09 CTA ──────────────────────────────────────────────────── */}
       <CtaSection />
 
+      {/* ── 10 FAQ ──────────────────────────────────────────────────── */}
       <section
         id="faq"
         className={cn(
           landingSection(),
-          "bg-muted/10 max-lg:bg-muted/22 lg:justify-start lg:overflow-y-auto lg:py-16 lg:[scrollbar-gutter:stable]",
+          "bg-muted/8 max-lg:bg-muted/14 lg:justify-start lg:overflow-y-auto lg:py-16 lg:[scrollbar-gutter:stable]",
         )}
         aria-labelledby="faq-heading"
       >
-        <div className="mx-auto w-full max-w-6xl px-4 py-2 sm:px-6">
+        <div className="mx-auto w-full max-w-7xl px-5 py-2 sm:px-8 lg:px-10">
           <Reveal>
             <FaqSection />
           </Reveal>
         </div>
       </section>
 
+      {/* ── 11 Localização ──────────────────────────────────────────── */}
       <section
         id="localizacao"
-        className={cn(
-          landingSection(),
-          "relative z-20 border-b-0 bg-background shadow-[0_24px_60px_-28px_rgba(0,0,0,0.55)]",
-        )}
+        className={cn(landingSection(), "relative z-20 border-b-0 bg-background !p-0 overflow-hidden")}
         aria-labelledby="localizacao-heading"
       >
-        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
-          <Reveal>
+        <div className="flex flex-col lg:flex-row lg:min-h-[calc(100dvh-var(--site-header-height))]">
+
+          {/* Texto — 45% espaço desktop */}
+          <Reveal
+            delay={0.06}
+            className="flex flex-col justify-center px-8 py-16 sm:px-12 sm:py-20 lg:w-[45%] lg:px-14 xl:px-18"
+          >
+            <span className="section-tag">11 — Visita</span>
             <h2
               id="localizacao-heading"
-              className="font-heading font-bold"
+              className="mt-5 font-heading font-bold"
             >
               Venha nos visitar
             </h2>
-            <p className="mt-3 font-heading text-sm font-semibold uppercase tracking-[0.2em] text-amber-500/90">
-              {siteConfig.brandFocusLine}
-            </p>
+
+            <div className="mt-10 space-y-8">
+              <p className="flex items-start gap-4 text-base leading-relaxed text-white/45">
+                <MapPin className="mt-1 size-4.5 shrink-0 text-amber-500/60" aria-hidden />
+                <span>
+                  <strong className="font-semibold text-white/80">{siteConfig.name}</strong>
+                  <br />
+                  {siteConfig.address.streetAddress}
+                  <br />
+                  {siteConfig.address.neighborhood} · {siteConfig.address.addressLocality} —{" "}
+                  {siteConfig.address.addressRegion}
+                  <br />
+                  <span className="text-white/28">CEP {siteConfig.address.postalCode}</span>
+                  <br />
+                  <span className="mt-2 inline-block text-white/28">
+                    Estacionamento no local para sua comodidade.
+                  </span>
+                </span>
+              </p>
+
+              <div className="flex items-start gap-4 text-base leading-relaxed text-white/45">
+                <Clock className="mt-1 size-4.5 shrink-0 text-amber-500/60" aria-hidden />
+                <div>
+                  <strong className="font-semibold text-white/80">Horário de funcionamento</strong>
+                  <ul className="mt-2 space-y-1.5">
+                    {siteConfig.openingHoursLines.map((line) => (
+                      <li key={line}>{line}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <a
+                href={siteConfig.wazeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="editorial-link group"
+              >
+                <Navigation className="size-3.5 shrink-0" aria-hidden />
+                Abrir rota no Waze
+              </a>
+
+              <p className="border-l border-white/[0.07] pl-5 text-sm text-white/28">
+                Atendimento com foco em{" "}
+                <strong className="font-semibold text-white/55">Moema</strong> e toda a Grande São Paulo.
+              </p>
+            </div>
           </Reveal>
 
-          <div className="mt-10 grid gap-10 lg:grid-cols-2 lg:items-stretch lg:gap-12">
-            <Reveal delay={0.06} className="flex flex-col justify-center gap-8">
-              <div className="space-y-8">
-                <p className="flex items-start gap-3 text-base leading-relaxed text-muted-foreground sm:text-lg">
-                  <MapPin
-                    className="mt-1 size-7 shrink-0 text-amber-500 transition-transform duration-500 hover:scale-110"
-                    aria-hidden
-                  />
-                  <span>
-                    <strong className="text-lg font-semibold text-foreground">Criare Moema</strong>
-                    <br />
-                    <span className="text-foreground/95">{siteConfig.address.streetAddress}</span>
-                    <br />
-                    <span className="text-foreground/95">
-                      {siteConfig.address.neighborhood} · {siteConfig.address.addressLocality} —{" "}
-                      {siteConfig.address.addressRegion}
-                    </span>
-                    <br />
-                    <span className="text-muted-foreground">CEP {siteConfig.address.postalCode}</span>
-                    <br />
-                    <span className="mt-2 inline-block text-muted-foreground">
-                      Estacionamento no local para sua comodidade.
-                    </span>
-                  </span>
-                </p>
-
-                <div className="flex items-start gap-3 text-base leading-relaxed text-muted-foreground sm:text-lg">
-                  <Clock
-                    className="mt-1 size-7 shrink-0 text-amber-500 transition-transform duration-500 hover:scale-110"
-                    aria-hidden
-                  />
-                  <div>
-                    <strong className="text-lg font-semibold text-foreground">
-                      Horário de funcionamento
-                    </strong>
-                    <ul className="mt-2 list-none space-y-1.5 text-foreground/90">
-                      {siteConfig.openingHoursLines.map((line) => (
-                        <li key={line}>{line}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-
-                <a
-                  href={siteConfig.wazeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex w-fit items-center gap-2 rounded-xl border border-amber-500/35 bg-amber-950/25 px-4 py-3 text-sm font-semibold text-amber-100 transition-all duration-500 hover:border-amber-500/55 hover:bg-amber-950/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <Navigation className="size-4 shrink-0" aria-hidden />
-                  Abrir rota no Waze
-                </a>
-
-                <p className="rounded-xl border border-dashed border-amber-500/25 bg-amber-950/20 px-4 py-3 text-sm text-amber-200/90 backdrop-blur-sm transition-colors duration-500 hover:border-amber-500/40">
-                  Atendimento com foco em <strong className="font-semibold">Moema</strong> e toda a
-                  Grande São Paulo — projetos sob medida para cada bairro.
-                </p>
-              </div>
-            </Reveal>
-
-            <ScaleReveal delay={0.12} className="min-h-[280px] lg:min-h-0">
-              <div className="group relative flex h-full min-h-[300px] overflow-hidden rounded-2xl border border-border/50 shadow-2xl ring-1 ring-amber-500/15 transition-all duration-700 hover:ring-amber-500/35 lg:min-h-[min(420px,55vh)]">
-                <iframe
-                  title="Mapa — Criare Moema São Paulo"
-                  src={siteConfig.mapEmbedUrl}
-                  className="h-full min-h-[300px] w-full flex-1 transition-transform duration-700 ease-out group-hover:scale-[1.02] lg:min-h-full"
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  allowFullScreen
-                />
-              </div>
-            </ScaleReveal>
+          {/* Mapa — 55% full-bleed à direita */}
+          <div className="relative h-[60svh] w-full shrink-0 overflow-hidden lg:h-auto lg:flex-1">
+            <iframe
+              title="Mapa — Criare Moema São Paulo"
+              src={siteConfig.mapEmbedUrl}
+              className="absolute inset-0 h-full w-full"
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              allowFullScreen
+            />
           </div>
         </div>
       </section>

@@ -1,11 +1,17 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { motion, useInView, useReducedMotion } from "framer-motion";
+import { useRef } from "react";
+import { WhatsAppOfficialLogo } from "@/components/icons/whatsapp-official-logo";
 import { brandImages } from "@/lib/brand-assets";
 import { siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
-import { ArrowUpRight, Clock, ExternalLink, Mail, MapPin, Navigation } from "lucide-react";
+import { ArrowRight, Clock, ExternalLink, Mail, MapPin, Navigation } from "lucide-react";
 
-/** Instagram SVG — Lucide não inclui redes sociais */
+const EASE = [0.22, 1, 0.36, 1] as const;
+
 function InstagramIcon({ className }: { className?: string }) {
   return (
     <svg
@@ -25,12 +31,150 @@ function InstagramIcon({ className }: { className?: string }) {
   );
 }
 
+// ─── Static cinematic background ─────────────────────────────────────────────
+
+function FooterBackground() {
+  const reduce = useReducedMotion();
+
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+      {/* Imagem principal com ken-burns sutil */}
+      <motion.div
+        className="absolute inset-0"
+        initial={reduce ? false : { scale: 1.04 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 18, ease: "linear", repeat: Infinity, repeatType: "reverse" }}
+      >
+        <Image
+          src={brandImages.showcase2.src}
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover object-center"
+          priority
+        />
+      </motion.div>
+
+      {/* Overlay principal — deixa imagem levemente visível */}
+      <div className="absolute inset-0 bg-[oklch(0.10_0.008_55)]/82" />
+
+      {/* Gradiente direcional — escurece mais à esquerda (área de texto) */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-black/10" />
+
+      {/* Gradiente vertical — fade superior e inferior */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80" />
+
+      {/* Grain texture — sofisticação premium */}
+      <div
+        className="absolute inset-0 opacity-[0.025] mix-blend-overlay"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          backgroundSize: "256px 256px",
+        }}
+      />
+
+      {/* Glow âmbar — borda superior */}
+      <div
+        className="absolute inset-x-0 top-0 h-px"
+        style={{ background: "linear-gradient(to right, transparent 0%, rgba(245,158,11,0.35) 40%, rgba(245,158,11,0.35) 60%, transparent 100%)" }}
+      />
+      {/* Glow âmbar — halo superior */}
+      <div
+        className="absolute inset-x-0 top-0 h-72"
+        style={{ background: "radial-gradient(ellipse 55% 100% at 30% 0%, rgba(245,158,11,0.07), transparent)" }}
+      />
+    </div>
+  );
+}
+
+// ─── Animated tagline ─────────────────────────────────────────────────────────
+
+const TAGLINE_LINES = [
+  { text: "Alto padrão", amber: false },
+  { text: "não é adjetivo.", amber: false },
+  { text: "É método.", amber: true },
+];
+
+function AnimatedTagline() {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  const reduce = useReducedMotion();
+
+  return (
+    <div
+      ref={ref}
+      className="mt-10 sm:mt-12"
+      aria-label={TAGLINE_LINES.map((l) => l.text).join(" ")}
+    >
+      {/* Label pré-tagline — como nas referências de luxo */}
+      <motion.span
+        className="mb-6 block font-heading text-[0.6rem] font-semibold uppercase tracking-[0.32em] text-amber-500/60"
+        initial={reduce ? false : { opacity: 0, x: -16 }}
+        animate={inView ? { opacity: 1, x: 0 } : {}}
+        transition={{ delay: 0.05, duration: 0.6, ease: EASE }}
+        aria-hidden
+      >
+        Manifesto Criare
+      </motion.span>
+
+      {/* Linha âmbar que cresce antes do texto */}
+      <motion.span
+        className="mb-7 block h-px origin-left bg-gradient-to-r from-amber-500/50 via-amber-400/25 to-transparent"
+        initial={reduce ? false : { scaleX: 0, opacity: 0 }}
+        animate={inView ? { scaleX: 1, opacity: 1 } : {}}
+        transition={{ delay: 0.18, duration: 0.9, ease: EASE }}
+        style={{ transformOrigin: "left center" }}
+        aria-hidden
+      />
+
+      {/* Linhas do manifesto — clip reveal por linha */}
+      {TAGLINE_LINES.map((line, i) => (
+        <div key={i} className="overflow-hidden leading-none">
+          <motion.p
+            className="font-heading font-bold leading-[1.06] tracking-[-0.01em]"
+            style={{
+              fontSize: "clamp(2.4rem, 6vw, 5.5rem)",
+              color: line.amber
+                ? "transparent"
+                : i === 0
+                  ? "rgba(255,255,255,0.95)"
+                  : "rgba(255,255,255,0.72)",
+              ...(line.amber && {
+                backgroundImage:
+                  "linear-gradient(105deg, #f59e0b 0%, #fbbf24 45%, #f59e0b 100%)",
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+              }),
+            }}
+            initial={reduce ? false : { y: "108%", opacity: 0 }}
+            animate={inView ? { y: "0%", opacity: 1 } : {}}
+            transition={{
+              delay: 0.32 + i * 0.16,
+              duration: 0.88,
+              ease: EASE,
+            }}
+          >
+            {line.text}
+          </motion.p>
+        </div>
+      ))}
+
+      {/* Shimmer âmbar que aparece após o reveal — linha final */}
+      <motion.span
+        className="mt-8 block h-[1px] w-0 bg-gradient-to-r from-amber-500/40 via-amber-300/20 to-transparent"
+        initial={{ width: 0 }}
+        animate={inView ? { width: "clamp(120px, 30%, 320px)" } : {}}
+        transition={{ delay: 1.1, duration: 1.4, ease: EASE }}
+        aria-hidden
+      />
+    </div>
+  );
+}
+
+// ─── Main footer ──────────────────────────────────────────────────────────────
+
 export interface SiteFooterProps {
   className?: string;
-  /**
-   * Quando true, remove min-height de viewport e classes de snap —
-   * adequado para páginas que não são a landing (404, erro, privacidade, etc.).
-   */
   compact?: boolean;
 }
 
@@ -40,228 +184,208 @@ export function SiteFooter({ className, compact = false }: SiteFooterProps) {
   return (
     <footer
       className={cn(
-        "relative z-10 mt-auto lg:flex lg:flex-col lg:justify-end",
-        !compact && "lg:snap-start lg:snap-always lg:scroll-mt-[var(--site-header-height)] lg:min-h-[min(100dvh,900px)]",
+        "relative z-10 mt-auto flex flex-col overflow-hidden",
+        !compact && "lg:snap-start lg:snap-always lg:scroll-mt-[var(--site-header-height)] lg:min-h-[100dvh]",
+        compact && "min-h-fit",
         className,
       )}
       style={{ background: "oklch(0.10 0.008 55)" }}
     >
+      {/* Background com imagem + overlays */}
+      {!compact && <FooterBackground />}
+
       {/* Ambient top glow */}
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-px"
-        style={{ background: "linear-gradient(to right, transparent, rgba(245,158,11,0.3), transparent)" }}
+        className="pointer-events-none absolute inset-x-0 top-0 h-px z-10"
+        style={{ background: "linear-gradient(to right, transparent, rgba(245,158,11,0.28), transparent)" }}
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute inset-x-0 top-0 h-40"
-        style={{ background: "radial-gradient(ellipse 70% 100% at 50% 0%, rgba(245,158,11,0.06), transparent)" }}
+        className="pointer-events-none absolute inset-x-0 top-0 h-64 z-10"
+        style={{ background: "radial-gradient(ellipse 60% 100% at 50% 0%, rgba(245,158,11,0.05), transparent)" }}
         aria-hidden
       />
 
-      <div className={cn("-mt-[min(14rem,32svh)] pt-[min(14rem,32svh)]")}>
-        <div className="w-full px-6 py-14 sm:px-10 sm:py-16 lg:px-16 lg:py-20 xl:px-24">
+      {/* ── Brand statement — expands to fill the upper area ─────────── */}
+      <div className="relative z-20 flex flex-1 flex-col justify-end border-b border-white/[0.06] px-6 pb-14 pt-20 sm:px-10 sm:pb-16 sm:pt-24 lg:px-16 xl:px-24">
+        <div className="mx-auto w-full max-w-7xl">
 
-          {/* ── Main grid ─────────────────────────────── */}
-          <div className="grid gap-12 lg:grid-cols-12 lg:gap-8">
+          {/* Logo */}
+          <Link
+            href="/"
+            className="inline-flex focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
+          >
+            <Image
+              src={brandImages.logo.src}
+              alt={`${siteConfig.name} — logotipo`}
+              width={brandImages.logo.width}
+              height={brandImages.logo.height}
+              className="h-9 w-auto opacity-65 sm:h-10"
+            />
+          </Link>
 
-            {/* Brand column */}
-            <div className="space-y-6 lg:col-span-4">
-              <Link
-                href="/"
-                className="inline-flex focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
-              >
-                <Image
-                  src={brandImages.logo.src}
-                  alt={`${siteConfig.name} — logotipo`}
-                  width={brandImages.logo.width}
-                  height={brandImages.logo.height}
-                  className="h-10 w-auto opacity-90 sm:h-11"
-                />
-              </Link>
+          {/* Tagline — animated editorial */}
+          <AnimatedTagline />
 
-              <p className="max-w-xs text-sm leading-relaxed text-white/45">
-                {siteConfig.tagline} — móveis planejados de alto padrão em Moema, São Paulo.
-              </p>
+          {/* CTAs */}
+          <div className="mt-10 flex flex-wrap items-center gap-8 sm:mt-12">
+            <a
+              href={siteConfig.whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="editorial-link group"
+            >
+              <WhatsAppOfficialLogo className="size-3.5 shrink-0" aria-hidden />
+              Solicitar diagnóstico gratuito
+              <ArrowRight
+                className="size-3.5 transition-transform duration-300 group-hover:translate-x-1"
+                aria-hidden
+              />
+            </a>
+            <a
+              href={siteConfig.instagramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-heading text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-white/22 transition-colors duration-300 hover:text-white/55"
+            >
+              <InstagramIcon className="size-3.5" />
+              @criaremoema
+            </a>
+          </div>
+        </div>
+      </div>
 
-              <p className="font-heading text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-500/70">
-                {siteConfig.brandFocusLine}
-              </p>
+      {/* ── Info grid ─────────────────────────────────────────────────── */}
+      <div className="relative z-20 px-6 py-12 sm:px-10 sm:py-14 lg:px-16 xl:px-24">
+        <div className="mx-auto grid w-full max-w-7xl gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8">
 
-              {/* Instagram — card dedicado */}
-              <div className="pt-2">
-                <p className="mb-3 font-heading text-[10px] font-semibold uppercase tracking-[0.22em] text-white/30">
-                  Redes Sociais
-                </p>
-                <a
-                  href={siteConfig.instagramUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex w-fit max-w-[220px] items-center gap-3 rounded-2xl border border-white/10 px-3.5 py-3 transition-all duration-300 hover:border-[#E1306C]/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E1306C]/50"
-                  style={{ background: "rgba(255,255,255,0.04)" }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.background =
-                      "linear-gradient(135deg, rgba(131,58,180,0.12) 0%, rgba(193,53,132,0.10) 50%, rgba(253,29,29,0.08) 100%)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.04)";
-                  }}
-                >
-                  {/* Instagram gradient icon container */}
-                  <span
-                    className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl text-white"
-                    style={{
-                      background:
-                        "linear-gradient(135deg, #833ab4 0%, #c13584 40%, #fd1d1d 70%, #fcb045 100%)",
-                    }}
-                  >
-                    <InstagramIcon className="size-4.5" />
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block text-sm font-semibold text-white/85 transition-colors duration-300 group-hover:text-white">
-                      @criaremoema
-                    </span>
-                  </span>
-                  <ArrowUpRight
-                    className="size-4 shrink-0 text-white/25 transition-all duration-300 group-hover:text-[#E1306C]/70 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                    aria-hidden
-                  />
-                </a>
-              </div>
-            </div>
-
-            {/* Nav column */}
-            <nav className="lg:col-span-2" aria-label="Mapa do site">
-              <h2 className="font-heading text-[10px] font-semibold uppercase tracking-[0.22em] text-white/30">
-                Navegar
-              </h2>
-              <ul className="mt-5 space-y-3 text-sm">
-                <li>
+          {/* Nav */}
+          <nav aria-label="Mapa do site">
+            <h2 className="font-heading text-[10px] font-semibold uppercase tracking-[0.22em] text-white/25">
+              Navegar
+            </h2>
+            <ul className="mt-5 space-y-3 text-sm">
+              <li>
+                <Link href="/" className="text-white/42 transition-colors duration-200 hover:text-white/75">
+                  Início
+                </Link>
+              </li>
+              {siteConfig.footerQuickLinks.map((item) => (
+                <li key={item.href}>
                   <Link
-                    href="/"
-                    className="text-white/50 transition-colors duration-200 hover:text-amber-400"
+                    href={item.href}
+                    className="text-white/42 transition-colors duration-200 hover:text-white/75"
                   >
-                    Início
+                    {item.label}
                   </Link>
                 </li>
-                {siteConfig.footerQuickLinks.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className="text-white/50 transition-colors duration-200 hover:text-amber-400"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Address */}
+          <div>
+            <h2 className="font-heading text-[10px] font-semibold uppercase tracking-[0.22em] text-white/25">
+              Loja
+            </h2>
+            <address className="mt-5 space-y-4 not-italic">
+              <p className="flex gap-3 text-sm leading-relaxed text-white/42">
+                <MapPin className="mt-0.5 size-4 shrink-0 text-white/28" aria-hidden />
+                <span>
+                  <strong className="font-semibold text-white/65">{siteConfig.name}</strong>
+                  <br />
+                  <span className="block">{siteConfig.address.streetAddress}</span>
+                  <span className="block">
+                    {siteConfig.address.neighborhood} · {siteConfig.address.addressLocality}
+                  </span>
+                  <span className="mt-1 block text-white/25">CEP {siteConfig.address.postalCode}</span>
+                </span>
+              </p>
+              <p className="flex items-center gap-3 text-sm">
+                <Mail className="size-4 shrink-0 text-white/28" aria-hidden />
+                <a
+                  href={`mailto:${siteConfig.email}`}
+                  className="text-white/42 transition-colors hover:text-white/70"
+                >
+                  {siteConfig.email}
+                </a>
+              </p>
+            </address>
+
+            <div className="mt-5 flex flex-wrap gap-2">
+              <a
+                href={siteConfig.wazeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-2 text-xs font-semibold text-white/35 transition-all duration-200 hover:border-white/20 hover:text-white/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25"
+                style={{ background: "rgba(255,255,255,0.04)" }}
+              >
+                <Navigation className="size-3.5" aria-hidden />
+                Waze
+              </a>
+              <a
+                href={siteConfig.googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-2 text-xs font-semibold text-white/35 transition-all duration-200 hover:border-white/20 hover:text-white/60 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25"
+                style={{ background: "rgba(255,255,255,0.04)" }}
+              >
+                <ExternalLink className="size-3.5" aria-hidden />
+                Google Maps
+              </a>
+            </div>
+          </div>
+
+          {/* Hours */}
+          <div>
+            <h2 className="font-heading text-[10px] font-semibold uppercase tracking-[0.22em] text-white/25">
+              Horário
+            </h2>
+            <div className="mt-5 flex gap-3 text-sm text-white/42">
+              <Clock className="mt-0.5 size-4 shrink-0 text-white/28" aria-hidden />
+              <ul className="space-y-2">
+                {siteConfig.openingHoursLines.map((line) => (
+                  <li key={line} className="leading-snug">{line}</li>
                 ))}
               </ul>
-            </nav>
-
-            {/* Address column */}
-            <div className="lg:col-span-3">
-              <h2 className="font-heading text-[10px] font-semibold uppercase tracking-[0.22em] text-white/30">
-                Loja
-              </h2>
-              <address className="mt-5 space-y-4 not-italic">
-                <p className="flex gap-3 text-sm leading-relaxed text-white/50">
-                  <MapPin className="mt-0.5 size-4.5 shrink-0 text-amber-500/80" aria-hidden />
-                  <span>
-                    <span className="font-semibold text-white/80">{siteConfig.name}</span>
-                    <br />
-                    <span className="block">{siteConfig.address.streetAddress}</span>
-                    <span className="block">
-                      {siteConfig.address.neighborhood} · {siteConfig.address.addressLocality} — {siteConfig.address.addressRegion}
-                    </span>
-                    <span className="block">CEP {siteConfig.address.postalCode}</span>
-                  </span>
-                </p>
-                <p className="flex items-center gap-3 text-sm">
-                  <Mail className="size-4 shrink-0 text-amber-500/70" aria-hidden />
-                  <a
-                    href={`mailto:${siteConfig.email}`}
-                    className="text-white/50 underline-offset-4 transition-colors hover:text-amber-400 hover:underline"
-                  >
-                    {siteConfig.email}
-                  </a>
-                </p>
-              </address>
-
-              {/* Map links — Waze & Google Maps only */}
-              <div className="mt-5 flex flex-wrap gap-2">
-                <a
-                  href={siteConfig.wazeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-amber-500/22 px-3 py-2 text-xs font-semibold text-amber-400/80 transition-all duration-200 hover:border-amber-500/45 hover:text-amber-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/50"
-                  style={{ background: "rgba(245,158,11,0.07)" }}
-                >
-                  <Navigation className="size-3.5" aria-hidden />
-                  Waze
-                </a>
-                <a
-                  href={siteConfig.googleMapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-2 text-xs font-semibold text-white/45 transition-all duration-200 hover:border-white/20 hover:text-white/70 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30"
-                  style={{ background: "rgba(255,255,255,0.04)" }}
-                >
-                  <ExternalLink className="size-3.5" aria-hidden />
-                  Google Maps
-                </a>
-              </div>
-            </div>
-
-            {/* Hours column */}
-            <div className="lg:col-span-3">
-              <h2 className="font-heading text-[10px] font-semibold uppercase tracking-[0.22em] text-white/30">
-                Horário de Atendimento
-              </h2>
-              <div className="mt-5 flex gap-3 text-sm text-white/50">
-                <Clock className="mt-0.5 size-4.5 shrink-0 text-amber-500/80" aria-hidden />
-                <ul className="list-none space-y-2">
-                  {siteConfig.openingHoursLines.map((line) => (
-                    <li key={line} className="leading-snug">{line}</li>
-                  ))}
-                </ul>
-              </div>
-
             </div>
           </div>
 
-          {/* ── SEO keyword strip ─────────────────────── */}
-          <div
-            className="mt-12 border-t pt-8"
-            style={{ borderColor: "rgba(255,255,255,0.07)" }}
-          >
-            <p className="text-center text-xs leading-relaxed text-white/20">
-              Loja de móveis planejados · Cozinha planejada · Quarto planejado · Closet · Home office ·
-              Móveis sob medida · Moema · São Paulo
+          {/* Brand focus */}
+          <div>
+            <h2 className="font-heading text-[10px] font-semibold uppercase tracking-[0.22em] text-white/25">
+              Sobre
+            </h2>
+            <p className="mt-5 text-sm leading-relaxed text-white/38">
+              {siteConfig.tagline} — móveis planejados de alto padrão em Moema, São Paulo.
+            </p>
+            <p className="mt-4 font-heading text-[10px] font-semibold uppercase tracking-[0.22em] text-white/20">
+              {siteConfig.brandFocusLine}
             </p>
           </div>
+        </div>
+      </div>
 
-          {/* ── Bottom bar ────────────────────────────── */}
-          <div
-            className="mt-6 flex flex-col items-center justify-between gap-4 border-t pt-6 text-center sm:flex-row sm:text-left"
-            style={{ borderColor: "rgba(255,255,255,0.07)" }}
-          >
-            <p className="text-xs text-white/25">
-              © {year} {siteConfig.organization.legalName} — Todos os direitos reservados.
+      {/* ── Bottom bar ────────────────────────────────────────────────── */}
+      <div
+        className="relative z-20 border-t px-6 py-5 sm:px-10 lg:px-16 xl:px-24"
+        style={{ borderColor: "rgba(255,255,255,0.06)" }}
+      >
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-white/20">
+            © {year} {siteConfig.organization.legalName} — Todos os direitos reservados.
+          </p>
+          <div className="flex flex-wrap gap-x-5 gap-y-2">
+            <p className="text-xs text-white/15">
+              Cozinha · Closet · Dormitório · Home office · Moema · São Paulo
             </p>
-            <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 sm:justify-end">
-              <Link
-                href="/termos"
-                className="text-xs text-white/30 transition-colors hover:text-white/60"
-              >
-                Termos de uso
-              </Link>
-              <Link
-                href="/privacidade"
-                className="text-xs text-white/30 transition-colors hover:text-white/60"
-              >
-                Política de privacidade
-              </Link>
-            </div>
+            <Link href="/termos" className="text-xs text-white/22 transition-colors hover:text-white/50">
+              Termos
+            </Link>
+            <Link href="/privacidade" className="text-xs text-white/22 transition-colors hover:text-white/50">
+              Privacidade
+            </Link>
           </div>
-
         </div>
       </div>
     </footer>

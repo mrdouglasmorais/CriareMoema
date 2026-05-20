@@ -9,8 +9,7 @@ import { useEffect } from "react";
  * onde todas as seções têm `snap-start`. Em outras páginas, remover o
  * atributo evita pulos erráticos causados por snap points isolados.
  *
- * Estratégia idêntica ao ThemeScript/ThemeProvider: mínimo JS no cliente,
- * sem rerender do Server Component pai.
+ * Mínimo JS no cliente, sem rerender do Server Component pai.
  */
 export function SnapManager() {
   const pathname = usePathname();

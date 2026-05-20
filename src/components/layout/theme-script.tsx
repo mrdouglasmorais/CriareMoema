@@ -1,9 +1,8 @@
 /**
- * Script inline injetado no <head> antes da hidratação do React.
- * Lê localStorage e prefers-color-scheme para aplicar a classe 'dark'
- * no <html> sem flash (FOUC) durante o carregamento.
+ * Garante que a classe 'dark' esteja no <html> antes da hidratação.
+ * Não há alternância de tema — o site é sempre dark-mode.
  */
 export function ThemeScript() {
-  const script = `(function(){try{var s=localStorage.getItem('theme'),m=window.matchMedia('(prefers-color-scheme:dark)').matches,d=s==='dark'||(s!=='light'&&m);document.documentElement.classList.toggle('dark',d);}catch(e){}})();`;
+  const script = `document.documentElement.classList.add('dark');`;
   return <script dangerouslySetInnerHTML={{ __html: script }} />;
 }

@@ -3,8 +3,20 @@
 import Image from "next/image";
 import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "framer-motion";
 import type { PanInfo } from "framer-motion";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Expand, Minus, Plus, RotateCcw, X } from "lucide-react";
+import { startTransition, useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import {
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Copy,
+  Expand,
+  Minus,
+  Plus,
+  RotateCcw,
+  Share2,
+  X,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   catalogCategories,
@@ -25,6 +37,30 @@ function clamp(v: number, lo: number, hi: number) {
   return Math.min(hi, Math.max(lo, v));
 }
 
+function IconFacebook({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+      <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073C0 18.1 4.388 23.094 10.125 24v-8.437H7.078v-3.49h3.047V9.41c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97h-1.513c-1.491 0-1.956.93-1.956 1.887v2.267h3.328l-.532 3.49h-2.796V24C19.612 23.094 24 18.1 24 12.073z"/>
+    </svg>
+  );
+}
+
+function IconXTwitter({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+    </svg>
+  );
+}
+
+function WhatsAppIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+    </svg>
+  );
+}
+
 // ─── Grid item ────────────────────────────────────────────────────────────────
 
 interface GridItemProps {
@@ -37,9 +73,9 @@ function GridItem({ image, onOpen, index }: GridItemProps) {
   const reduce = useReducedMotion();
 
   return (
-      <motion.button
+    <motion.button
       type="button"
-      className="group relative mb-2 block w-full overflow-hidden rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70"
+      className="group relative mb-2 block w-full cursor-pointer overflow-hidden rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70"
       style={{ aspectRatio: `${image.width} / ${image.height}` }}
       onClick={() => onOpen(image)}
       aria-label={`Ampliar: ${image.alt}`}
@@ -49,7 +85,6 @@ function GridItem({ image, onOpen, index }: GridItemProps) {
       whileHover={reduce ? undefined : { scale: 1.012 }}
       whileTap={reduce ? undefined : { scale: 0.99 }}
     >
-      {/* Imagem */}
       <Image
         src={image.src}
         alt={image.alt}
@@ -58,33 +93,112 @@ function GridItem({ image, onOpen, index }: GridItemProps) {
         className="object-cover transition-transform duration-700 will-change-transform group-hover:scale-[1.07]"
       />
 
-      {/* Overlay hover — gradiente premium */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent opacity-0 transition-opacity duration-400 group-hover:opacity-100" />
+      <div className="absolute inset-0 rounded-xl ring-1 ring-inset ring-transparent transition-all duration-400 group-hover:ring-amber-400/25" />
 
-      {/* Borda vitral no hover */}
-      <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-transparent transition-all duration-400 group-hover:ring-amber-400/30" />
-
-      {/* Badge de categoria — aparece no hover */}
       <div className="absolute left-3 top-3 translate-y-2 opacity-0 transition-all duration-350 group-hover:translate-y-0 group-hover:opacity-100">
-        <span className="inline-flex items-center rounded-full border border-white/20 bg-black/60 px-2.5 py-1 font-heading text-[10px] font-semibold uppercase tracking-[0.14em] text-amber-300 backdrop-blur-md">
+        <span className="inline-flex items-center rounded-full border border-white/18 bg-black/60 px-2.5 py-1 font-heading text-[10px] font-semibold uppercase tracking-[0.14em] text-white/60 backdrop-blur-md">
           {image.category}
         </span>
       </div>
 
-      {/* Expand icon — centro */}
       <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-all duration-350 group-hover:opacity-100">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full border border-white/25 bg-black/50 text-white shadow-xl shadow-black/50 backdrop-blur-md transition-transform duration-300 group-hover:scale-110">
-          <Expand className="size-5" aria-hidden />
+        <div className="flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white/70 shadow-xl shadow-black/50 backdrop-blur-md transition-transform duration-300 group-hover:scale-110">
+          <Expand className="size-4" aria-hidden />
         </div>
       </div>
 
-      {/* Caption bottom */}
       <div className="absolute bottom-0 left-0 right-0 translate-y-1 p-3.5 opacity-0 transition-all duration-350 group-hover:translate-y-0 group-hover:opacity-100">
-        <p className="line-clamp-2 font-heading text-[11px] font-medium leading-relaxed text-white/70">
+        <p className="line-clamp-2 font-heading text-[11px] font-medium leading-relaxed text-white/60">
           {image.alt.split(" — ")[0]}
         </p>
       </div>
     </motion.button>
+  );
+}
+
+// ─── Lightbox share panel ─────────────────────────────────────────────────────
+
+interface SharePanelProps {
+  imageUrl: string;
+  onClose: () => void;
+}
+
+function SharePanel({ imageUrl, onClose }: SharePanelProps) {
+  const [copied, setCopied] = useState(false);
+
+  const networks = [
+    {
+      id: "whatsapp",
+      label: "WhatsApp",
+      icon: WhatsAppIcon,
+      href: `https://api.whatsapp.com/send?text=${encodeURIComponent(imageUrl)}`,
+    },
+    {
+      id: "facebook",
+      label: "Facebook",
+      icon: IconFacebook,
+      href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(imageUrl)}`,
+    },
+    {
+      id: "twitter",
+      label: "X",
+      icon: IconXTwitter,
+      href: `https://twitter.com/intent/tweet?url=${encodeURIComponent(imageUrl)}&text=${encodeURIComponent("Confira este projeto:")}`,
+    },
+  ];
+
+  async function copy() {
+    await navigator.clipboard.writeText(imageUrl).catch(() => {});
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  return (
+    <motion.div
+      className="absolute right-0 top-full z-30 mt-2 w-56 overflow-hidden rounded-2xl border border-white/12 bg-background/95 shadow-2xl shadow-black/60"
+      style={{ backdropFilter: "blur(40px)", WebkitBackdropFilter: "blur(40px)", transformOrigin: "top right" }}
+      initial={{ opacity: 0, scale: 0.88, y: -8 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.88, y: -8 }}
+      transition={{ duration: 0.25, ease: EASE }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className="border-b border-white/[0.07] px-4 py-3">
+        <p className="font-heading text-[10px] font-semibold uppercase tracking-[0.20em] text-white/30">
+          Compartilhar imagem
+        </p>
+      </div>
+      <div className="p-3 space-y-1">
+        {networks.map((net) => (
+          <a
+            key={net.id}
+            href={net.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={onClose}
+            className="group flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors duration-200 hover:bg-white/[0.06]"
+          >
+            <net.icon className="size-4 text-white/35 transition-colors group-hover:text-white/65" />
+            <span className="text-sm text-white/45 transition-colors group-hover:text-white/80">{net.label}</span>
+          </a>
+        ))}
+        <button
+          type="button"
+          onClick={copy}
+          className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 transition-colors duration-200 hover:bg-white/[0.06]"
+        >
+          {copied ? (
+            <Check className="size-4 text-amber-400" />
+          ) : (
+            <Copy className="size-4 text-white/35 transition-colors group-hover:text-white/65" />
+          )}
+          <span className={cn("text-sm transition-colors", copied ? "text-amber-400/80" : "text-white/45 group-hover:text-white/80")}>
+            {copied ? "Link copiado!" : "Copiar link"}
+          </span>
+        </button>
+      </div>
+    </motion.div>
   );
 }
 
@@ -103,43 +217,55 @@ function Lightbox({ image, images, onClose, onNavigate, direction }: LightboxPro
   const [scale, setScale] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const [isPanning, setIsPanning] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
-  const panRef = useRef<{ startX: number; startY: number; baseX: number; baseY: number } | null>(
-    null,
-  );
+  const panRef = useRef<{ startX: number; startY: number; baseX: number; baseY: number } | null>(null);
   const thumbsRef = useRef<HTMLDivElement>(null);
   const currentIndex = images.findIndex((img) => img.id === image.id);
   const isZoomed = scale > MIN_SCALE;
+
+  const pageUrl = typeof window !== "undefined"
+    ? `${window.location.origin}/catalogo?foto=${image.id}`
+    : `/catalogo?foto=${image.id}`;
 
   const resetZoom = useCallback(() => {
     setScale(1);
     setOffset({ x: 0, y: 0 });
   }, []);
 
-  useEffect(() => {
-    resetZoom();
-  }, [image.id, resetZoom]);
+  useEffect(() => { startTransition(() => { resetZoom(); setShareOpen(false); }); }, [image.id, resetZoom]);
 
+  /* block scroll + hide site header */
   useEffect(() => {
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    document.documentElement.setAttribute("data-lightbox", "open");
     return () => {
       document.body.style.overflow = prev;
+      document.documentElement.removeAttribute("data-lightbox");
     };
   }, []);
 
+  /* keyboard */
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") { onClose(); return; }
       if (e.key === "ArrowRight") { onNavigate(images[(currentIndex + 1) % images.length]); return; }
       if (e.key === "ArrowLeft") { onNavigate(images[(currentIndex - 1 + images.length) % images.length]); return; }
       if (e.key === "+" || e.key === "=") { setScale((s) => clamp(s + ZOOM_STEP, MIN_SCALE, MAX_SCALE)); return; }
-      if (e.key === "-") { setScale((s) => { const n = clamp(s - ZOOM_STEP, MIN_SCALE, MAX_SCALE); if (n <= MIN_SCALE) setOffset({ x: 0, y: 0 }); return n; }); }
+      if (e.key === "-") {
+        setScale((s) => {
+          const n = clamp(s - ZOOM_STEP, MIN_SCALE, MAX_SCALE);
+          if (n <= MIN_SCALE) setOffset({ x: 0, y: 0 });
+          return n;
+        });
+      }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [currentIndex, images, onClose, onNavigate]);
 
+  /* scroll thumbnail into view */
   useEffect(() => {
     const el = thumbsRef.current?.children[currentIndex] as HTMLElement | undefined;
     el?.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" });
@@ -184,10 +310,7 @@ function Lightbox({ image, images, onClose, onNavigate, direction }: LightboxPro
     });
   }
 
-  function handlePointerUp() {
-    panRef.current = null;
-    setIsPanning(false);
-  }
+  function handlePointerUp() { panRef.current = null; setIsPanning(false); }
 
   function handleDragEnd(_: unknown, info: PanInfo) {
     if (isZoomed) return;
@@ -215,41 +338,42 @@ function Lightbox({ image, images, onClose, onNavigate, direction }: LightboxPro
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
+      transition={{ duration: 0.22 }}
       role="dialog"
       aria-modal="true"
       aria-label={`Galeria — ${image.alt}`}
     >
-      {/* ── Top bar — liquid glass ──────────────────────────────────────── */}
-      <div className="relative z-10 shrink-0 border-b border-white/8 bg-white/4 backdrop-blur-xl">
-        <div className="flex items-center justify-between px-4 py-3 sm:px-6">
+      {/* ── Top bar ─────────────────────────────────────────────────────── */}
+      <div className="relative z-10 shrink-0 border-b border-white/[0.07] bg-white/[0.03] backdrop-blur-xl">
+        <div className="flex items-center justify-between px-4 py-3 sm:px-5">
 
-          {/* Counter + category */}
-          <div className="flex items-center gap-3">
-            <span className="font-heading text-[11px] font-semibold tabular-nums text-white/40">
-              {currentIndex + 1}/{images.length}
+          {/* Left: counter + category */}
+          <div className="flex items-center gap-3 min-w-0">
+            <span className="font-heading text-[11px] font-semibold tabular-nums text-white/35">
+              {String(currentIndex + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
             </span>
-            <span className="hidden h-3 w-px bg-white/15 sm:block" aria-hidden />
-            <span className="hidden font-heading text-[11px] font-semibold uppercase tracking-[0.16em] text-amber-400/60 sm:block">
+            <span className="hidden h-3 w-px bg-white/12 sm:block" aria-hidden />
+            <span className="hidden font-heading text-[11px] font-semibold uppercase tracking-[0.16em] text-white/28 sm:block">
               {image.category}
             </span>
           </div>
 
-          {/* Caption — center */}
-          <p className="absolute left-1/2 max-w-[40%] -translate-x-1/2 truncate text-center font-heading text-[11px] font-medium text-white/30 max-lg:hidden">
+          {/* Center caption */}
+          <p className="absolute left-1/2 max-w-[38%] -translate-x-1/2 truncate text-center font-heading text-[11px] font-medium text-white/25 max-lg:hidden">
             {image.alt.split(" — ")[0]}
           </p>
 
-          {/* Controls right */}
-          <div className="flex items-center gap-2">
+          {/* Right: controls */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
+
             {/* Zoom pill */}
-            <div className="flex items-center rounded-full border border-white/12 bg-white/6 p-[3px] backdrop-blur-sm">
+            <div className="flex items-center rounded-full border border-white/10 bg-white/[0.05] p-[3px]">
               <button
                 type="button"
                 onClick={zoomOut}
                 disabled={scale <= MIN_SCALE}
-                className="grid h-7 w-7 place-items-center rounded-full text-white/50 transition-colors hover:bg-white/10 hover:text-white disabled:pointer-events-none disabled:opacity-25 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/50"
-                aria-label="Diminuir zoom"
+                className="grid h-7 w-7 cursor-pointer place-items-center rounded-full text-white/45 transition-colors hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-20 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30"
+                aria-label="Diminuir zoom (−)"
               >
                 <Minus className="size-3" aria-hidden />
               </button>
@@ -258,9 +382,8 @@ function Lightbox({ image, images, onClose, onNavigate, direction }: LightboxPro
                 type="button"
                 onClick={resetZoom}
                 disabled={!isZoomed}
-                className="min-w-[3.5rem] px-1 text-center font-heading text-[10px] font-semibold tabular-nums text-white/40 transition-colors hover:text-white disabled:pointer-events-none"
+                className="cursor-pointer min-w-[3.25rem] px-1 text-center font-heading text-[10px] font-semibold tabular-nums text-white/35 transition-colors hover:text-white/75 disabled:cursor-default disabled:pointer-events-none"
                 aria-label="Resetar zoom"
-                title="Resetar zoom"
               >
                 {pct}%
               </button>
@@ -269,33 +392,61 @@ function Lightbox({ image, images, onClose, onNavigate, direction }: LightboxPro
                 type="button"
                 onClick={zoomIn}
                 disabled={scale >= MAX_SCALE}
-                className="grid h-7 w-7 place-items-center rounded-full text-white/50 transition-colors hover:bg-white/10 hover:text-white disabled:pointer-events-none disabled:opacity-25 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/50"
-                aria-label="Aumentar zoom"
+                className="grid h-7 w-7 cursor-pointer place-items-center rounded-full text-white/45 transition-colors hover:bg-white/10 hover:text-white disabled:cursor-not-allowed disabled:pointer-events-none disabled:opacity-20 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30"
+                aria-label="Aumentar zoom (+)"
               >
                 <Plus className="size-3" aria-hidden />
               </button>
             </div>
 
-            {/* Divider */}
-            <span className="h-5 w-px bg-white/12" aria-hidden />
+            {/* Reset when zoomed */}
+            <AnimatePresence>
+              {isZoomed && (
+                <motion.button
+                  type="button"
+                  onClick={resetZoom}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.2 }}
+                  className="grid h-8 w-8 cursor-pointer place-items-center rounded-full border border-white/10 text-white/35 transition-colors hover:border-white/20 hover:text-white/75 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30"
+                  aria-label="Resetar zoom (R)"
+                >
+                  <RotateCcw className="size-3.5" aria-hidden />
+                </motion.button>
+              )}
+            </AnimatePresence>
 
-            {/* Reset zoom */}
-            {isZoomed && (
+            <span className="h-5 w-px bg-white/10" aria-hidden />
+
+            {/* Share */}
+            <div className="relative">
               <button
                 type="button"
-                onClick={resetZoom}
-                className="grid h-8 w-8 place-items-center rounded-full border border-white/12 text-white/45 transition-colors hover:border-amber-400/40 hover:text-amber-400 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/50"
-                aria-label="Resetar zoom (R)"
+                onClick={() => setShareOpen((v) => !v)}
+                aria-expanded={shareOpen}
+                aria-label="Compartilhar esta imagem"
+                className={cn(
+                  "grid h-8 w-8 cursor-pointer place-items-center rounded-full border transition-all duration-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30",
+                  shareOpen
+                    ? "border-white/20 bg-white/8 text-white/75"
+                    : "border-white/10 text-white/35 hover:border-white/20 hover:text-white/70",
+                )}
               >
-                <RotateCcw className="size-3.5" aria-hidden />
+                <Share2 className="size-3.5" aria-hidden />
               </button>
-            )}
+              <AnimatePresence>
+                {shareOpen && (
+                  <SharePanel imageUrl={pageUrl} onClose={() => setShareOpen(false)} />
+                )}
+              </AnimatePresence>
+            </div>
 
             {/* Close */}
             <button
               type="button"
               onClick={onClose}
-              className="grid h-8 w-8 place-items-center rounded-full border border-white/12 text-white/45 transition-colors hover:border-white/30 hover:text-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/50"
+              className="grid h-8 w-8 cursor-pointer place-items-center rounded-full border border-white/10 text-white/35 transition-colors hover:border-white/22 hover:text-white/75 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30"
               aria-label="Fechar (Esc)"
             >
               <X className="size-4" aria-hidden />
@@ -305,16 +456,19 @@ function Lightbox({ image, images, onClose, onNavigate, direction }: LightboxPro
       </div>
 
       {/* ── Stage ─────────────────────────────────────────────────────────── */}
-      <div className="relative flex flex-1 items-center justify-center overflow-hidden">
+      <div
+        className="relative flex flex-1 items-center justify-center overflow-hidden"
+        onClick={() => shareOpen && setShareOpen(false)}
+      >
 
-        {/* Prev button */}
+        {/* Prev */}
         <button
           type="button"
           onClick={() => onNavigate(images[(currentIndex - 1 + images.length) % images.length])}
-          className="absolute left-3 z-20 flex h-12 w-12 items-center justify-center rounded-full border border-white/12 bg-black/40 text-white/60 shadow-xl shadow-black/40 backdrop-blur-xl transition-all duration-200 hover:border-white/35 hover:bg-black/65 hover:text-white hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60 sm:left-6 sm:h-14 sm:w-14"
+          className="absolute left-3 z-20 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-black/40 text-white/50 shadow-xl shadow-black/40 backdrop-blur-xl transition-all duration-300 hover:border-white/25 hover:bg-black/60 hover:text-white hover:scale-105 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25 sm:left-5 sm:h-12 sm:w-12"
           aria-label="Foto anterior (←)"
         >
-          <ChevronLeft className="size-5 sm:size-6" aria-hidden />
+          <ChevronLeft className="size-5" aria-hidden />
         </button>
 
         {/* Image stage */}
@@ -341,7 +495,7 @@ function Lightbox({ image, images, onClose, onNavigate, direction }: LightboxPro
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.35, ease: EASE }}
+              transition={{ duration: 0.32, ease: EASE }}
               drag={!isZoomed ? "x" : false}
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.18}
@@ -370,15 +524,15 @@ function Lightbox({ image, images, onClose, onNavigate, direction }: LightboxPro
             </motion.div>
           </AnimatePresence>
 
-          {/* Hint mobile */}
+          {/* Mobile hint */}
           <AnimatePresence>
             {!isZoomed && (
               <motion.p
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                transition={{ delay: 0.6 }}
-                className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full border border-white/10 bg-black/55 px-3.5 py-1.5 font-heading text-[10px] font-semibold uppercase tracking-[0.12em] text-white/30 backdrop-blur-md sm:hidden"
+                transition={{ delay: 0.7 }}
+                className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 rounded-full border border-white/8 bg-black/50 px-3.5 py-1.5 font-heading text-[10px] font-semibold uppercase tracking-[0.12em] text-white/25 backdrop-blur-md sm:hidden"
               >
                 Duplo toque para ampliar · Deslize para navegar
               </motion.p>
@@ -386,22 +540,22 @@ function Lightbox({ image, images, onClose, onNavigate, direction }: LightboxPro
           </AnimatePresence>
         </div>
 
-        {/* Next button */}
+        {/* Next */}
         <button
           type="button"
           onClick={() => onNavigate(images[(currentIndex + 1) % images.length])}
-          className="absolute right-3 z-20 flex h-12 w-12 items-center justify-center rounded-full border border-white/12 bg-black/40 text-white/60 shadow-xl shadow-black/40 backdrop-blur-xl transition-all duration-200 hover:border-white/35 hover:bg-black/65 hover:text-white hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60 sm:right-6 sm:h-14 sm:w-14"
+          className="absolute right-3 z-20 flex h-11 w-11 cursor-pointer items-center justify-center rounded-full border border-white/10 bg-black/40 text-white/50 shadow-xl shadow-black/40 backdrop-blur-xl transition-all duration-300 hover:border-white/25 hover:bg-black/60 hover:text-white hover:scale-105 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25 sm:right-5 sm:h-12 sm:w-12"
           aria-label="Próxima foto (→)"
         >
-          <ChevronRight className="size-5 sm:size-6" aria-hidden />
+          <ChevronRight className="size-5" aria-hidden />
         </button>
       </div>
 
       {/* ── Thumbnail strip ───────────────────────────────────────────────── */}
-      <div className="shrink-0 border-t border-white/8 bg-white/3 backdrop-blur-xl">
+      <div className="shrink-0 border-t border-white/[0.07] bg-white/[0.025] backdrop-blur-xl">
         <div
           ref={thumbsRef}
-          className="flex gap-2 overflow-x-auto px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] sm:px-6"
+          className="flex gap-2 overflow-x-auto px-4 py-3 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))] sm:px-5"
           style={{ scrollbarWidth: "none" } as React.CSSProperties}
           role="listbox"
           aria-label="Miniaturas"
@@ -414,14 +568,14 @@ function Lightbox({ image, images, onClose, onNavigate, direction }: LightboxPro
               aria-selected={img.id === image.id}
               onClick={() => onNavigate(img)}
               className={cn(
-                "relative h-16 w-16 shrink-0 overflow-hidden rounded-xl transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60",
+                "relative h-14 w-14 shrink-0 cursor-pointer overflow-hidden rounded-lg transition-all duration-300 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/40",
                 img.id === image.id
-                  ? "scale-105 ring-2 ring-amber-400 ring-offset-1 ring-offset-black/60 opacity-100"
-                  : "opacity-30 hover:opacity-60 hover:scale-102",
+                  ? "scale-105 ring-1 ring-white/50 ring-offset-1 ring-offset-black/60 opacity-100"
+                  : "opacity-28 hover:opacity-55",
               )}
               aria-label={`Foto ${i + 1}${img.id === image.id ? " (atual)" : ""}`}
             >
-              <Image src={img.src} alt="" fill className="object-cover" sizes="64px" aria-hidden />
+              <Image src={img.src} alt="" fill className="object-cover" sizes="56px" aria-hidden />
             </button>
           ))}
         </div>
@@ -436,19 +590,39 @@ export function CatalogGallery() {
   const [activeCategory, setActiveCategory] = useState<ActiveCategory>("Todos");
   const [selected, setSelected] = useState<CatalogImage | null>(null);
   const [direction, setDirection] = useState(0);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { startTransition(() => setMounted(true)); }, []);
 
   const filtered =
     activeCategory === "Todos"
       ? catalogImages
       : catalogImages.filter((img) => img.category === activeCategory);
 
+  /* restore image from URL on mount */
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const fotoId = params.get("foto");
+    if (fotoId) {
+      const img = catalogImages.find((i) => i.id === fotoId);
+      if (img) {
+        startTransition(() => {
+          setActiveCategory(img.category);
+          setSelected(img);
+        });
+      }
+    }
+  }, []);
+
   function openImage(image: CatalogImage) {
     setDirection(0);
     setSelected(image);
+    window.history.pushState({}, "", `/catalogo?foto=${image.id}`);
   }
 
   function closeImage() {
     setSelected(null);
+    window.history.pushState({}, "", "/catalogo");
   }
 
   function navigateTo(image: CatalogImage) {
@@ -457,17 +631,14 @@ export function CatalogGallery() {
     const nxt = filtered.findIndex((img) => img.id === image.id);
     setDirection(nxt >= cur ? 1 : -1);
     setSelected(image);
+    window.history.replaceState({}, "", `/catalogo?foto=${image.id}`);
   }
 
   return (
     <>
-      {/* ── Category filter ── */}
+      {/* ── Category filters ── */}
       <LayoutGroup>
-        <div
-          className="flex flex-wrap gap-2"
-          role="group"
-          aria-label="Filtrar por categoria"
-        >
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrar por categoria">
           {ALL_CATEGORIES.map((cat) => {
             const count =
               cat === "Todos"
@@ -482,28 +653,23 @@ export function CatalogGallery() {
                 onClick={() => setActiveCategory(cat)}
                 aria-pressed={isActive}
                 className={cn(
-                  "relative shrink-0 overflow-hidden rounded-full px-4 py-2 font-heading text-xs font-semibold uppercase tracking-[0.12em] transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60",
+                  "relative shrink-0 cursor-pointer overflow-hidden rounded-full px-4 py-2 font-heading text-xs font-semibold uppercase tracking-[0.12em] transition-all duration-350 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30",
                   isActive
-                    ? "text-stone-950 shadow-md shadow-amber-500/25"
-                    : "border border-border/50 bg-transparent text-muted-foreground hover:border-amber-500/30 hover:text-foreground",
+                    ? "border border-amber-500/35 bg-amber-500/8 text-amber-400/85"
+                    : "border border-white/10 bg-transparent text-white/35 hover:border-white/18 hover:text-white/65",
                 )}
               >
                 {isActive && (
                   <motion.span
                     layoutId="cat-pill"
-                    className="absolute inset-0 bg-gradient-to-b from-amber-300 to-amber-400"
+                    className="absolute inset-0 rounded-full"
                     transition={{ type: "spring", stiffness: 380, damping: 34 }}
                     aria-hidden
                   />
                 )}
                 <span className="relative inline-flex items-center gap-1.5">
                   {cat}
-                  <span
-                    className={cn(
-                      "tabular-nums text-[10px]",
-                      isActive ? "text-stone-800/70" : "text-muted-foreground/60",
-                    )}
-                  >
+                  <span className={cn("tabular-nums text-[10px]", isActive ? "text-amber-400/55" : "text-white/20")}>
                     {count}
                   </span>
                 </span>
@@ -513,7 +679,7 @@ export function CatalogGallery() {
         </div>
       </LayoutGroup>
 
-      {/* ── Masonry grid — full-width, sem container ── */}
+      {/* ── Masonry grid ── */}
       <motion.div
         key={activeCategory}
         className="mt-8 columns-2 gap-2 sm:columns-3 lg:columns-4 xl:columns-5"
@@ -528,25 +694,27 @@ export function CatalogGallery() {
         ))}
       </motion.div>
 
-      {/* Empty state */}
       {filtered.length === 0 && (
-        <div className="flex flex-col items-center justify-center py-24 text-center text-muted-foreground">
+        <div className="flex flex-col items-center justify-center py-24 text-center text-white/30">
           <p className="font-heading text-lg font-semibold">Nenhuma imagem nesta categoria</p>
         </div>
       )}
 
-      {/* ── Lightbox ── */}
-      <AnimatePresence>
-        {selected && (
-          <Lightbox
-            image={selected}
-            images={filtered}
-            onClose={closeImage}
-            onNavigate={navigateTo}
-            direction={direction}
-          />
-        )}
-      </AnimatePresence>
+      {/* ── Lightbox — rendered in portal to escape overflow:clip ancestors ── */}
+      {mounted && createPortal(
+        <AnimatePresence>
+          {selected && (
+            <Lightbox
+              image={selected}
+              images={filtered}
+              onClose={closeImage}
+              onNavigate={navigateTo}
+              direction={direction}
+            />
+          )}
+        </AnimatePresence>,
+        document.body,
+      )}
     </>
   );
 }

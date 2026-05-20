@@ -8,7 +8,7 @@ import { WhatsAppOfficialLogo } from "@/components/icons/whatsapp-official-logo"
 import { siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 import { motion, useMotionValue, useReducedMotion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const easeOut = [0.22, 1, 0.36, 1] as const;
 
@@ -20,8 +20,6 @@ export function HeroSection() {
   return (
     <section
       aria-labelledby="hero-heading"
-      // Hero sempre dark: foto de fundo escura + overlay — texto precisa ser sempre claro
-      // independente da preferência de tema do usuário.
       className={cn(
         "dark",
         landingHeroSection(),
@@ -42,125 +40,121 @@ export function HeroSection() {
     >
       <HeroAmbientLayers reduce={!!reduce} mouseX={mouseX} mouseY={mouseY} />
 
-      {/* Raios de luz prismáticos — efeito vitral no hero */}
+      {/* Raios de luz prismáticos */}
       {!reduce && (
         <div className="pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden>
-          {/* Raio âmbar */}
           <div
             className="absolute -left-20 top-0 h-full w-[45%] origin-top-left"
             style={{
-              background: "linear-gradient(170deg, rgba(245,158,11,0.12) 0%, transparent 70%)",
+              background: "linear-gradient(170deg, rgba(245,158,11,0.10) 0%, transparent 70%)",
               transform: "skewX(-15deg)",
             }}
           />
-          {/* Raio violeta */}
           <div
             className="absolute -right-20 top-0 h-full w-[35%] origin-top-right"
             style={{
-              background: "linear-gradient(190deg, rgba(139,92,246,0.10) 0%, transparent 65%)",
+              background: "linear-gradient(190deg, rgba(139,92,246,0.08) 0%, transparent 65%)",
               transform: "skewX(10deg)",
-            }}
-          />
-          {/* Prisma central — arco-íris sutil */}
-          <div
-            className="absolute left-1/2 top-0 h-[60%] w-px -translate-x-1/2 opacity-20"
-            style={{
-              background: "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(245,158,11,0.6) 30%, rgba(139,92,246,0.6) 60%, transparent 100%)",
-              filter: "blur(8px)",
-              width: "3px",
             }}
           />
         </div>
       )}
 
-      <div className="relative z-10 mx-auto flex w-full min-w-0 max-w-6xl flex-1 flex-col px-4 pb-[max(5rem,env(safe-area-inset-bottom,0px))] pt-8 sm:px-6 sm:pb-24 sm:pt-10">
-        <div className="relative z-10 max-w-3xl space-y-8">
-          <motion.p
-            className="prismatic-ring inline-flex max-w-full flex-wrap items-center gap-x-2 gap-y-1 rounded-full bg-amber-950/40 px-4 py-2.5 font-heading text-xs font-semibold uppercase tracking-[0.2em] text-amber-200 backdrop-blur-xl sm:tracking-[0.28em]"
-            style={{ boxShadow: "0 0 40px -6px rgba(245,158,11,0.5), 0 0 80px -20px rgba(139,92,246,0.3)" }}
-            initial={reduce ? false : { opacity: 0, y: 16, scale: 0.96 }}
-            animate={reduce ? {} : { opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.65, ease: easeOut }}
-          >
-            {siteConfig.brandFocusLine}
-          </motion.p>
+      <div className="relative z-10 mx-auto flex w-full min-w-0 max-w-7xl flex-1 flex-col px-5 pb-[max(5rem,env(safe-area-inset-bottom,0px))] pt-10 sm:px-8 sm:pb-28 sm:pt-14 lg:px-10">
+        <div className="relative z-10 flex flex-1 flex-col justify-end max-w-4xl space-y-7 pb-4 sm:pb-8">
 
+          {/* Eyebrow editorial — linha + texto, sem pill/badge */}
+          <motion.div
+            className="flex items-center gap-4"
+            initial={reduce ? false : { opacity: 0, y: 12 }}
+            animate={reduce ? {} : { opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: easeOut }}
+          >
+            <span className="h-px w-12 bg-amber-500/50 shrink-0" aria-hidden />
+            <span className="font-heading text-[0.68rem] font-500 uppercase tracking-[0.26em] text-amber-400/70">
+              {siteConfig.brandFocusLine}
+            </span>
+          </motion.div>
+
+          {/* Heading — editorial, massivo */}
           <motion.h1
             id="hero-heading"
-            className="relative isolate font-heading text-balance font-bold leading-[1.02] tracking-[-0.03em] text-foreground"
-            style={{ fontSize: "clamp(3rem, 9vw + 0.5rem, 7rem)" }}
-            initial={reduce ? false : { opacity: 0, y: 28 }}
+            className="font-heading font-bold leading-[0.97] tracking-[-0.03em] text-balance"
+            style={{ fontSize: "clamp(3.25rem, 10vw + 0.5rem, 8rem)" }}
+            initial={reduce ? false : { opacity: 0, y: 32 }}
             animate={reduce ? {} : { opacity: 1, y: 0 }}
-            transition={{ duration: 0.75, ease: easeOut, delay: 0.12 }}
+            transition={{ duration: 0.8, ease: easeOut, delay: 0.1 }}
           >
-            <span className="bg-gradient-to-br from-stone-50 via-white to-amber-100/90 bg-clip-text text-transparent drop-shadow-sm">
-              Manifeste sua personalidade
+            <span className="bg-gradient-to-br from-white via-white to-white/70 bg-clip-text text-transparent">
+              Manifeste sua
+            </span>
+            <br />
+            <span className="bg-gradient-to-br from-white/90 via-white/75 to-amber-100/60 bg-clip-text text-transparent">
+              personalidade
             </span>
           </motion.h1>
 
+          {/* Descrição — sutil, não compete com o título */}
           <motion.p
-            className="max-w-xl text-pretty text-xl leading-relaxed text-white/70 sm:text-2xl"
-            initial={reduce ? false : { opacity: 0, y: 20 }}
+            className="max-w-lg text-pretty text-base leading-relaxed text-white/45 sm:text-lg lg:text-xl"
+            initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={reduce ? {} : { opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: easeOut, delay: 0.22 }}
           >
-            Cozinha, sala, lavanderia, dormitório, closet, lavabo e home office — projetos
-            planejados sob medida em{" "}
-            <strong className="font-semibold text-foreground/90">Moema</strong> e região, para quem
-            exige execução impecável.
+            Projetos planejados sob medida em Moema — cozinha, dormitório,
+            closet e home office com execução impecável.
           </motion.p>
 
+          {/* CTAs — primário âmbar + secundário editorial */}
           <motion.div
-            className="flex flex-wrap items-center gap-3 pt-2"
-            initial={reduce ? false : { opacity: 0, y: 18 }}
+            className="flex flex-wrap items-center gap-5 pt-1"
+            initial={reduce ? false : { opacity: 0, y: 14 }}
             animate={reduce ? {} : { opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: easeOut, delay: 0.34 }}
+            transition={{ duration: 0.65, ease: easeOut, delay: 0.34 }}
           >
+            {/* CTA primário — refinado, sem cores fortes */}
             <Link
               href={siteConfig.whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               className={cn(
-                "inline-flex h-12 items-center gap-2.5 rounded-xl px-6 text-sm font-semibold sm:h-14 sm:px-8 sm:text-base",
-                "bg-gradient-to-b from-amber-400 to-amber-500 text-stone-950",
-                "shadow-[0_1px_0_rgba(255,255,255,0.25)_inset,0_4px_20px_rgba(245,158,11,0.4)]",
-                "transition-all duration-300",
-                "hover:from-amber-300 hover:to-amber-400 hover:shadow-[0_1px_0_rgba(255,255,255,0.3)_inset,0_8px_28px_rgba(245,158,11,0.55)]",
-                "active:from-amber-500 active:to-amber-600 active:shadow-none",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+                "inline-flex h-11 items-center gap-2.5 rounded-xl px-6 sm:h-12 sm:px-7",
+                "font-heading text-[0.78rem] font-semibold uppercase tracking-[0.06em]",
+                "border border-amber-500/28 bg-amber-500/7 text-amber-400/78",
+                "transition-all duration-400",
+                "hover:border-amber-500/45 hover:bg-amber-500/12 hover:text-amber-400/96",
+                "focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/40 focus-visible:ring-offset-2 focus-visible:ring-offset-black/50",
               )}
               aria-label="Falar com especialista pelo WhatsApp"
             >
-              <WhatsAppOfficialLogo className="size-5 shrink-0" aria-hidden />
+              <WhatsAppOfficialLogo className="size-4 shrink-0" aria-hidden />
               Falar com especialista
             </Link>
 
+            {/* CTA secundário — editorial text-link */}
             <button
               type="button"
               onClick={() => {
                 const html = document.documentElement;
                 const target = document.getElementById("ambientes");
                 if (!target) return;
-                // Desativa snap temporariamente para não bloquear scrollIntoView
                 const prev = html.style.scrollSnapType;
                 html.style.scrollSnapType = "none";
                 target.scrollIntoView({ behavior: "smooth", block: "start" });
-                // Restaura snap após a animação de scroll completar
                 setTimeout(() => {
                   html.style.scrollSnapType = prev;
                 }, 900);
               }}
-              className={cn(
-                "inline-flex h-12 items-center gap-2 rounded-xl border border-white/20 bg-white/8 px-6 text-sm font-semibold text-foreground/90 backdrop-blur-sm sm:h-14 sm:px-8 sm:text-base",
-                "transition-all duration-300",
-                "hover:border-white/30 hover:bg-white/12 hover:text-foreground",
-                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-              )}
+              className="editorial-link group"
             >
               Ver ambientes
-              <ChevronDown className="size-4 shrink-0 opacity-70" aria-hidden />
+              <ArrowRight
+                className="size-3.5 transition-transform duration-300 group-hover:translate-x-1"
+                aria-hidden
+              />
             </button>
           </motion.div>
+
         </div>
       </div>
 

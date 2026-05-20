@@ -4,7 +4,6 @@ import { FooterWrapper } from "@/components/layout/footer-wrapper";
 import { ScrollToTop } from "@/components/layout/scroll-to-top";
 import { SnapManager } from "@/components/layout/snap-manager";
 import { SiteHeader } from "@/components/layout/site-header";
-import { ThemeProvider } from "@/components/layout/theme-provider";
 import { ThemeScript } from "@/components/layout/theme-script";
 import { Analytics } from "@/components/analytics/analytics";
 import { FloatingSocialShare } from "@/components/layout/floating-social-share";
@@ -63,34 +62,26 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <html
+    <html
       lang={siteConfig.language}
-      className={`${syne.variable} ${dmSans.variable} h-full scroll-smooth antialiased`}
+      className={`${syne.variable} ${dmSans.variable} dark h-full scroll-smooth antialiased`}
       suppressHydrationWarning
     >
       <head>
-        {/* Inline antes da hidratação — evita flash de tema errado (FOUC) */}
+        {/* Garante dark class antes da hidratação — sem FOUC */}
         <ThemeScript />
         <Analytics />
       </head>
       <body className="min-h-full bg-background text-foreground">
         <JsonLd data={[organizationJsonLd, websiteJsonLd]} />
-        <ThemeProvider>
         <SnapManager />
         <div className="relative flex min-h-full flex-col">
-          {/*
-           * Ambient mesh background — cinematográfico.
-           * Dark: orbs âmbar + violeta profundo criam profundidade.
-           * Light: orbs quentes suaves, sem escurecer.
-           */}
+          {/* Ambient mesh background — cinematográfico dark */}
           <div
             aria-hidden
-            className="pointer-events-none fixed inset-0 -z-10 transition-opacity duration-700"
+            className="pointer-events-none fixed inset-0 -z-10"
           >
-            {/* Dark mode mesh */}
-            <div className="absolute inset-0 dark:block hidden bg-[radial-gradient(ellipse_90%_65%_at_15%_-10%,rgba(245,158,11,0.22),transparent_55%),radial-gradient(ellipse_70%_55%_at_88%_15%,rgba(139,92,246,0.18),transparent_50%),radial-gradient(ellipse_80%_60%_at_5%_80%,rgba(6,78,59,0.15),transparent_55%),radial-gradient(ellipse_100%_100%_at_50%_50%,rgba(9,9,11,0.98),transparent)]" />
-            {/* Light mode mesh */}
-            <div className="absolute inset-0 dark:hidden block bg-[radial-gradient(ellipse_80%_60%_at_15%_-15%,rgba(245,158,11,0.1),transparent_55%),radial-gradient(ellipse_60%_50%_at_88%_10%,rgba(139,92,246,0.06),transparent_50%),radial-gradient(ellipse_100%_100%_at_50%_50%,rgba(245,240,235,0.98),transparent)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_65%_at_15%_-10%,rgba(245,158,11,0.22),transparent_55%),radial-gradient(ellipse_70%_55%_at_88%_15%,rgba(139,92,246,0.18),transparent_50%),radial-gradient(ellipse_80%_60%_at_5%_80%,rgba(6,78,59,0.15),transparent_55%),radial-gradient(ellipse_100%_100%_at_50%_50%,rgba(9,9,11,0.98),transparent)]" />
           </div>
           <SiteHeader />
           <div className="flex flex-1 flex-col pt-[var(--site-header-height)]">
@@ -104,7 +95,6 @@ export default function RootLayout({
           <FloatingSocialShare />
           <ScrollToTop />
         </div>
-        </ThemeProvider>
       </body>
     </html>
   );
