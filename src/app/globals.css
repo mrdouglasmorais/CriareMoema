@@ -2,6 +2,12 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@property --shimmer-pos {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: -60%;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -48,79 +54,66 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/*
+ * Dark-only design system — rich near-black quente, inspirado em Apple Pro products.
+ * Profundidade e temperatura superiores ao cinza puro genérico.
+ */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  /* Superficie */
+  --background: oklch(0.09 0.010 55);         /* near-black quente profundo */
+  --foreground: oklch(0.97 0.005 80);         /* off-white quente */
+
+  /* Cards */
+  --card: oklch(0.145 0.010 55);
+  --card-foreground: oklch(0.97 0.005 80);
+  --popover: oklch(0.145 0.010 55);
+  --popover-foreground: oklch(0.97 0.005 80);
+
+  /* Primary */
+  --primary: oklch(0.93 0.006 80);
+  --primary-foreground: oklch(0.16 0.008 60);
+
+  /* Secondary / Muted */
+  --secondary: oklch(0.22 0.008 60);
+  --secondary-foreground: oklch(0.97 0.005 80);
+  --muted: oklch(0.22 0.008 60);
+  --muted-foreground: oklch(0.70 0.008 70);
+
+  /* Accent */
+  --accent: oklch(0.22 0.008 60);
+  --accent-foreground: oklch(0.97 0.005 80);
+
+  /* Bordas */
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.55 0.008 60);
+
+  /* Destructive */
+  --destructive: oklch(0.704 0.191 22.216);
+
+  /* Charts */
   --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
-  /** Altura útil do header (logo + nav); safe-area entra no total via --site-header-height */
+  --chart-2: oklch(0.60 0 0);
+  --chart-3: oklch(0.45 0 0);
+  --chart-4: oklch(0.35 0 0);
+  --chart-5: oklch(0.26 0 0);
+
+  /* Sidebar */
+  --radius: 0.75rem;
+  --sidebar: oklch(0.145 0.010 55);
+  --sidebar-foreground: oklch(0.97 0.005 80);
+  --sidebar-primary: oklch(0.93 0.006 80);
+  --sidebar-primary-foreground: oklch(0.16 0.008 60);
+  --sidebar-accent: oklch(0.22 0.008 60);
+  --sidebar-accent-foreground: oklch(0.97 0.005 80);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.55 0.008 60);
+
   --site-header-inner: 5.5rem;
   --site-header-height: calc(env(safe-area-inset-top, 0px) + var(--site-header-inner));
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
-
-/* Hero: zoom + pan suave na foto (mais “vida” que o Ken Burns simples) */
+/* Hero: zoom + pan suave na foto */
 @keyframes hero-ken-burns {
   0% {
     transform: scale(1.1) translate(0%, 0%);
@@ -156,6 +149,7 @@
 }
 
 @layer utilities {
+  /* Hero animations */
   .animate-hero-ken-burns {
     animation: hero-ken-burns 32s cubic-bezier(0.45, 0.05, 0.25, 1) infinite alternate;
   }
@@ -171,17 +165,451 @@
       animation: none;
       transform: scale(1.05);
     }
-
     .hero-film-grain {
       animation: none;
       opacity: 0.035;
     }
   }
+
+  /*
+   * Texto com gradiente amber — reutilizável em headings de seção.
+   */
+  .text-gradient-amber {
+    background: linear-gradient(135deg, #fde68a 0%, #f59e0b 45%, #d97706 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /*
+   * Label eyebrow — linha de contexto acima de headings (estilo editorial).
+   * Uso: <p class="label-eyebrow">Criare Moema · São Paulo</p>
+   */
+  .label-eyebrow {
+    font-family: var(--font-heading);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: oklch(0.68 0.10 55);
+  }
+
+  /*
+   * Divisor âmbar decorativo — linha horizontal com brilho central.
+   */
+  .amber-divider {
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(245, 158, 11, 0.45), transparent);
+  }
+
+  /*
+   * Editorial link — CTA texto puro estilo Bontempo.
+   * Uso: <a class="editorial-link">Ver todos <ArrowRight /></a>
+   */
+  .editorial-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+    transition: color 0.3s ease, gap 0.3s ease;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .editorial-link:hover {
+    color: rgba(255, 255, 255, 0.90);
+    gap: 0.85rem;
+  }
+
+  .editorial-link:focus-visible {
+    outline: 2px solid rgba(245, 158, 11, 0.5);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /*
+   * Section tag — número + label editorial (estilo Bontempo).
+   * Uso: <span class="section-tag">01 — Ambientes</span>
+   */
+  .section-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-heading);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.22);
+  }
+
+  .section-tag::before {
+    content: "";
+    display: block;
+    width: 1.75rem;
+    height: 1px;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+
+  /*
+   * Foto editorial — imagem full-bleed com tratamento sutil de contraste.
+   * Aplique direto na tag <Image> ou no container.
+   */
+  .img-editorial {
+    filter: contrast(1.04) saturate(0.95);
+    transition: filter 0.6s ease;
+  }
+
+  .img-editorial:hover {
+    filter: contrast(1.02) saturate(1.02);
+  }
+
+  /*
+   * Overlay de hover fotográfico — máscara escura que surge no hover.
+   * Uso: <div class="group"> + <div class="photo-overlay" />
+   */
+  .photo-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    transition: background 0.5s ease;
+  }
+
+  .group:hover .photo-overlay {
+    background: rgba(0, 0, 0, 0.18);
+  }
+
+  /*
+   * Card premium: borda sutil + sombra de profundidade.
+   */
+  .card-premium {
+    background: var(--card);
+    border: 1px solid color-mix(in oklch, var(--border) 60%, transparent);
+    border-radius: var(--radius-2xl);
+    box-shadow:
+      0 1px 0 rgba(255,255,255,0.06) inset,
+      0 4px 24px -6px rgba(0,0,0,0.18),
+      0 1px 4px rgba(0,0,0,0.10);
+  }
+
+  /*
+   * Glow amber — aura de brilho para CTAs e elementos de destaque.
+   */
+  .glow-amber {
+    box-shadow: 0 0 32px -4px rgba(245,158,11,0.4);
+  }
+
+  .glow-amber-sm {
+    box-shadow: 0 0 16px -4px rgba(245,158,11,0.3);
+  }
+
+  /* ─────────────────────────────────────────
+   * LIQUID GLASS — sistema de efeito vitral cinematográfico
+   * Fundo escuro sólido + blur + borda âmbar gradiente linear.
+   * ───────────────────────────────────────── */
+
+  /*
+   * Base glassmorphism.
+   */
+  .liquid-glass {
+    background: oklch(1 0 0 / 0.06);
+    backdrop-filter: blur(28px) saturate(200%) brightness(1.01);
+    -webkit-backdrop-filter: blur(28px) saturate(200%) brightness(1.01);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  /*
+   * Vitral card — liquid glass cinematográfico.
+   * Fundo quase-preto quente + blur profundo + borda âmbar gradiente.
+   */
+  .vitral-card {
+    position: relative;
+    background: oklch(0.14 0.008 52);
+    backdrop-filter: blur(32px) saturate(200%) brightness(1.02);
+    -webkit-backdrop-filter: blur(32px) saturate(200%) brightness(1.02);
+    border-radius: var(--radius-2xl);
+    isolation: isolate;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.07) inset,
+      0 -1px 0 rgba(0, 0, 0, 0.3) inset,
+      0 12px 48px -8px rgba(0, 0, 0, 0.65),
+      0 4px 16px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(0, 0, 0, 0.4),
+      0 0 48px -16px rgba(245, 158, 11, 0.10);
+  }
+
+  /* Borda sólida âmbar com gradiente linear — cinematográfica */
+  .vitral-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(245, 158, 11, 0.65) 0%,
+      rgba(245, 158, 11, 0.25) 30%,
+      rgba(255, 255, 255, 0.06) 50%,
+      rgba(245, 158, 11, 0.18) 70%,
+      rgba(245, 158, 11, 0.55) 100%
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .vitral-card:hover::before {
+    background: linear-gradient(
+      135deg,
+      rgba(245, 158, 11, 0.85) 0%,
+      rgba(245, 158, 11, 0.40) 30%,
+      rgba(255, 255, 255, 0.10) 50%,
+      rgba(245, 158, 11, 0.30) 70%,
+      rgba(245, 158, 11, 0.75) 100%
+    );
+  }
+
+  /* Halo de luz interna — reflexo cinematográfico no vidro */
+  .vitral-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background:
+      radial-gradient(ellipse 90% 35% at 50% 0%, rgba(255, 255, 255, 0.06), transparent 55%),
+      radial-gradient(ellipse 50% 20% at 50% 100%, rgba(245, 158, 11, 0.06), transparent 60%);
+    pointer-events: none;
+  }
+
+  /*
+   * Shimmer light sweep — relance de luz passando pela superfície.
+   */
+  .vitral-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .vitral-shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 40%,
+      rgba(255, 255, 255, 0.18) 50%,
+      transparent 60%
+    );
+    background-size: 200% 100%;
+    background-position-x: var(--shimmer-pos);
+    pointer-events: none;
+    transition: none;
+  }
+
+  .vitral-shimmer:hover::after {
+    animation: shimmer-sweep 0.7s ease-out forwards;
+  }
+
+  /*
+   * Card sólido premium — fundo opaco, sem glassmorphism.
+   */
+  .card-solid {
+    background: oklch(0.15 0.009 52);
+    border: 1px solid rgba(245, 158, 11, 0.18);
+    border-radius: var(--radius-2xl);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.06) inset,
+      0 8px 40px -8px rgba(0, 0, 0, 0.60),
+      0 0 0 1px rgba(0, 0, 0, 0.25);
+  }
+
+  /*
+   * Card sólido com acento âmbar no topo.
+   */
+  .card-solid-amber {
+    background: oklch(0.15 0.009 52);
+    border: 1px solid rgba(245, 158, 11, 0.22);
+    border-top: 2px solid rgba(245, 158, 11, 0.7);
+    border-radius: var(--radius-2xl);
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.06) inset,
+      0 8px 40px -8px rgba(0, 0, 0, 0.60),
+      0 0 40px -16px rgba(245, 158, 11, 0.12);
+  }
+
+  /*
+   * Botão âmbar refinado — CTA primário do site, estilo ghost-outline sofisticado.
+   */
+  .btn-amber {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-xl);
+    padding: 0.875rem 1.75rem;
+    font-family: var(--font-heading);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1;
+    background: rgba(245, 158, 11, 0.07);
+    color: rgba(245, 158, 11, 0.80);
+    border: 1px solid rgba(245, 158, 11, 0.28);
+    box-shadow: none;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    cursor: pointer;
+    text-decoration: none;
+    outline: none;
+    white-space: nowrap;
+  }
+
+  .btn-amber:hover {
+    background: rgba(245, 158, 11, 0.12);
+    border-color: rgba(245, 158, 11, 0.45);
+    color: rgba(245, 158, 11, 0.96);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba(245, 158, 11, 0.10);
+  }
+
+  .btn-amber:active {
+    transform: translateY(0);
+    box-shadow: none;
+  }
+
+  .btn-amber:focus-visible {
+    outline: 1px solid rgba(245, 158, 11, 0.45);
+    outline-offset: 3px;
+  }
+
+  .btn-amber:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /*
+   * Botão ghost — CTA secundário com borda translúcida.
+   */
+  .btn-ghost-dark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-xl);
+    padding: 0.875rem 1.75rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    line-height: 1;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .btn-ghost-dark:hover {
+    background: rgba(255, 255, 255, 0.14);
+    border-color: rgba(255, 255, 255, 0.32);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost-dark:focus-visible {
+    outline: 2px solid rgba(255, 255, 255, 0.4);
+    outline-offset: 2px;
+  }
+
+  /*
+   * Mesh ambient background — fundo cinematográfico com orbs de luz.
+   */
+  .mesh-ambient {
+    background:
+      radial-gradient(ellipse 90% 70% at 15% 10%,  rgba(245, 158,  11, 0.18), transparent 55%),
+      radial-gradient(ellipse 70% 60% at 85% 90%,  rgba(139,  92, 246, 0.14), transparent 50%),
+      radial-gradient(ellipse 80% 50% at 50% 50%,  rgba(16,  185, 129, 0.07), transparent 60%),
+      radial-gradient(ellipse 100% 80% at 50% 100%, rgba(17,  24,  39, 0.95),  transparent 70%);
+  }
+
+  /*
+   * Prismatic ring — anel âmbar sólido para badges e pills.
+   */
+  .prismatic-ring {
+    position: relative;
+  }
+
+  .prismatic-ring::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(245, 158, 11, 0.9) 0%,
+      rgba(245, 158, 11, 0.45) 40%,
+      rgba(255, 255, 255, 0.15) 60%,
+      rgba(245, 158, 11, 0.7) 100%
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+}
+
+/* ─── Keyframes ──────────────────────────────── */
+
+@keyframes shimmer-sweep {
+  from { --shimmer-pos: -60%; }
+  to   { --shimmer-pos: 160%; }
+}
+
+@keyframes vitral-pulse {
+  0%, 100% { opacity: 0.7; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.02); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vitral-card::before,
+  .prismatic-ring::before {
+    animation: none;
+  }
+  .vitral-shimmer::after {
+    display: none;
+  }
+}
+
+/* ─── Media queries ──────────────────────────── */
+
+/* Hide site header when lightbox is open */
+html[data-lightbox="open"] header {
+  visibility: hidden;
+  pointer-events: none;
 }
 
 @media (min-width: 1024px) {
   :root {
-    --site-header-inner: 7rem;
+    --site-header-inner: 6rem;
   }
 
   html[data-landing-snap] {
@@ -195,10 +623,10 @@
   }
 }
 
-/* Mobile: corpo secundário um pouco mais claro — melhor leitura sobre fundos muted/baixo contraste */
+/* Mobile: muted-foreground ligeiramente mais claro para leitura */
 @media (max-width: 1023px) {
-  .dark {
-    --muted-foreground: oklch(0.78 0 0);
+  :root {
+    --muted-foreground: oklch(0.76 0.007 70);
   }
 }
 
@@ -206,8 +634,8 @@
 @media (min-width: 1024px) {
   #conteudo-principal > section:not(:first-of-type) {
     box-shadow:
-      inset 0 88px 64px -72px rgba(245, 158, 11, 0.1),
-      inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
+      inset 0 88px 64px -72px rgba(245, 158, 11, 0.09),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.055);
   }
 }
 
@@ -215,24 +643,54 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   html {
     @apply font-sans;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
-    /**
-     * Header fixo + `href="#..."`: o ponto de ancoragem respeita a altura da navbar
-     * (mobile e desktop). `--site-header-height` já inclui safe-area superior.
-     */
     scroll-padding-top: var(--site-header-height);
     scroll-padding-bottom: env(safe-area-inset-bottom, 0px);
   }
+
   body {
     @apply min-w-0 overflow-x-hidden bg-background text-foreground antialiased;
   }
-  h1,
-  h2,
-  h3,
+
+  /*
+   * Escala tipográfica editorial:
+   * Headlines grandes, tracking negativo, leitura forte.
+   */
+  h1 {
+    @apply font-heading font-bold tracking-tight;
+    font-size: clamp(2.75rem, 7vw + 0.5rem, 6rem);
+    line-height: 1.04;
+    letter-spacing: -0.028em;
+  }
+
+  h2 {
+    @apply font-heading font-bold;
+    font-size: clamp(2rem, 4vw + 0.5rem, 3.75rem);
+    line-height: 1.08;
+    letter-spacing: -0.022em;
+  }
+
+  h3 {
+    @apply font-heading font-semibold;
+    font-size: clamp(1.35rem, 2.5vw + 0.25rem, 2rem);
+    line-height: 1.2;
+    letter-spacing: -0.016em;
+  }
+
   h4 {
-    @apply font-heading;
+    @apply font-heading font-semibold;
+    font-size: clamp(1.1rem, 1.5vw + 0.25rem, 1.5rem);
+    line-height: 1.3;
+    letter-spacing: -0.012em;
+  }
+
+  /* Corpo de texto: 17px base, leitura confortável */
+  p, li {
+    font-size: clamp(1rem, 1.2vw + 0.1rem, 1.125rem);
+    line-height: 1.65;
   }
 }

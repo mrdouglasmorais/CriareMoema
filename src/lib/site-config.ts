@@ -1,7 +1,19 @@
 /**
- * URL canônica e identidade da marca para metadata, Open Graph e JSON-LD.
- * Defina NEXT_PUBLIC_SITE_URL em produção para canonical, sitemap e og:url corretos.
+ * Resolve a URL canônica em ordem de prioridade:
+ * 1. NEXT_PUBLIC_SITE_URL   — domínio de produção (configure no painel Vercel)
+ * 2. VERCEL_URL             — URL automática de cada deploy Vercel (preview/prod)
+ * 3. localhost              — fallback local durante desenvolvimento
  */
+function resolveBaseUrl(): string {
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  return "http://localhost:3000";
+}
+
 export const siteConfig = {
   name: "Criare Moema",
   titleSuffix: "Móveis Planejados Criare",
@@ -15,16 +27,19 @@ export const siteConfig = {
    * mas ajuda outras ferramentas e reforça o tema da página).
    */
   seoKeywords: [
-    "móveis planejados",
     "móveis planejados Moema",
+    "móveis planejados de alto padrão",
     "móveis sob medida São Paulo",
-    "cozinha planejada",
-    "closet planejado",
+    "cozinha planejada Moema",
+    "cozinha sob medida alto padrão",
+    "closet planejado de luxo",
     "dormitório planejado",
+    "home office planejado",
     "Criare Moema",
     "loja de móveis planejados Moema",
-    "marcenaria planejada",
-    "projeto de móveis",
+    "marcenaria alto padrão",
+    "projeto de móveis sob medida",
+    "móveis planejados para arquitetos",
   ] as const,
   /** Texto descritivo para `og:image:alt` / acessibilidade em previews. */
   ogImageAlt:
@@ -32,7 +47,7 @@ export const siteConfig = {
   referenceLandingUrl: "https://ads.criaremoema.com.br/",
   whatsappUrl:
     "https://wa.me/5511942703131?text=Ol%C3%A1%21%20Vim%20pelo%20site%20da%20Criare%20Moema.",
-  url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  url: resolveBaseUrl(),
   locale: "pt_BR",
   language: "pt-BR",
   twitterHandle: "@criaremoema",
@@ -71,12 +86,13 @@ export const siteConfig = {
   countdownTarget: process.env.NEXT_PUBLIC_NOVIDADES_AT ?? "",
   /** Dias do contador quando não há `countdownTarget` definido. */
   countdownDurationDays: 7,
-  /** Links da landing no rodapé (descoberta além do menu principal). */
+  /** Links do rodapé — inclui páginas internas e âncoras da landing. */
   footerQuickLinks: [
-    { href: "/#novidades", label: "Novidades" },
-    { href: "/#ambientes", label: "Ambientes" },
-    { href: "/#beneficios", label: "Benefícios" },
-    { href: "/#quem-somos", label: "Quem somos" },
+    { href: "/ambientes", label: "Ambientes" },
+    { href: "/catalogo", label: "Catálogo" },
+    { href: "/para-profissionais", label: "Para Profissionais" },
+    { href: "/blog", label: "Blog / Tendências" },
+    { href: "/#quem-somos", label: "Quem Somos" },
     { href: "/#faq", label: "FAQ" },
     { href: "/#localizacao", label: "Localização" },
   ] as const,

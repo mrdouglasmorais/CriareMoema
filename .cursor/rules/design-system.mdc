@@ -1,0 +1,54 @@
+---
+description: Design system, padrões visuais premium, TailwindCSS, responsividade mobile-first e acessibilidade
+globs: **/*.tsx,**/*.css
+alwaysApply: false
+---
+
+# Design System — Padrão Visual Premium
+
+## Filosofia
+Inspirado em produtos Apple: clareza, elegância, espaçamento generoso, hierarquia forte, zero poluição visual.
+
+## Tokens de design
+| Token | Uso |
+|-------|-----|
+| `amber-400/500` | Acento principal, CTAs, destaques |
+| `font-heading` | Syne — títulos e labels uppercase |
+| `font-sans` | DM Sans — corpo de texto |
+| `--site-header-height` | Offset de scroll e padding-top de páginas |
+
+## Padrão de seção landing
+```tsx
+// Sempre use landingSection() ou landingHeroSection() de section-styles.ts
+<section className={cn(landingSection(), "bg-muted/15")} aria-labelledby="id-heading">
+  <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+    ...
+  </div>
+</section>
+```
+
+## CTAs — Regras obrigatórias
+- CTA primário: variante `amber` do `Button` ou classe manual com `from-amber-400 to-amber-500 text-stone-950`.
+- CTA WhatsApp: sempre `href={siteConfig.whatsappUrl}` com `target="_blank" rel="noopener noreferrer"`.
+- Todo CTA precisa de `focus-visible:ring-2` para acessibilidade.
+- CTA principal deve aparecer no Hero. Repita em momentos estratégicos.
+
+## Mobile-first obrigatório
+- Todas as seções desenhadas para mobile primeiro.
+- Grids: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`.
+- Textos longos com `text-pretty` ou `text-balance`.
+- Evitar elementos que quebrem em < 375px.
+- Formulários otimizados para toque (inputs com `py-3`, botões com `h-12` mínimo).
+
+## Acessibilidade
+- HTML semântico: `<section aria-labelledby>`, `<nav aria-label>`, `<figure>/<figcaption>`.
+- Somente um `<h1>` por página.
+- `alt` descritivo em todas as imagens de conteúdo; `alt=""` + `aria-hidden` em decorativas.
+- Botões com `aria-label` quando o label visual não for suficiente.
+- Contraste mínimo: texto sobre fundos escuros deve usar `text-foreground` ou `text-muted-foreground`.
+
+## Evite
+- Excesso de cores além da paleta amber/stone/neutral.
+- Animações antes de verificar `prefers-reduced-motion`.
+- Layout shift (use dimensões explícitas em imagens Next.js).
+- Componentes com mais de 200 linhas — quebre em sub-componentes.

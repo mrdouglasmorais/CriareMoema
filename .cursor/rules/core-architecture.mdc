@@ -1,0 +1,46 @@
+---
+description: Arquitetura central do projeto — estrutura de pastas, Server vs Client Components, TypeScript, qualidade de código
+alwaysApply: true
+---
+
+# Arquitetura do Projeto — Criare Moema
+
+## Stack
+Next.js 16 (App Router) · React 19 · TypeScript · TailwindCSS v4 · Framer Motion v12
+
+## Regra #1 — Leia o Next.js antes de escrever
+Consulte `node_modules/next/dist/docs/` antes de usar qualquer API do Next.js. Esta versão tem breaking changes.
+
+## Estrutura de pastas obrigatória
+```
+src/
+  app/          # Rotas, layouts, sitemap, robots
+  components/
+    ui/         # Primitivos reutilizáveis (botões, cards, inputs)
+    layout/     # Header, Footer, FABs
+    landing/    # Seções específicas da landing
+    sections/   # Seções reutilizáveis de página
+    forms/      # Formulários de captura
+    seo/        # JSON-LD, metadata helpers
+  data/         # Conteúdo desacoplado (faq.ts, home.ts, etc.)
+  lib/
+    actions/    # Server Actions ("use server" isolado)
+    utils.ts
+  types/        # Tipos e interfaces globais
+```
+
+## Server vs Client Components
+- **Padrão**: Server Component. Não adicione `"use client"` sem necessidade.
+- **Require `"use client"`**: hooks React, eventos de browser, Framer Motion, estado local.
+- **Server Actions**: sempre em arquivo separado com `"use server"` no topo — nunca misturar com `"use client"`.
+
+## TypeScript
+- Sem `any`. Use `unknown` + type guard quando necessário.
+- Interfaces para props de componentes, `type` para unions e aliases.
+- Exporte tipos de `src/types/index.ts` quando globais.
+
+## Qualidade de código
+- Componentes pequenos e com única responsabilidade.
+- Conteúdo (textos, listas) sempre em `src/data/` — não hardcode em componentes.
+- `cn()` para composição de classes Tailwind.
+- Nomes descritivos em português ou inglês — sem abreviações opacas.

@@ -43,14 +43,14 @@ export function ScrollToTop({ className }: ScrollToTopProps) {
           exit={{ opacity: 0, x: -12, scale: 0.92 }}
           transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           className={cn(
-            "fixed z-[85] flex h-12 w-12 items-center justify-center rounded-full border border-white/15 bg-background/75 text-foreground shadow-lg shadow-black/30 backdrop-blur-xl transition-[border-color,box-shadow] duration-500 hover:border-amber-500/40 hover:shadow-xl hover:shadow-amber-950/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+            "group fixed z-[85] flex h-10 w-10 items-center justify-center rounded-full border border-white/12 bg-background/75 text-foreground shadow-lg shadow-black/30 backdrop-blur-xl transition-all duration-500 hover:border-white/22 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
             "bottom-[max(2rem,env(safe-area-inset-bottom,0px))] left-[max(1.25rem,env(safe-area-inset-left,0px))] sm:bottom-8 sm:left-5 lg:bottom-12 lg:left-8 lg:h-14 lg:w-14",
             className,
           )}
           onClick={goTop}
           aria-label="Voltar ao topo da página"
         >
-          <ChevronUp className="size-5 text-amber-400/95 lg:size-6" strokeWidth={2} aria-hidden />
+          <ChevronUp className="size-5 text-white/38 transition-colors duration-400 group-hover:text-white/70 lg:size-5" strokeWidth={1.5} aria-hidden />
         </motion.button>
       ) : null}
     </AnimatePresence>

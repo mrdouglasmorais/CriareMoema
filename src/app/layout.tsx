@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import { DM_Sans, Syne } from "next/font/google";
+import { FooterWrapper } from "@/components/layout/footer-wrapper";
 import { ScrollToTop } from "@/components/layout/scroll-to-top";
-import { SiteFooter } from "@/components/layout/site-footer";
+import { SnapManager } from "@/components/layout/snap-manager";
 import { SiteHeader } from "@/components/layout/site-header";
+import { ThemeScript } from "@/components/layout/theme-script";
+import { Analytics } from "@/components/analytics/analytics";
+import { FloatingSocialShare } from "@/components/layout/floating-social-share";
 import { WhatsAppFab } from "@/components/layout/whatsapp-fab";
 import { JsonLd } from "@/components/seo/json-ld";
 import { rootMetadata, rootViewport } from "@/lib/metadata";
@@ -60,25 +64,35 @@ export default function RootLayout({
   return (
     <html
       lang={siteConfig.language}
-      data-landing-snap
-      className={`dark ${syne.variable} ${dmSans.variable} h-full scroll-smooth antialiased`}
+      className={`${syne.variable} ${dmSans.variable} dark h-full scroll-smooth antialiased`}
+      suppressHydrationWarning
     >
+      <head>
+        {/* Garante dark class antes da hidratação — sem FOUC */}
+        <ThemeScript />
+        <Analytics />
+      </head>
       <body className="min-h-full bg-background text-foreground">
         <JsonLd data={[organizationJsonLd, websiteJsonLd]} />
+        <SnapManager />
         <div className="relative flex min-h-full flex-col">
+          {/* Ambient mesh background — cinematográfico dark */}
           <div
-            className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(ellipse_120%_80%_at_50%_-25%,rgba(217,119,6,0.12),transparent_50%),radial-gradient(ellipse_90%_60%_at_100%_0%,rgba(120,53,15,0.15),transparent_55%),radial-gradient(ellipse_80%_50%_at_0%_100%,rgba(41,37,36,0.9),transparent_45%)]"
             aria-hidden
-          />
+            className="pointer-events-none fixed inset-0 -z-10"
+          >
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_90%_65%_at_15%_-10%,rgba(245,158,11,0.22),transparent_55%),radial-gradient(ellipse_70%_55%_at_88%_15%,rgba(139,92,246,0.18),transparent_50%),radial-gradient(ellipse_80%_60%_at_5%_80%,rgba(6,78,59,0.15),transparent_55%),radial-gradient(ellipse_100%_100%_at_50%_50%,rgba(9,9,11,0.98),transparent)]" />
+          </div>
           <SiteHeader />
           <div className="flex flex-1 flex-col pt-[var(--site-header-height)]">
             <span id="top" className="sr-only" tabIndex={-1}>
               Topo da página
             </span>
             {children}
-            <SiteFooter />
+            <FooterWrapper />
           </div>
           <WhatsAppFab />
+          <FloatingSocialShare />
           <ScrollToTop />
         </div>
       </body>
