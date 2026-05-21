@@ -110,12 +110,12 @@ const lineVariants = {
   visible: {
     y: "0%",
     opacity: 1,
-    transition: { duration: 0.88, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.88, ease: EASE },
   },
   exit: {
     y: "-14%",
     opacity: 0,
-    transition: { duration: 0.48, ease: [0.4, 0, 1, 1] },
+    transition: { duration: 0.48, ease: [0.4, 0, 1, 1] as const },
   },
 };
 
