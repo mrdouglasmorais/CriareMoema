@@ -115,7 +115,8 @@ export default function ParaProfissionaisPage() {
 
         {/* ── Hero cinematográfico ─────────────────────────────────────── */}
         <section
-          className="relative flex min-h-[100dvh] flex-col overflow-hidden border-b border-border/30"
+          className="relative flex flex-col overflow-hidden border-b border-border/30"
+          style={{ minHeight: "calc(100dvh - var(--site-header-height, 4rem))" }}
           aria-labelledby="profissionais-hero-heading"
         >
           <Image
@@ -127,13 +128,13 @@ export default function ParaProfissionaisPage() {
             className="object-cover object-center"
           />
           {/* Layered gradients */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/75 to-black/30" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/60 to-black/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-amber-950/20 to-transparent" />
 
-          <div className="relative z-10 mx-auto flex flex-1 max-w-6xl flex-col justify-end px-4 pb-16 sm:px-6 sm:pb-24">
-            <Reveal className="max-w-2xl space-y-5">
-              <nav aria-label="Navegação estrutural">
+          <div className="relative z-10 mx-auto flex flex-1 max-w-6xl flex-col justify-end px-5 pb-14 pt-8 sm:px-6 sm:pb-24 sm:pt-0">
+            <Reveal className="max-w-2xl space-y-4 sm:space-y-5">
+              <nav aria-label="Navegação estrutural" className="hidden sm:block">
                 <ol className="flex flex-wrap items-center gap-2 font-heading text-[11px] font-semibold uppercase tracking-[0.18em] text-white/50">
                   <li>
                     <Link href="/" className="transition-colors hover:text-amber-400">
@@ -149,21 +150,27 @@ export default function ParaProfissionaisPage() {
 
               <h1
                 id="profissionais-hero-heading"
-                className="font-heading font-bold tracking-tight text-white/85"
-                style={{ fontSize: "clamp(2.6rem, 5.5vw, 4.8rem)", lineHeight: 1.05 }}
+                className="font-heading font-bold tracking-tight text-white/90"
+                style={{ fontSize: "clamp(2.1rem, 5.5vw, 4.8rem)", lineHeight: 1.06 }}
               >
                 Você projeta.{" "}
-                <span className="text-white/50">Nós executamos.</span>
+                <span className="text-white/48">Nós executamos.</span>
               </h1>
-              <p className="text-base leading-relaxed text-white/75 sm:text-lg">
+
+              {/* Descrição — versão curta no mobile, completa no sm+ */}
+              <p className="text-sm leading-relaxed text-white/70 sm:hidden">
+                Parceria completa para arquitetos e designers: catálogos, suporte técnico e precisão na execução.
+              </p>
+              <p className="hidden text-base leading-relaxed text-white/70 sm:block sm:text-lg">
                 A Criare Moema é parceira de arquitetos e designers de interiores que exigem precisão
                 milimétrica na execução. Suporte técnico completo para que seus projetos ganhem vida
                 com o mais alto padrão de acabamento.
               </p>
-              <div className="flex flex-wrap gap-4 pt-2">
+
+              <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:flex-wrap sm:gap-4 sm:pt-2">
                 <a
                   href="#cadastro"
-                  className="inline-flex h-11 items-center gap-2.5 rounded-xl border border-amber-500/28 bg-amber-500/7 px-7 font-heading text-[0.78rem] font-semibold uppercase tracking-[0.06em] text-amber-400/78 transition-all duration-400 hover:border-amber-500/45 hover:bg-amber-500/12 hover:text-amber-400/96 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/40 sm:h-12 sm:px-8"
+                  className="inline-flex h-11 items-center justify-center gap-2.5 rounded-xl border border-amber-500/28 bg-amber-500/7 px-6 font-heading text-[0.78rem] font-semibold uppercase tracking-[0.06em] text-amber-400/78 transition-all duration-400 hover:border-amber-500/45 hover:bg-amber-500/12 hover:text-amber-400/96 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-amber-400/40 sm:h-12 sm:px-8"
                 >
                   Cadastrar-me gratuitamente
                   <ArrowRight className="size-3.5 shrink-0" aria-hidden />
@@ -172,7 +179,7 @@ export default function ParaProfissionaisPage() {
                   href={siteConfig.whatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-11 items-center gap-2 rounded-xl border border-white/15 bg-white/6 px-7 font-heading text-[0.78rem] font-semibold uppercase tracking-[0.06em] text-white/55 backdrop-blur-sm transition-all duration-400 hover:border-white/28 hover:bg-white/10 hover:text-white/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30 sm:h-12 sm:px-8"
+                  className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/6 px-6 font-heading text-[0.78rem] font-semibold uppercase tracking-[0.06em] text-white/55 backdrop-blur-sm transition-all duration-400 hover:border-white/28 hover:bg-white/10 hover:text-white/80 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/30 sm:h-12 sm:px-8"
                 >
                   Falar pelo WhatsApp
                 </a>

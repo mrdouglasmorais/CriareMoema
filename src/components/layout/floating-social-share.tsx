@@ -126,9 +126,9 @@ export function FloatingSocialShare() {
         )}
       </AnimatePresence>
 
-      {/* ── Bottom-right anchor — stacked above WhatsApp FAB ───────── */}
+      {/* ── Bottom-right anchor — visível apenas em sm+, stacked above WhatsApp FAB ── */}
       <div
-        className="fixed z-[105] flex flex-col items-end gap-3"
+        className="fixed z-[105] hidden flex-col items-end gap-3 sm:flex"
         style={{
           bottom: "calc(max(1.25rem, env(safe-area-inset-bottom, 0px)) + 4rem)",
           right: "max(1.25rem, env(safe-area-inset-right, 1.25rem))",

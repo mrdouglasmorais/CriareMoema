@@ -106,20 +106,20 @@ export function AmbientesCarousel() {
       </AnimatePresence>
 
       {/* ── Overlay de contexto — topo esquerdo ─────────────────────── */}
-      <div className="absolute left-8 top-8 z-20 sm:left-12 lg:left-16">
+      <div className="absolute left-6 top-6 z-20 sm:left-12 sm:top-8 lg:left-16">
         <span className="section-tag">01 — Ambientes</span>
       </div>
 
       {/* ── Contador — topo direito ──────────────────────────────────── */}
       <div
-        className="absolute right-8 top-8 z-20 font-heading text-[10px] font-500 tabular-nums tracking-[0.20em] text-white/25 sm:right-12 lg:right-16"
+        className="absolute right-6 top-6 z-20 font-heading text-[10px] font-500 tabular-nums tracking-[0.20em] text-white/25 sm:right-12 sm:top-8 lg:right-16"
         aria-label={`Slide ${current + 1} de ${total}`}
       >
         {String(current + 1).padStart(2, "0")} / {String(total).padStart(2, "0")}
       </div>
 
       {/* ── Conteúdo — overlay bottom-left ──────────────────────────── */}
-      <div className="absolute inset-x-0 bottom-0 z-20 px-8 pb-14 sm:px-12 sm:pb-16 lg:px-16 lg:pb-20">
+      <div className="absolute inset-x-0 bottom-0 z-20 px-6 pb-12 sm:px-12 sm:pb-16 lg:px-16 lg:pb-20">
         <AnimatePresence mode="wait">
           <motion.div
             key={active.slug}
@@ -130,14 +130,14 @@ export function AmbientesCarousel() {
             transition={{ duration: 0.7, ease: EASE, delay: 0.35 }}
           >
             {/* Categoria */}
-            <p className="label-eyebrow mb-4 text-amber-400/55">
+            <p className="label-eyebrow mb-3 text-amber-400/55 sm:mb-4">
               {active.subtitle}
             </p>
 
             {/* Título — massivo, editorial */}
             <h3
               className="font-heading font-bold leading-[0.94] tracking-tight text-white"
-              style={{ fontSize: "clamp(2.25rem, 7vw, 6rem)" }}
+              style={{ fontSize: "clamp(1.9rem, 7vw, 6rem)" }}
             >
               {active.title}
             </h3>
@@ -148,7 +148,7 @@ export function AmbientesCarousel() {
             </p>
 
             {/* CTA editorial */}
-            <div className="mt-6 flex items-center gap-8">
+            <div className="mt-5 flex flex-col items-start gap-3 sm:mt-6 sm:flex-row sm:items-center sm:gap-8">
               <Link
                 href={`/ambientes/${active.slug}`}
                 className="editorial-link group"
@@ -171,9 +171,9 @@ export function AmbientesCarousel() {
         </AnimatePresence>
       </div>
 
-      {/* ── Dots — bottom right ──────────────────────────────────────── */}
+      {/* ── Dots — bottom right (visível apenas sm+, mobile usa swipe) ── */}
       <div
-        className="absolute bottom-14 right-8 z-20 flex items-center gap-2 sm:right-12 lg:right-16"
+        className="absolute bottom-12 right-6 z-20 hidden items-center gap-2 sm:flex sm:bottom-14 sm:right-12 lg:right-16"
         role="tablist"
         aria-label="Slides de ambientes"
       >
@@ -193,6 +193,24 @@ export function AmbientesCarousel() {
             )}
           />
         ))}
+      </div>
+
+      {/* ── Mobile swipe hint — aparece só no início ─────────────────── */}
+      <div
+        className="pointer-events-none absolute bottom-5 left-1/2 z-20 -translate-x-1/2 sm:hidden"
+        aria-hidden
+      >
+        <div className="flex items-center gap-1.5">
+          {ambientes.map((_, i) => (
+            <span
+              key={i}
+              className={cn(
+                "block rounded-full transition-all duration-500",
+                i === current ? "h-[2px] w-5 bg-white/55" : "h-[2px] w-2 bg-white/18",
+              )}
+            />
+          ))}
+        </div>
       </div>
 
       {/* ── Progress line — bottom ───────────────────────────────────── */}

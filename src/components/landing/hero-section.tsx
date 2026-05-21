@@ -60,8 +60,8 @@ export function HeroSection() {
         </div>
       )}
 
-      <div className="relative z-10 mx-auto flex w-full min-w-0 max-w-7xl flex-1 flex-col px-5 pb-[max(5rem,env(safe-area-inset-bottom,0px))] pt-10 sm:px-8 sm:pb-28 sm:pt-14 lg:px-10">
-        <div className="relative z-10 flex flex-1 flex-col justify-end max-w-4xl space-y-7 pb-4 sm:pb-8">
+      <div className="relative z-10 mx-auto flex w-full min-w-0 max-w-7xl flex-1 flex-col px-5 pb-[max(6rem,env(safe-area-inset-bottom,0px))] pt-8 sm:px-8 sm:pb-28 sm:pt-14 lg:px-10">
+        <div className="relative z-10 flex flex-1 flex-col justify-end max-w-4xl space-y-5 pb-4 sm:space-y-7 sm:pb-8">
 
           {/* Eyebrow editorial — linha + texto, sem pill/badge */}
           <motion.div
@@ -96,7 +96,7 @@ export function HeroSection() {
 
           {/* Descrição — sutil, não compete com o título */}
           <motion.p
-            className="max-w-lg text-pretty text-base leading-relaxed text-white/45 sm:text-lg lg:text-xl"
+            className="max-w-lg text-pretty text-sm leading-relaxed text-white/45 sm:text-base lg:text-xl"
             initial={reduce ? false : { opacity: 0, y: 18 }}
             animate={reduce ? {} : { opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: easeOut, delay: 0.22 }}
@@ -158,7 +158,7 @@ export function HeroSection() {
         </div>
       </div>
 
-      <HeroScrollArrow />
+      <HeroScrollArrow className="hidden sm:flex" />
     </section>
   );
 }

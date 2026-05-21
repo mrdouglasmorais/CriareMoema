@@ -21,23 +21,23 @@ export function AmbientesGrid() {
         blur={0}
         className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10"
       >
-        <div className="flex flex-wrap items-center justify-between gap-6 border-t border-white/[0.06] py-10">
-          {/* Stats editoriais */}
-          <div className="flex flex-wrap gap-x-10 gap-y-5">
+        <div className="flex flex-col gap-6 border-t border-white/[0.06] py-8 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:py-10">
+          {/* Stats editoriais — grid 3 colunas no mobile */}
+          <div className="grid grid-cols-3 gap-x-4 gap-y-5 sm:flex sm:flex-wrap sm:gap-x-10">
             {stats.map((stat) => (
               <div key={stat.label} className="flex flex-col gap-0.5">
-                <span className="font-heading text-xl font-bold tracking-tight text-white/85 sm:text-2xl">
+                <span className="font-heading text-lg font-bold tracking-tight text-white/85 sm:text-2xl">
                   {stat.value}
                 </span>
-                <span className="font-heading text-[0.65rem] font-500 uppercase tracking-[0.16em] text-white/28">
+                <span className="font-heading text-[0.6rem] font-500 uppercase tracking-[0.12em] text-white/28 sm:text-[0.65rem] sm:tracking-[0.16em]">
                   {stat.label}
                 </span>
               </div>
             ))}
           </div>
 
-          {/* CTA editorial — alinhado à direita */}
-          <Link href="/ambientes" className="editorial-link group shrink-0">
+          {/* CTA editorial */}
+          <Link href="/ambientes" className="editorial-link group shrink-0 self-start sm:self-auto">
             Ver todos os ambientes
             <ArrowRight
               className="size-3.5 transition-transform duration-300 group-hover:translate-x-1"

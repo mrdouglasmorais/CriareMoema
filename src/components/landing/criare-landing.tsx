@@ -17,7 +17,7 @@ export function CriareLanding() {
   return (
     <main
       id="conteudo-principal"
-      className="min-w-0 overflow-x-clip max-lg:pb-[max(7.5rem,env(safe-area-inset-bottom,0px))]"
+      className="min-w-0 overflow-x-clip max-lg:pb-[max(6rem,env(safe-area-inset-bottom,0px))]"
     >
       {/* ── Hero ────────────────────────────────────────────────────── */}
       <HeroSection />

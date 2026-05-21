@@ -145,7 +145,10 @@ export default async function BlogPostPage({ params }: Props) {
       <main id="conteudo-principal" className="min-w-0 overflow-x-clip">
 
         {/* ── Hero cinematográfico ─────────────────────────────────────── */}
-        <section className="relative min-h-[100dvh] overflow-hidden border-b border-border/30">
+        <section
+          className="relative overflow-hidden border-b border-border/30"
+          style={{ minHeight: "calc(100dvh - var(--site-header-height, 4rem))" }}
+        >
           <Image
             src={post.coverImage}
             alt={post.coverImageAlt}
@@ -158,7 +161,10 @@ export default async function BlogPostPage({ params }: Props) {
           <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-amber-950/15 to-transparent" />
 
-          <div className="relative z-10 mx-auto flex min-h-[100dvh] max-w-3xl flex-col justify-end px-4 pb-14 sm:px-6 sm:pb-20">
+          <div
+            className="relative z-10 mx-auto flex max-w-3xl flex-col justify-end px-4 pb-14 sm:px-6 sm:pb-20"
+            style={{ minHeight: "calc(100dvh - var(--site-header-height, 4rem))" }}
+          >
             <Reveal className="space-y-4">
               <nav aria-label="Navegação estrutural">
                 <ol className="flex flex-wrap items-center gap-2 font-heading text-[11px] font-semibold uppercase tracking-[0.18em] text-white/50">

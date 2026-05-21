@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useInView, useReducedMotion } from "framer-motion";
-import { useRef } from "react";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { WhatsAppOfficialLogo } from "@/components/icons/whatsapp-official-logo";
 import { brandImages } from "@/lib/brand-assets";
 import { siteConfig } from "@/lib/site-config";
@@ -87,18 +87,74 @@ function FooterBackground() {
   );
 }
 
-// ─── Animated tagline ─────────────────────────────────────────────────────────
+// ─── Animated tagline — continuous cycling manifesto ─────────────────────────
 
 const TAGLINE_LINES = [
   { text: "Alto padrão", amber: false },
   { text: "não é adjetivo.", amber: false },
   { text: "É método.", amber: true },
-];
+] as const;
+
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.17, delayChildren: 0 },
+  },
+  exit: {
+    transition: { staggerChildren: 0.09, staggerDirection: -1 as const },
+  },
+};
+
+const lineVariants = {
+  hidden: { y: "110%", opacity: 0 },
+  visible: {
+    y: "0%",
+    opacity: 1,
+    transition: { duration: 0.88, ease: [0.22, 1, 0.36, 1] },
+  },
+  exit: {
+    y: "-14%",
+    opacity: 0,
+    transition: { duration: 0.48, ease: [0.4, 0, 1, 1] },
+  },
+};
 
 function AnimatedTagline() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
   const reduce = useReducedMotion();
+  const [visible, setVisible] = useState(true);
+  const [cycleKey, setCycleKey] = useState(0);
+
+  useEffect(() => {
+    if (!inView || reduce) return;
+
+    const REVEAL_TIME = 1700;   // aguarda o reveal inicial terminar
+    const SHOW_DURATION = 4000; // tempo que as linhas ficam visíveis
+    const PAUSE_DURATION = 850; // pausa entre saída e nova entrada
+
+    let showTimer: ReturnType<typeof setTimeout>;
+    let pauseTimer: ReturnType<typeof setTimeout>;
+
+    function runCycle() {
+      showTimer = setTimeout(() => {
+        setVisible(false);
+        pauseTimer = setTimeout(() => {
+          setCycleKey((k) => k + 1);
+          setVisible(true);
+          runCycle();
+        }, PAUSE_DURATION);
+      }, SHOW_DURATION);
+    }
+
+    const initial = setTimeout(runCycle, REVEAL_TIME);
+
+    return () => {
+      clearTimeout(initial);
+      clearTimeout(showTimer);
+      clearTimeout(pauseTimer);
+    };
+  }, [inView, reduce]);
 
   return (
     <div
@@ -106,7 +162,7 @@ function AnimatedTagline() {
       className="mt-10 sm:mt-12"
       aria-label={TAGLINE_LINES.map((l) => l.text).join(" ")}
     >
-      {/* Label pré-tagline — como nas referências de luxo */}
+      {/* Label pré-tagline */}
       <motion.span
         className="mb-6 block font-heading text-[0.6rem] font-semibold uppercase tracking-[0.32em] text-amber-500/60"
         initial={reduce ? false : { opacity: 0, x: -16 }}
@@ -127,41 +183,47 @@ function AnimatedTagline() {
         aria-hidden
       />
 
-      {/* Linhas do manifesto — clip reveal por linha */}
-      {TAGLINE_LINES.map((line, i) => (
-        <div key={i} className="overflow-hidden leading-none">
-          <motion.p
-            className="font-heading font-bold leading-[1.06] tracking-[-0.01em]"
-            style={{
-              fontSize: "clamp(2.4rem, 6vw, 5.5rem)",
-              color: line.amber
-                ? "transparent"
-                : i === 0
-                  ? "rgba(255,255,255,0.95)"
-                  : "rgba(255,255,255,0.72)",
-              ...(line.amber && {
-                backgroundImage:
-                  "linear-gradient(105deg, #f59e0b 0%, #fbbf24 45%, #f59e0b 100%)",
-                backgroundClip: "text",
-                WebkitBackgroundClip: "text",
-              }),
-            }}
-            initial={reduce ? false : { y: "108%", opacity: 0 }}
-            animate={inView ? { y: "0%", opacity: 1 } : {}}
-            transition={{
-              delay: 0.32 + i * 0.16,
-              duration: 0.88,
-              ease: EASE,
-            }}
+      {/* Linhas do manifesto — ciclo contínuo */}
+      <AnimatePresence mode="wait">
+        {visible && (
+          <motion.div
+            key={cycleKey}
+            variants={containerVariants}
+            initial={reduce ? "visible" : "hidden"}
+            animate="visible"
+            exit={reduce ? {} : "exit"}
           >
-            {line.text}
-          </motion.p>
-        </div>
-      ))}
+            {TAGLINE_LINES.map((line, i) => (
+              <div key={i} className="overflow-hidden leading-none">
+                <motion.p
+                  variants={lineVariants}
+                  className="font-heading font-bold leading-[1.06] tracking-[-0.01em]"
+                  style={{
+                    fontSize: "clamp(2.4rem, 6vw, 5.5rem)",
+                    color: line.amber
+                      ? "transparent"
+                      : i === 0
+                        ? "rgba(255,255,255,0.95)"
+                        : "rgba(255,255,255,0.72)",
+                    ...(line.amber && {
+                      backgroundImage:
+                        "linear-gradient(105deg, #f59e0b 0%, #fbbf24 45%, #f59e0b 100%)",
+                      backgroundClip: "text",
+                      WebkitBackgroundClip: "text",
+                    }),
+                  }}
+                >
+                  {line.text}
+                </motion.p>
+              </div>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Shimmer âmbar que aparece após o reveal — linha final */}
+      {/* Shimmer âmbar — linha final */}
       <motion.span
-        className="mt-8 block h-[1px] w-0 bg-gradient-to-r from-amber-500/40 via-amber-300/20 to-transparent"
+        className="mt-8 block h-[1px] bg-gradient-to-r from-amber-500/40 via-amber-300/20 to-transparent"
         initial={{ width: 0 }}
         animate={inView ? { width: "clamp(120px, 30%, 320px)" } : {}}
         transition={{ delay: 1.1, duration: 1.4, ease: EASE }}
