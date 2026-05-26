@@ -160,6 +160,7 @@ function AnimatedTagline() {
     <div
       ref={ref}
       className="mt-10 sm:mt-12"
+      role="text"
       aria-label={TAGLINE_LINES.map((l) => l.text).join(" ")}
     >
       {/* Label pré-tagline */}
@@ -183,43 +184,52 @@ function AnimatedTagline() {
         aria-hidden
       />
 
-      {/* Linhas do manifesto — ciclo contínuo */}
-      <AnimatePresence mode="wait">
-        {visible && (
-          <motion.div
-            key={cycleKey}
-            variants={containerVariants}
-            initial={reduce ? "visible" : "hidden"}
-            animate="visible"
-            exit={reduce ? {} : "exit"}
-          >
-            {TAGLINE_LINES.map((line, i) => (
-              <div key={i} className="overflow-hidden leading-none">
-                <motion.p
-                  variants={lineVariants}
-                  className="font-heading font-bold leading-[1.06] tracking-[-0.01em]"
-                  style={{
-                    fontSize: "clamp(2.4rem, 6vw, 5.5rem)",
-                    color: line.amber
-                      ? "transparent"
-                      : i === 0
-                        ? "rgba(255,255,255,0.95)"
-                        : "rgba(255,255,255,0.72)",
-                    ...(line.amber && {
-                      backgroundImage:
-                        "linear-gradient(105deg, #f59e0b 0%, #fbbf24 45%, #f59e0b 100%)",
-                      backgroundClip: "text",
-                      WebkitBackgroundClip: "text",
-                    }),
-                  }}
-                >
-                  {line.text}
-                </motion.p>
-              </div>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Linhas do manifesto — ciclo contínuo.
+          O wrapper com minHeight reserva o espaço exato das 3 linhas
+          (fonte × leading × 3) para que a animação nunca cause layout shift. */}
+      <div
+        className="relative"
+        style={{ minHeight: "clamp(7.6rem, 19vw, 17.5rem)" }}
+        aria-hidden="true"
+      >
+        <AnimatePresence mode="wait">
+          {visible && (
+            <motion.div
+              key={cycleKey}
+              className="absolute inset-x-0 top-0"
+              variants={containerVariants}
+              initial={reduce ? "visible" : "hidden"}
+              animate="visible"
+              exit={reduce ? {} : "exit"}
+            >
+              {TAGLINE_LINES.map((line, i) => (
+                <div key={i} className="overflow-hidden leading-none">
+                  <motion.p
+                    variants={lineVariants}
+                    className="font-heading font-bold leading-[1.06] tracking-[-0.01em]"
+                    style={{
+                      fontSize: "clamp(2.4rem, 6vw, 5.5rem)",
+                      color: line.amber
+                        ? "transparent"
+                        : i === 0
+                          ? "rgba(255,255,255,0.95)"
+                          : "rgba(255,255,255,0.72)",
+                      ...(line.amber && {
+                        backgroundImage:
+                          "linear-gradient(105deg, #f59e0b 0%, #fbbf24 45%, #f59e0b 100%)",
+                        backgroundClip: "text",
+                        WebkitBackgroundClip: "text",
+                      }),
+                    }}
+                  >
+                    {line.text}
+                  </motion.p>
+                </div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* Shimmer âmbar — linha final */}
       <motion.span
