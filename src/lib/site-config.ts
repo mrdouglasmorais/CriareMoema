@@ -1,17 +1,18 @@
 /**
  * Resolve a URL canônica em ordem de prioridade:
  * 1. NEXT_PUBLIC_SITE_URL   — domínio de produção (configure no painel Vercel)
- * 2. VERCEL_URL             — URL automática de cada deploy Vercel (preview/prod)
- * 3. localhost              — fallback local durante desenvolvimento
+ * 2. Domínio de produção fixo — garante sitemap e canonicals corretos em qualquer deploy
+ *
+ * VERCEL_URL foi removido do fallback pois retorna a URL do deploy específico
+ * (ex.: criare-moema-abc123-habitvs.vercel.app), corrompendo sitemap e canonicals.
  */
+const PRODUCTION_URL = "https://www.criaremoema.com.br";
+
 function resolveBaseUrl(): string {
   if (process.env.NEXT_PUBLIC_SITE_URL) {
     return process.env.NEXT_PUBLIC_SITE_URL.replace(/\/$/, "");
   }
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-  return "http://localhost:3000";
+  return PRODUCTION_URL;
 }
 
 export const siteConfig = {
