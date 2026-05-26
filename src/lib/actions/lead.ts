@@ -15,6 +15,7 @@ export async function submitLead(
   const email = (formData.get("email") as string | null)?.trim() ?? "";
   const phone = (formData.get("phone") as string | null)?.trim() ?? "";
   const message = (formData.get("message") as string | null)?.trim() ?? "";
+  const page    = (formData.get("page")    as string | null)?.trim() ?? "/";
 
   if (!name || !email || !phone) {
     return { status: "error", message: "Preencha nome, e-mail e WhatsApp." };
@@ -26,7 +27,7 @@ export async function submitLead(
   }
 
   // ── Moskit CRM ────────────────────────────────────────────────────────────
-  await createMoskitDeal({ name, email, phone, message, source: "site" });
+  await createMoskitDeal({ name, email, phone, message, page });
 
   // ── Webhook legado (opcional) ─────────────────────────────────────────────
   const webhookUrl = process.env.LEAD_WEBHOOK_URL;

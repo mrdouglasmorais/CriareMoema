@@ -32,6 +32,8 @@ export interface MoskitLeadInput {
   phone: string;
   message?: string;
   source?: string;
+  /** URL ou pathname da página onde o formulário foi enviado */
+  page?: string;
 }
 
 export interface MoskitDealResult {
@@ -107,7 +109,6 @@ export async function createMoskitDeal(input: MoskitLeadInput): Promise<MoskitDe
     const pipelineId = await resolvePipelineId(apiKey);
     const stageId    = await resolveStageId(apiKey, pipelineId);
     const user       = { id: userId };
-    const source     = input.source ?? "site";
 
     // 1. Cria contato
     const contact = await api<{ id: number }>("POST", "/contacts", apiKey, {
@@ -130,7 +131,8 @@ export async function createMoskitDeal(input: MoskitLeadInput): Promise<MoskitDe
 
     // 3. Adiciona nota com contexto do lead
     const noteLines = [
-      `Origem: ${source}`,
+      `Origem: site`,
+      `Página: ${input.page ?? "/"}`,
       `E-mail: ${input.email}`,
       `Telefone: ${input.phone}`,
       ...(input.message ? [`Mensagem: ${input.message}`] : []),

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useActionState } from "react";
+import { usePathname } from "next/navigation";
 import { WhatsAppOfficialLogo } from "@/components/icons/whatsapp-official-logo";
 import { submitLead, type LeadFormState } from "@/lib/actions/lead";
 import { siteConfig } from "@/lib/site-config";
@@ -26,6 +27,7 @@ const inputBase = cn(
 );
 
 export function LeadForm({ className, showMessage = true }: LeadFormProps) {
+  const pathname = usePathname();
   const [state, formAction, isPending] = useActionState<LeadFormState, FormData>(
     submitLead,
     { status: "idle" },
@@ -70,6 +72,7 @@ export function LeadForm({ className, showMessage = true }: LeadFormProps) {
       noValidate
       aria-label="Formulário de contato"
     >
+      <input type="hidden" name="page" value={pathname} />
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">
           <label
