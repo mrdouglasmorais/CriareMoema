@@ -1,5 +1,7 @@
 "use server";
 
+import { createMoskitDeal } from "@/lib/moskit";
+
 export type LeadFormState =
   | { status: "idle" }
   | { status: "success" }
@@ -23,6 +25,10 @@ export async function submitLead(
     return { status: "error", message: "E-mail inválido." };
   }
 
+  // ── Moskit CRM ────────────────────────────────────────────────────────────
+  await createMoskitDeal({ name, email, phone, message, source: "site" });
+
+  // ── Webhook legado (opcional) ─────────────────────────────────────────────
   const webhookUrl = process.env.LEAD_WEBHOOK_URL;
   if (webhookUrl) {
     try {

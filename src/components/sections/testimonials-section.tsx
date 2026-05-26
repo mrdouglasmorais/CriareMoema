@@ -25,10 +25,7 @@ const testimonials = [
 ] as const;
 
 const badges = [
-  { value: "15+", label: "anos no mercado" },
-  { value: "5.000+", label: "projetos entregues" },
   { value: "5 anos", label: "de garantia" },
-  { value: "36×", label: "sem juros" },
 ] as const;
 
 export interface TestimonialsSectionProps {

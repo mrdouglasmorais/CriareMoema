@@ -63,7 +63,6 @@ export default function AmbientesPage() {
           stats={[
             { value: `${ambientes.length}`, label: "ambientes disponíveis" },
             { value: "5", label: "anos de garantia" },
-            { value: "36×", label: "parcelamento" },
           ]}
           cta={{ label: "Explorar ambientes", targetId: "lista-ambientes" }}
         />

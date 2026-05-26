@@ -7,8 +7,7 @@ import { ParaProfissionaisTeaser } from "@/components/sections/para-profissionai
 import { ProjetosAssinadosSection } from "@/components/sections/projetos-assinados-section";
 import { CtaSection } from "@/components/sections/cta-section";
 import { TestimonialsSection } from "@/components/sections/testimonials-section";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { benefits, diferenciais, paymentCards } from "@/data/home";
+import { benefits, diferenciais } from "@/data/home";
 import { siteConfig } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 import { Check, Clock, MapPin, Navigation } from "lucide-react";
@@ -95,9 +94,10 @@ export function CriareLanding() {
             </p>
             <ul className="mt-10 space-y-5 border-t border-white/[0.07] pt-10">
               {[
-                "Atendimento com arquiteto do início ao fim",
-                "Fidelidade total ao projeto aprovado",
-                "Estacionamento no local para sua comodidade",
+                "Projeto desenvolvido junto ao seu arquiteto — ou ao nosso, se preferir",
+                "Fidelidade total ao projeto aprovado. Sem substituições de material de última hora",
+                "23 anos de fábrica em Bento Gonçalves — polo moveleiro da Serra Gaúcha",
+                "Loja na Alameda dos Nhambiquaras, 1910.",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-4 text-sm leading-relaxed text-white/38">
                   <span className="mt-[0.55em] h-px w-5 shrink-0 bg-amber-500/35" aria-hidden />
@@ -163,7 +163,7 @@ export function CriareLanding() {
             </h2>
             <p className="mt-6 max-w-sm text-base leading-relaxed text-white/40">
               Maior fábrica de móveis planejados da América Latina combinada com
-              atendimento personalizado com arquiteto.
+              atendimento personalizado para arquitetos.
             </p>
             <ul className="mt-10 space-y-5 border-t border-white/[0.07] pt-10">
               {diferenciais.map((item) => (
@@ -182,45 +182,6 @@ export function CriareLanding() {
 
       {/* ── 06 Depoimentos ──────────────────────────────────────────── */}
       <TestimonialsSection />
-
-      {/* ── 07 Pagamento ────────────────────────────────────────────── */}
-      <section
-        id="pagamento"
-        className={cn(landingSection(), "bg-muted/8 max-lg:bg-muted/14")}
-        aria-labelledby="pagamento-heading"
-      >
-        <div className="mx-auto w-full max-w-7xl px-5 sm:px-8 lg:px-10">
-          <Reveal>
-            <span className="section-tag">07 — Condições</span>
-            <h2
-              id="pagamento-heading"
-              className="mt-5 font-heading font-bold"
-            >
-              Condições de{" "}
-              <span className="text-gradient-amber">pagamento</span>
-            </h2>
-            <p className="mt-4 max-w-lg text-sm text-white/28 italic">
-              *Condições sujeitas à análise e às políticas comerciais da Criare Moema.
-            </p>
-          </Reveal>
-          <Stagger className="mt-14 grid gap-6 sm:grid-cols-3">
-            {paymentCards.map((card) => (
-              <StaggerItem key={card.id}>
-                <Card className="vitral-card vitral-shimmer group h-full transition-all duration-500 hover:-translate-y-1">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="font-heading text-xl font-bold leading-snug tracking-tight transition-colors duration-300 group-hover:text-amber-100 sm:text-2xl">
-                      {card.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-sm leading-relaxed text-white/38">{card.description}</p>
-                  </CardContent>
-                </Card>
-              </StaggerItem>
-            ))}
-          </Stagger>
-        </div>
-      </section>
 
       {/* ── 08 Benefícios — strip horizontal ────────────────────────── */}
       <section

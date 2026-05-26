@@ -15,6 +15,7 @@ export interface SiteHeaderProps {
 }
 
 const nav = [
+  { href: "/", label: "Home" },
   { href: "/ambientes", label: "Ambientes" },
   { href: "/catalogo", label: "Catálogo" },
   { href: "/para-profissionais", label: "Para Profissionais" },

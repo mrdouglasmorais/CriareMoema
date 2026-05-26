@@ -70,13 +70,11 @@ export const rootMetadata: Metadata = {
       alt: siteConfig.ogImageAlt,
     },
   },
-  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
-    ? {
-        verification: {
-          google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
-        },
-      }
-    : {}),
+  verification: {
+    google:
+      process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ??
+      "qXkJzBXiRY6wwPH6PO-KqM2ANM75KSZXUVJzx7BOFl8",
+  },
 };
 
 export const rootViewport = {

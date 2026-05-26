@@ -10,11 +10,6 @@ export interface DiferencialItem {
   text: string;
 }
 
-export interface PaymentCard {
-  id: string;
-  title: string;
-  description: string;
-}
 
 export interface TestimonialItem {
   id: string;
@@ -26,45 +21,20 @@ export interface TestimonialItem {
 
 export const benefits: BenefitItem[] = [
   { id: "b1", text: "Processo organizado do briefing à instalação" },
-  { id: "b2", text: "Maior fábrica de móveis da América Latina" },
-  { id: "b3", text: "Flexibilidade financeira, até 36x" },
-  { id: "b4", text: "Personalização de alto padrão com ótimo custo-benefício" },
-  { id: "b5", text: "5 anos de garantia após instalação" },
-  { id: "b6", text: "Projeto personalizado junto ao arquiteto" },
+  { id: "b2", text: "Maior fábrica de móveis planejados da América Latina combinada com atendimento personalizado para arquitetos." },
+  { id: "b4", text: "Design sem concessões — com investimento que cabe no orçamento da reforma." },
+  { id: "b5", text: "5 anos de garantia após a instalação — pós-venda com atenção total ao cliente." },
+  { id: "b6", text: "O que foi aprovado é o que será entregue — sem substituições de material de última hora." },
 ];
 
 export const diferenciais: DiferencialItem[] = [
   { id: "d1", text: "Processo organizado do briefing à instalação." },
-  { id: "d2", text: "Maior fábrica de móveis planejados da América Latina." },
-  {
-    id: "d3",
-    text: "Flexibilidade financeira, com parcelamento em até 36x e possibilidade de 90 dias para o primeiro pagamento.",
-  },
-  { id: "d4", text: "5 anos de garantia após a instalação." },
-  { id: "d5", text: "Projeto personalizado junto ao arquiteto." },
-  { id: "d6", text: "Personalização de alto padrão com ótimo custo-benefício." },
+  { id: "d2", text: "Maior fábrica de móveis planejados da América Latina combinada com atendimento personalizado para arquitetos." },
+  { id: "d4", text: "5 anos de garantia após a instalação — pós-venda com atenção total ao cliente." },
+  { id: "d5", text: "O que foi aprovado é o que será entregue — sem substituições de material de última hora." },
+  { id: "d6", text: "Design sem concessões — com investimento que cabe no orçamento da reforma." },
 ];
 
-export const paymentCards: PaymentCard[] = [
-  {
-    id: "p1",
-    title: "Parcelamento em até 36x",
-    description:
-      "Flexibilidade para adequar o investimento ao seu fluxo e ao projeto.",
-  },
-  {
-    id: "p2",
-    title: "Primeira parcela em até 90 dias",
-    description:
-      "Possibilidade de alongar o início das parcelas, conforme análise.",
-  },
-  {
-    id: "p3",
-    title: "5 anos de garantia",
-    description:
-      "Tranquilidade após a instalação, alinhada às políticas da loja.",
-  },
-];
 
 export const testimonials: TestimonialItem[] = [
   {
@@ -89,10 +59,3 @@ export const testimonials: TestimonialItem[] = [
     text: "Primeira vez que faço um projeto planejado e não me arrependo. A qualidade dos materiais e o acabamento são de altíssimo padrão. Atendimento diferenciado do começo ao fim.",
   },
 ];
-
-export const trustBadges = [
-  { id: "tb1", value: "15+", label: "anos no mercado" },
-  { id: "tb2", value: "5.000+", label: "projetos entregues" },
-  { id: "tb3", value: "5 anos", label: "de garantia" },
-  { id: "tb4", value: "36x", label: "sem juros" },
-] as const;

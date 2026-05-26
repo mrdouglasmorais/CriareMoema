@@ -21,20 +21,12 @@ export interface CtaSectionProps {
 
 const BENEFITS = [
   {
-    text: "Atendimento personalizado com arquiteto",
-    detail: "Do briefing à entrega",
-  },
-  {
     text: "Projeto executivo sem custo adicional",
     detail: "Incluído no orçamento",
   },
   {
-    text: "Parcelamento em até 36×",
-    detail: "Condições facilitadas",
-  },
-  {
-    text: "5 anos de garantia após instalação",
-    detail: "Tranquilidade total",
+    text: "5 anos de garantia após a instalação — pós-venda com atenção total ao cliente",
+    detail: "Pós-venda com atenção total",
   },
 ] as const;
 

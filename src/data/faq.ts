@@ -18,12 +18,6 @@ export const faqItems: FaqItem[] = [
       "Você junta projeto com arquiteto, produção na maior fábrica de móveis planejados da América Latina e 5 anos de garantia no mesmo lugar.",
   },
   {
-    id: "pagamento",
-    question: "Como funcionam as formas de pagamento?",
-    answer:
-      "Parcelamento em até 36x e possibilidade de primeira parcela em até 90 dias, conforme análise do pedido.",
-  },
-  {
     id: "acompanhamento",
     question: "Vou conseguir acompanhar o processo?",
     answer:
