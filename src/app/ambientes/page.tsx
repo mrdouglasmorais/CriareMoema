@@ -11,19 +11,22 @@ import { siteConfig } from "@/lib/site-config";
 import { ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Ambientes Planejados em Moema | Criare Moema",
+  title: "Ambientes Planejados de Alto Padrão em Moema | Criare Moema",
   description:
-    "Cozinhas, closets, dormitórios, home office, lavabos e mais — móveis planejados de alto padrão sob medida em Moema, São Paulo. Conheça nossos projetos.",
+    "Cozinhas, closets, dormitórios, home offices, banheiros, salas e lavanderias planejados sob medida em Moema, São Paulo. Alto padrão de execução do projeto à instalação.",
   path: "/ambientes",
   keywords: [
     "ambientes planejados Moema",
-    "móveis planejados por ambiente",
+    "móveis planejados por ambiente São Paulo",
     "cozinha planejada Moema",
     "closet planejado São Paulo",
-    "dormitório planejado",
-    "home office sob medida",
-    "lavabo planejado",
+    "dormitório planejado alto padrão",
+    "home office sob medida Moema",
+    "lavabo planejado São Paulo",
     "sala planejada",
+    "lavanderia planejada",
+    "banheiro planejado Moema",
+    "ambientes sob medida alto padrão",
   ],
 });
 

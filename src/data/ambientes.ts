@@ -28,7 +28,7 @@ export const ambientes: AmbienteData[] = [
       "A cozinha é o coração da casa. Na Criare Moema, cada projeto de cozinha começa pelo seu modo de viver: rotina, circulação, armazenamento e estética. Trabalhamos com marcenaria de precisão fabril, gaveteiros Blum com fechamento suave, painéis em Laccato ou madeirado e iluminação LED integrada — para uma cozinha que não apenas impressiona, mas funciona com excelência no dia a dia.",
     seoTitle: "Cozinha Planejada de Alto Padrão em Moema | Criare Moema",
     seoDescription:
-      "Cozinhas planejadas sob medida em Moema, São Paulo. Projeto executivo personalizado, acabamento premium e instalação impecável. Solicite um diagnóstico gratuito.",
+      "Cozinha planejada de alto padrão em Moema, São Paulo. Projeto executivo personalizado, acabamentos Laccato e madeirado, gaveteiros Blum e instalação impecável. Conheça nossos projetos.",
     keywords: [
       "cozinha planejada Moema",
       "cozinha sob medida São Paulo",

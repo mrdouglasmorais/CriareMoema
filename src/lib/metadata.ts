@@ -1,15 +1,22 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/lib/site-config";
 
-const ogImage = "/opengraph-image";
+/**
+ * Imagem OG padrão: gerada pelo route handler src/app/opengraph-image.tsx
+ * (gradiente dark com nome + tagline + descrição — 1200×630).
+ * A home page sobrescreve com o screenshot real /og-image.png (2147×1193).
+ */
+const OG_IMAGE_URL = "/opengraph-image";
+const OG_IMAGE_WIDTH = 1200;
+const OG_IMAGE_HEIGHT = 630;
 
-/** Título padrão alinhado entre `<title>`, `og:title` e `twitter:title` (CTR e pré-visualizações). */
-export const defaultSeoTitle = `${siteConfig.name} | ${siteConfig.titleSuffix}`;
+/** Título padrão para home — inclui localização explícita para SEO local. */
+export const defaultSeoTitle =
+  "Criare Moema | Móveis Planejados de Alto Padrão em Moema, São Paulo";
 
 /**
- * Metadados raiz + template de título. Filhas podem sobrescrever via generateMetadata.
- * Por quê: OG/Twitter completos melhoram cliques em compartilhamentos; keywords reforçam tema;
- * robots explícitos evitam ambiguidade; verificação opcional liga Search Console/Bing Webmaster.
+ * Metadados raiz + template de título.
+ * Filhas sobrescrevem via generateMetadata / export const metadata.
  */
 export const rootMetadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -19,18 +26,33 @@ export const rootMetadata: Metadata = {
   },
   description: siteConfig.description,
   keywords: [...siteConfig.seoKeywords],
-  icons: {
-    icon: "/brand/icon.png",
-    apple: "/brand/icon.png",
-  },
+
+  // ── Identidade da aplicação ────────────────────────────────────────────────
   applicationName: siteConfig.name,
   authors: [{ name: siteConfig.name, url: siteConfig.url }],
   creator: siteConfig.name,
   publisher: siteConfig.name,
+  generator: "Next.js",
+  referrer: "origin-when-cross-origin",
   formatDetection: { telephone: false, email: false, address: false },
+
+  /*
+   * Ícones: Next.js resolve automaticamente a partir dos arquivos
+   * src/app/icon.png e src/app/apple-icon.png — não declarar aqui
+   * evita conflito com os links gerados pelo framework.
+   * O favicon.ico em src/app/ cobre browsers legados.
+   */
+
+  // ── Manifest PWA ──────────────────────────────────────────────────────────
+  manifest: "/manifest.webmanifest",
+
+  // ── Robots ────────────────────────────────────────────────────────────────
   robots: {
     index: true,
     follow: true,
+    "max-image-preview": "large",
+    "max-snippet": -1,
+    "max-video-preview": -1,
     googleBot: {
       index: true,
       follow: true,
@@ -39,6 +61,8 @@ export const rootMetadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+
+  // ── Open Graph ────────────────────────────────────────────────────────────
   openGraph: {
     type: "website",
     locale: siteConfig.locale,
@@ -47,29 +71,37 @@ export const rootMetadata: Metadata = {
     title: defaultSeoTitle,
     description: siteConfig.description,
     emails: [siteConfig.email],
+    phoneNumbers: [siteConfig.telephone],
     images: [
       {
-        url: ogImage,
-        width: 1200,
-        height: 630,
+        url: OG_IMAGE_URL,
+        secureUrl: OG_IMAGE_URL,
+        width: OG_IMAGE_WIDTH,
+        height: OG_IMAGE_HEIGHT,
         alt: siteConfig.ogImageAlt,
         type: "image/png",
       },
     ],
   },
+
+  // ── Twitter / X card ──────────────────────────────────────────────────────
   twitter: {
     card: "summary_large_image",
     title: defaultSeoTitle,
     description: siteConfig.description,
     site: siteConfig.twitterHandle,
     creator: siteConfig.twitterHandle,
-    images: {
-      url: ogImage,
-      width: 1200,
-      height: 630,
-      alt: siteConfig.ogImageAlt,
-    },
+    images: [
+      {
+        url: OG_IMAGE_URL,
+        width: OG_IMAGE_WIDTH,
+        height: OG_IMAGE_HEIGHT,
+        alt: siteConfig.ogImageAlt,
+      },
+    ],
   },
+
+  // ── Verificação Search Console ────────────────────────────────────────────
   verification: {
     google:
       process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ??
@@ -78,32 +110,40 @@ export const rootMetadata: Metadata = {
 };
 
 export const rootViewport = {
-  themeColor: "#0c0a09",
+  themeColor: [
+    { media: "(prefers-color-scheme: dark)", color: "#0c0a09" },
+    { media: "(prefers-color-scheme: light)", color: "#0c0a09" },
+  ],
   width: "device-width" as const,
   initialScale: 1,
   viewportFit: "cover" as const,
 };
+
+// ─── createPageMetadata ────────────────────────────────────────────────────────
 
 export interface PageMetadataInput {
   title: string;
   description: string;
   /** Caminho sem domínio, ex: /blog/post */
   path?: string;
-  /** Imagem absoluta ou path — metadataBase resolve paths relativos */
+  /** Override da imagem OG — absolute URL ou path relativo ao metadataBase. */
   ogImage?: string;
-  /** Alt da imagem OG/Twitter (pré-visualização e leitores de tela). */
+  ogImageWidth?: number;
+  ogImageHeight?: number;
+  /** Alt da imagem OG/Twitter. */
   ogImageAlt?: string;
   /** Palavras-chave; padrão: `siteConfig.seoKeywords`. */
   keywords?: readonly string[] | string;
   noIndex?: boolean;
-  /** Quando presente, Open Graph usa type=article (artigos, estudos de caso). */
+  /** Quando presente, og:type vira "article". */
   article?: {
     publishedTime: string;
     modifiedTime?: string;
+    authors?: string[];
+    section?: string;
+    tags?: string[];
   };
 }
-
-const defaultOg = ogImage;
 
 function normalizeKeywords(keywords?: readonly string[] | string): string[] {
   if (keywords === undefined) return [...siteConfig.seoKeywords];
@@ -117,15 +157,16 @@ function normalizeKeywords(keywords?: readonly string[] | string): string[] {
 }
 
 /**
- * Centraliza título (com template), canonical e Open Graph.
- * Por quê: títulos consistentes aumentam CTR; canonical consolida sinais de ranking;
- * og:* e twitter:* melhoram rich results em redes e Discover.
+ * Gera metadados completos para qualquer página:
+ * título canônico, canonical URL, Open Graph, Twitter Card e robots.
  */
 export function createPageMetadata({
   title,
   description,
   path = "",
-  ogImage: ogImagePath = defaultOg,
+  ogImage: ogImagePath = OG_IMAGE_URL,
+  ogImageWidth = OG_IMAGE_WIDTH,
+  ogImageHeight = OG_IMAGE_HEIGHT,
   ogImageAlt = siteConfig.ogImageAlt,
   keywords,
   noIndex = false,
@@ -136,19 +177,26 @@ export function createPageMetadata({
 
   return {
     metadataBase: new URL(siteConfig.url),
-    // `absolute` ignora o template `%s | Criare Moema` do layout raiz,
-    // evitando títulos duplos como "Blog | Criare Moema | Criare Moema".
     title: { absolute: title },
     description,
     keywords: keywordList,
+    authors: [{ name: siteConfig.name, url: siteConfig.url }],
+    creator: siteConfig.name,
+    publisher: siteConfig.name,
+
     alternates: {
       canonical,
+      languages: { "pt-BR": canonical },
     },
+
     robots: noIndex
       ? { index: false, follow: false }
       : {
           index: true,
           follow: true,
+          "max-image-preview": "large",
+          "max-snippet": -1,
+          "max-video-preview": -1,
           googleBot: {
             index: true,
             follow: true,
@@ -157,6 +205,7 @@ export function createPageMetadata({
             "max-video-preview": -1,
           },
         },
+
     openGraph: {
       type: article ? "article" : "website",
       locale: siteConfig.locale,
@@ -164,32 +213,40 @@ export function createPageMetadata({
       siteName: siteConfig.name,
       title,
       description,
+      emails: [siteConfig.email],
       ...(article && {
         publishedTime: article.publishedTime,
         modifiedTime: article.modifiedTime,
+        authors: article.authors ?? [siteConfig.name],
+        section: article.section,
+        tags: article.tags,
       }),
       images: [
         {
           url: ogImagePath,
-          width: 1200,
-          height: 630,
+          secureUrl: ogImagePath,
+          width: ogImageWidth,
+          height: ogImageHeight,
           alt: ogImageAlt,
           type: "image/png",
         },
       ],
     },
+
     twitter: {
       card: "summary_large_image",
       title,
       description,
       site: siteConfig.twitterHandle,
       creator: siteConfig.twitterHandle,
-      images: {
-        url: ogImagePath,
-        width: 1200,
-        height: 630,
-        alt: ogImageAlt,
-      },
+      images: [
+        {
+          url: ogImagePath,
+          width: ogImageWidth,
+          height: ogImageHeight,
+          alt: ogImageAlt,
+        },
+      ],
     },
   };
 }

@@ -178,7 +178,7 @@ export function LeadForm({ className, showMessage = true }: LeadFormProps) {
         ) : (
           <>
             <Send className="size-4 shrink-0" aria-hidden />
-            Solicitar diagnóstico gratuito
+            Falar com especialista
           </>
         )}
       </button>

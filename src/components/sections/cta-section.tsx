@@ -106,9 +106,7 @@ export function CtaSection({ className, compact = false }: CtaSectionProps) {
                 <span className="text-white/45">seus ambientes?</span>
               </h2>
               <p className="text-base leading-relaxed text-white/55 sm:text-lg">
-                Solicite um diagnóstico gratuito com um dos nossos especialistas. Em minutos,
-                entendemos seu espaço, suas necessidades e apresentamos as melhores soluções
-                em móveis planejados sob medida.
+                Fale com um dos nossos especialistas e receba um estudo personalizado para o seu espaço — entendemos suas necessidades e apresentamos as melhores soluções em móveis planejados sob medida.
               </p>
             </div>
 
@@ -138,7 +136,6 @@ export function CtaSection({ className, compact = false }: CtaSectionProps) {
           <Reveal delay={0.1}>
             <div className="vitral-card vitral-shimmer overflow-hidden">
               <div className="p-6 sm:p-8">
-                <p className="mb-1 label-eyebrow">diagnóstico gratuito</p>
                 <p className="mb-6 font-heading text-xl font-bold text-white sm:text-2xl">
                   Converse com um especialista
                 </p>

@@ -308,7 +308,7 @@ export function SiteFooter({ className, compact = false }: SiteFooterProps) {
               className="editorial-link group"
             >
               <WhatsAppOfficialLogo className="size-3.5 shrink-0" aria-hidden />
-              Solicitar diagnóstico gratuito
+              Falar com especialista
               <ArrowRight
                 className="size-3.5 transition-transform duration-300 group-hover:translate-x-1"
                 aria-hidden

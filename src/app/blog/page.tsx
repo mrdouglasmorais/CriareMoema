@@ -11,17 +11,19 @@ import { siteConfig } from "@/lib/site-config";
 import { ArrowRight, Clock } from "lucide-react";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Blog & Tendências | Criare Moema",
+  title: "Blog & Tendências em Móveis Planejados | Criare Moema",
   description:
-    "Trend Reports, guias técnicos e tendências em móveis planejados, design de interiores e marcenaria de alto padrão. Conteúdo para quem exige o melhor.",
+    "Trend Reports, guias técnicos e tendências em móveis planejados, design de interiores e marcenaria de alto padrão em São Paulo. Conteúdo especializado para quem exige o melhor.",
   path: "/blog",
   keywords: [
-    "tendências móveis planejados",
-    "blog marcenaria alto padrão",
+    "tendências móveis planejados 2025",
+    "blog marcenaria alto padrão São Paulo",
     "design de interiores Moema",
-    "cozinha planejada tendências",
+    "cozinha planejada tendências 2025",
     "closet planejado guia",
-    "trend report móveis",
+    "trend report móveis planejados",
+    "decoração alto padrão São Paulo",
+    "guia móveis sob medida",
   ],
 });
 

@@ -6,30 +6,82 @@ import { faqItems } from "@/data/faq";
 import { createPageMetadata, defaultSeoTitle } from "@/lib/metadata";
 import { siteConfig } from "@/lib/site-config";
 
-const ogImagePath = "/opengraph-image";
-
 /**
  * Metadados da home com canonical explícito.
- * Por quê: `alternates.canonical` concentra autoridade na URL oficial; útil se no futuro
- * existirem campanhas com query strings ou espelhos de conteúdo.
+ * OG image aponta para o arquivo estático /og-image.png (public/).
+ * As dimensões reais 2147×1193 são propagadas via createPageMetadata.
  */
 export async function generateMetadata(): Promise<Metadata> {
   return createPageMetadata({
     title: defaultSeoTitle,
     description: siteConfig.description,
     path: "/",
-    ogImage: ogImagePath,
+    ogImage: "/og-image.png",
+    ogImageWidth: 2147,
+    ogImageHeight: 1193,
     ogImageAlt: siteConfig.ogImageAlt,
     keywords: siteConfig.seoKeywords,
   });
 }
 
 export default function HomePage() {
-  const storeId = `${siteConfig.url}#furniturestore`;
-  const websiteId = `${siteConfig.url}#website`;
-  const webPageId = `${siteConfig.url}#webpage`;
-  const ogImageUrl = new URL(ogImagePath, siteConfig.url).toString();
+  const orgId      = `${siteConfig.url}#organization`;
+  const storeId    = `${siteConfig.url}#furniturestore`;
+  const websiteId  = `${siteConfig.url}#website`;
+  const webPageId  = `${siteConfig.url}#webpage`;
+  const ogImageUrl = new URL("/og-image.png", siteConfig.url).toString();
+  const logoUrl    = new URL(siteConfig.organization.logoPath, siteConfig.url).toString();
 
+  /** Organization — entidade reutilizada por outros schemas via @id */
+  const organizationLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": orgId,
+    name: siteConfig.name,
+    legalName: siteConfig.organization.legalName,
+    url: siteConfig.url,
+    telephone: siteConfig.telephone,
+    email: siteConfig.email,
+    logo: {
+      "@type": "ImageObject",
+      url: logoUrl,
+      width: 200,
+      height: 200,
+    },
+    image: ogImageUrl,
+    sameAs: [...siteConfig.sameAs],
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: siteConfig.address.streetAddress,
+      addressLocality: siteConfig.address.addressLocality,
+      addressRegion: siteConfig.address.addressRegion,
+      postalCode: siteConfig.address.postalCode,
+      addressCountry: siteConfig.address.addressCountry,
+    },
+  };
+
+  /** WebSite — habilita Sitelinks Searchbox no Google */
+  const websiteLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": websiteId,
+    name: siteConfig.name,
+    alternateName: "Criare Moema Móveis Planejados",
+    url: siteConfig.url,
+    description: siteConfig.description,
+    inLanguage: siteConfig.language,
+    publisher: { "@id": orgId },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${siteConfig.url}/catalogo?q={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+
+  /** WebPage — metadata da página principal */
   const webPageLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -39,25 +91,43 @@ export default function HomePage() {
     url: siteConfig.url,
     inLanguage: siteConfig.language,
     isPartOf: { "@id": websiteId },
+    about: { "@id": storeId },
     primaryImageOfPage: {
       "@type": "ImageObject",
       url: ogImageUrl,
-      width: 1200,
-      height: 630,
+      width: 2147,
+      height: 1193,
       caption: siteConfig.ogImageAlt,
+    },
+    breadcrumb: {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Início", item: siteConfig.url },
+      ],
     },
   };
 
+  /** FurnitureStore + LocalBusiness — dados da loja física */
   const furnitureStoreLd = {
     "@context": "https://schema.org",
-    "@type": "FurnitureStore",
+    "@type": ["FurnitureStore", "LocalBusiness"],
     "@id": storeId,
     name: siteConfig.name,
     description: siteConfig.description,
     url: siteConfig.url,
-    image: new URL(brandImages.hero.src, siteConfig.url).toString(),
+    telephone: siteConfig.telephone,
     email: siteConfig.email,
-    sameAs: siteConfig.sameAs,
+    image: [
+      ogImageUrl,
+      new URL(brandImages.hero.src, siteConfig.url).toString(),
+    ],
+    logo: logoUrl,
+    founder: { "@id": orgId },
+    sameAs: [...siteConfig.sameAs],
+    currenciesAccepted: "BRL",
+    paymentAccepted: "Cartão de crédito, PIX, Boleto bancário, Financiamento",
+    priceRange: "$$$",
+    servesCuisine: null,
     address: {
       "@type": "PostalAddress",
       streetAddress: siteConfig.address.streetAddress,
@@ -86,7 +156,28 @@ export default function HomePage() {
         closes: "16:00",
       },
     ],
-    priceRange: "$$",
+    areaServed: [
+      { "@type": "City", name: "São Paulo", containedInPlace: { "@type": "State", name: "SP" } },
+      { "@type": "Neighborhood", name: "Moema" },
+      { "@type": "Neighborhood", name: "Ibirapuera" },
+      { "@type": "Neighborhood", name: "Vila Clementino" },
+      { "@type": "Neighborhood", name: "Brooklin" },
+      { "@type": "Neighborhood", name: "Vila Mariana" },
+    ],
+    knowsAbout: [
+      "Móveis Planejados",
+      "Cozinha Planejada",
+      "Closet Sob Medida",
+      "Dormitório Planejado",
+      "Home Office Planejado",
+      "Lavanderia Planejada",
+      "Marcenaria de Alto Padrão",
+    ],
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Catálogo de Ambientes Planejados",
+      url: `${siteConfig.url}/catalogo`,
+    },
   };
 
   const faqPageLd = {
@@ -104,7 +195,7 @@ export default function HomePage() {
 
   return (
     <>
-      <JsonLd data={[webPageLd, furnitureStoreLd, faqPageLd]} />
+      <JsonLd data={[organizationLd, websiteLd, webPageLd, furnitureStoreLd, faqPageLd]} />
       <CriareLanding />
     </>
   );

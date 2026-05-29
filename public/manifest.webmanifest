@@ -1,0 +1,36 @@
+{
+  "name": "Criare Moema — Móveis Planejados de Alto Padrão",
+  "short_name": "Criare Moema",
+  "description": "Móveis planejados de alto padrão em Moema, São Paulo. Cozinhas, dormitórios, closets e home offices sob medida.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0c0a09",
+  "theme_color": "#0c0a09",
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "orientation": "portrait-primary",
+  "categories": ["shopping", "lifestyle", "business"],
+  "icons": [
+    {
+      "src": "/brand/icon.png",
+      "sizes": "200x200",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "apple touch icon"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/og-image.png",
+      "sizes": "2147x1193",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Criare Moema — Homepage"
+    }
+  ]
+}

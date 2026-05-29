@@ -119,24 +119,52 @@ export default async function BlogPostPage({ params }: Props) {
     ],
   };
 
+  const postUrl = `${siteConfig.url}/blog/${slug}`;
   const articleLd = {
     "@context": "https://schema.org",
     "@type": "Article",
+    "@id": `${postUrl}#article`,
     headline: post.title,
+    name: post.title,
     description: post.seoDescription,
-    image: new URL(post.coverImage, siteConfig.url).toString(),
+    url: postUrl,
+    inLanguage: siteConfig.language,
+    image: {
+      "@type": "ImageObject",
+      url: new URL(post.coverImage, siteConfig.url).toString(),
+      caption: post.coverImageAlt,
+    },
     datePublished: post.publishedAt,
     dateModified: post.updatedAt ?? post.publishedAt,
     author: {
       "@type": "Organization",
+      "@id": `${siteConfig.url}#organization`,
       name: siteConfig.name,
       url: siteConfig.url,
     },
     publisher: {
       "@type": "Organization",
+      "@id": `${siteConfig.url}#organization`,
       name: siteConfig.name,
-      logo: new URL(siteConfig.organization.logoPath, siteConfig.url).toString(),
+      logo: {
+        "@type": "ImageObject",
+        url: new URL(siteConfig.organization.logoPath, siteConfig.url).toString(),
+        width: 200,
+        height: 200,
+      },
     },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": postUrl,
+    },
+    isPartOf: {
+      "@type": "Blog",
+      "@id": `${siteConfig.url}/blog#blog`,
+      name: `Blog ${siteConfig.name}`,
+      url: `${siteConfig.url}/blog`,
+    },
+    keywords: post.keywords,
+    articleSection: "Design de Interiores",
   };
 
   return (
@@ -249,7 +277,7 @@ export default async function BlogPostPage({ params }: Props) {
                   rel="noopener noreferrer"
                   className="editorial-link group"
                 >
-                  Solicitar diagnóstico gratuito
+                  Falar com especialista
                   <ArrowRight className="size-3.5 transition-transform duration-300 group-hover:translate-x-1" aria-hidden />
                 </Link>
               </div>

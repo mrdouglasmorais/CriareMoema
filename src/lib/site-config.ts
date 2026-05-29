@@ -17,12 +17,12 @@ function resolveBaseUrl(): string {
 
 export const siteConfig = {
   name: "Criare Moema",
-  titleSuffix: "Móveis Planejados Criare",
+  titleSuffix: "Móveis Planejados de Alto Padrão em Moema",
   /** Linha de foco principal — SEO local e hero. */
   brandFocusLine: "Móveis planejados · São Paulo · Moema",
   tagline: "Manifeste sua personalidade",
   description:
-    "Móveis planejados em Moema, São Paulo. Cozinhas, dormitórios, closets e ambientes sob medida com alto padrão de execução.",
+    "Móveis planejados de alto padrão em Moema, São Paulo. Cozinhas, dormitórios, closets e home offices sob medida — projeto personalizado e execução impecável.",
   /**
    * Palavras-chave para `<meta name="keywords">` e consistência editorial (Google dá pouco peso,
    * mas ajuda outras ferramentas e reforça o tema da página).
@@ -34,18 +34,23 @@ export const siteConfig = {
     "cozinha planejada Moema",
     "cozinha sob medida alto padrão",
     "closet planejado de luxo",
-    "dormitório planejado",
+    "dormitório planejado Moema",
     "home office planejado",
     "Criare Moema",
     "loja de móveis planejados Moema",
-    "marcenaria alto padrão",
+    "marcenaria alto padrão São Paulo",
     "projeto de móveis sob medida",
     "móveis planejados para arquitetos",
+    "móveis planejados Ibirapuera",
+    "móveis planejados Vila Clementino",
+    "móveis planejados Brooklin",
+    "marcenaria sob medida Moema",
   ] as const,
   /** Texto descritivo para `og:image:alt` / acessibilidade em previews. */
   ogImageAlt:
-    "Criare Moema — móveis planejados em Moema, São Paulo: cozinhas, dormitórios e ambientes sob medida.",
+    "Criare Moema — móveis planejados de alto padrão em Moema, São Paulo: cozinhas, dormitórios, closets e ambientes sob medida.",
   referenceLandingUrl: "https://ads.criaremoema.com.br/",
+  telephone: "+55 11 94270-3131",
   whatsappUrl:
     "https://wa.me/5511942703131?text=Ol%C3%A1%21%20Vim%20pelo%20site%20da%20Criare%20Moema.",
   url: resolveBaseUrl(),
@@ -53,7 +58,11 @@ export const siteConfig = {
   language: "pt-BR",
   twitterHandle: "@criaremoema",
   email: "contato@criaremoema.com.br",
-  sameAs: ["https://ads.criaremoema.com.br/"],
+  sameAs: [
+    "https://ads.criaremoema.com.br/",
+    "https://www.instagram.com/criaremoema/",
+    "https://www.google.com/maps/search/?api=1&query=-23.613767,-46.665891",
+  ],
   organization: {
     legalName: "Criare Moema",
     logoPath: "/brand/logo.png",

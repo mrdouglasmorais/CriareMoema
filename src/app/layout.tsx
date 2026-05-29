@@ -70,6 +70,16 @@ export default function RootLayout({
       <head>
         {/* Garante dark class antes da hidratação — sem FOUC */}
         <ThemeScript />
+        {/*
+          Desabilita o scroll restoration nativo do browser antes da hidratação.
+          Sem isso, o browser pode restaurar a posição salva de uma visita anterior
+          (ex.: usuário havia rolado até a seção de endereço) ao recarregar a página.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if("scrollRestoration"in history){history.scrollRestoration="manual"}window.scrollTo(0,0)`,
+          }}
+        />
         <Analytics />
       </head>
       <body className="min-h-full bg-background text-foreground">

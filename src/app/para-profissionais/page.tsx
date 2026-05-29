@@ -10,18 +10,21 @@ import { siteConfig } from "@/lib/site-config";
 import { ArrowRight, BookOpen, Box, FileText, Shield, Star, Users } from "lucide-react";
 
 export const metadata: Metadata = createPageMetadata({
-  title: "Para Arquitetos e Designers | Portal do Profissional | Criare Moema",
+  title: "Para Arquitetos e Designers de Interiores | Criare Moema",
   description:
-    "Portal exclusivo para arquitetos e designers de interiores: catálogos técnicos, blocos 3D, atendimento dedicado e condições especiais para parceiros. Cadastre-se gratuitamente.",
+    "Portal exclusivo para arquitetos e designers: catálogos técnicos, blocos 3D para AutoCAD e SketchUp, consultor dedicado e condições especiais. Parceria com a maior fábrica de móveis planejados da América Latina.",
   path: "/para-profissionais",
   keywords: [
     "móveis planejados para arquitetos",
-    "catálogo técnico móveis",
-    "blocos 3D marcenaria",
-    "parceria arquiteto móveis planejados",
+    "catálogo técnico móveis planejados",
+    "blocos 3D marcenaria AutoCAD SketchUp",
+    "parceria arquiteto móveis planejados Moema",
     "Criare Moema arquiteto",
-    "especificação móveis planejados",
+    "especificação móveis planejados São Paulo",
     "designer de interiores Moema",
+    "marcenaria para arquitetos São Paulo",
+    "tabela de preços arquiteto móveis",
+    "consultor dedicado móveis planejados",
   ],
 });
 
@@ -107,10 +110,40 @@ const breadcrumbLd = {
   ],
 };
 
+const profissionaisServiceLd = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "@id": `${siteConfig.url}/para-profissionais#service`,
+  name: "Programa de Parceria para Profissionais de Arquitetura e Design",
+  description:
+    "Serviço exclusivo para arquitetos, designers de interiores e decoradores: acesso a catálogos técnicos, suporte para especificação de projetos, visitas técnicas e execução precisa de móveis planejados de alto padrão em Moema.",
+  url: `${siteConfig.url}/para-profissionais`,
+  provider: {
+    "@type": "FurnitureStore",
+    "@id": `${siteConfig.url}#furniturestore`,
+    name: siteConfig.name,
+  },
+  areaServed: [
+    { "@type": "City", name: "São Paulo" },
+    { "@type": "Neighborhood", name: "Moema" },
+  ],
+  audience: {
+    "@type": "Audience",
+    audienceType: "Arquitetos, designers de interiores e decoradores",
+  },
+  category: "Móveis Planejados de Alto Padrão",
+  serviceType: "Especificação e execução de projetos de marcenaria",
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "Catálogo Técnico para Profissionais",
+    url: `${siteConfig.url}/catalogo`,
+  },
+};
+
 export default function ParaProfissionaisPage() {
   return (
     <>
-      <JsonLd data={[breadcrumbLd]} />
+      <JsonLd data={[breadcrumbLd, profissionaisServiceLd]} />
       <main id="conteudo-principal" className="min-w-0 overflow-x-clip">
 
         {/* ── Hero cinematográfico ─────────────────────────────────────── */}
