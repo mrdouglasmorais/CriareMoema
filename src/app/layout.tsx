@@ -61,6 +61,7 @@ export default function RootLayout({
     <html
       lang={siteConfig.language}
       className={`${syne.variable} ${dmSans.variable} dark h-full scroll-smooth antialiased`}
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
     >
       <head>

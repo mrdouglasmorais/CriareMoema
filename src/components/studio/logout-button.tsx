@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { Button } from "@/components/ui/button";
@@ -10,11 +10,10 @@ import { getFirebaseAuth } from "@/lib/firebase/client";
 
 export function LogoutButton() {
   const router = useRouter();
-  const [pending, setPending] = useState(false);
+  const [pending, startTransition] = useTransition();
 
-  async function onLogout() {
-    setPending(true);
-    try {
+  function onLogout() {
+    startTransition(async () => {
       const auth = getFirebaseAuth();
       if (auth) {
         await signOut(auth);
@@ -22,9 +21,7 @@ export function LogoutButton() {
       await destroyStudioSession();
       router.replace("/studio/login");
       router.refresh();
-    } finally {
-      setPending(false);
-    }
+    });
   }
 
   return (

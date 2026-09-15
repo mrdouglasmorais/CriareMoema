@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { Button } from "@/components/ui/button";
@@ -20,10 +20,10 @@ interface LoginFormProps {
 export function LoginForm({ firebaseReady }: LoginFormProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [pending, setPending] = useState(false);
+  const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError(null);
 
@@ -41,37 +41,36 @@ export function LoginForm({ firebaseReady }: LoginFormProps) {
       return;
     }
 
-    const auth = getFirebaseAuth();
-    if (!auth) {
-      setError("Firebase Auth indisponível neste navegador.");
-      return;
-    }
-
-    setPending(true);
-    try {
-      const credential = await signInWithEmailAndPassword(auth, email, password);
-      const idToken = await credential.user.getIdToken();
-      const result = await createStudioSession(idToken);
-      if (!result.ok) {
-        setError(result.message);
+    startTransition(async () => {
+      const auth = getFirebaseAuth();
+      if (!auth) {
+        setError("Firebase Auth indisponível neste navegador.");
         return;
       }
 
-      const next = searchParams.get("next") ?? "/studio";
-      router.replace(isSafeStudioPath(next) ? next : "/studio");
-      router.refresh();
-    } catch (err) {
-      const code = typeof err === "object" && err && "code" in err ? String(err.code) : "";
-      if (code === "auth/invalid-credential" || code === "auth/wrong-password") {
-        setError("E-mail ou senha inválidos.");
-      } else if (code === "auth/too-many-requests") {
-        setError("Muitas tentativas. Aguarde um momento e tente de novo.");
-      } else {
-        setError("Não foi possível entrar. Verifique as credenciais e o Firebase.");
+      try {
+        const credential = await signInWithEmailAndPassword(auth, email, password);
+        const idToken = await credential.user.getIdToken();
+        const result = await createStudioSession(idToken);
+        if (!result.ok) {
+          setError(result.message);
+          return;
+        }
+
+        const next = searchParams.get("next") ?? "/studio";
+        router.replace(isSafeStudioPath(next) ? next : "/studio");
+        router.refresh();
+      } catch (err) {
+        const code = typeof err === "object" && err && "code" in err ? String(err.code) : "";
+        if (code === "auth/invalid-credential" || code === "auth/wrong-password") {
+          setError("E-mail ou senha inválidos.");
+        } else if (code === "auth/too-many-requests") {
+          setError("Muitas tentativas. Aguarde um momento e tente de novo.");
+        } else {
+          setError("Não foi possível entrar. Verifique as credenciais e o Firebase.");
+        }
       }
-    } finally {
-      setPending(false);
-    }
+    });
   }
 
   return (
@@ -84,6 +83,7 @@ export function LoginForm({ firebaseReady }: LoginFormProps) {
           type="email"
           autoComplete="username"
           required
+          disabled={pending}
           className={studioFieldClass}
           placeholder="voce@criaremoema.com.br"
         />
@@ -96,6 +96,7 @@ export function LoginForm({ firebaseReady }: LoginFormProps) {
           type="password"
           autoComplete="current-password"
           required
+          disabled={pending}
           className={studioFieldClass}
         />
       </div>

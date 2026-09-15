@@ -3,26 +3,37 @@
 import { requireStudioSession } from "@/lib/auth/session";
 import { isCloudinaryConfigured } from "@/lib/firebase/config";
 import { uploadBlogCover } from "@/lib/cloudinary";
+import { enforceLoadLimit } from "@/lib/integrations/load-gate";
 import type { CoverImageAsset } from "@/types";
 
+export type UploadCoverState =
+  | { status: "idle" }
+  | { status: "success"; asset: CoverImageAsset }
+  | { status: "error"; message: string };
+
 export async function uploadStudioCover(
+  _prev: UploadCoverState,
   formData: FormData,
-): Promise<{ ok: true; asset: CoverImageAsset } | { ok: false; message: string }> {
-  await requireStudioSession();
+): Promise<UploadCoverState> {
+  const session = await requireStudioSession();
+  const load = enforceLoadLimit("studio.upload", session.email);
+  if (!load.ok) {
+    return { status: "error", message: load.message };
+  }
 
   if (!isCloudinaryConfigured()) {
-    return { ok: false, message: "Cloudinary não configurado." };
+    return { status: "error", message: "Cloudinary não configurado." };
   }
 
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) {
-    return { ok: false, message: "Selecione um arquivo de imagem." };
+    return { status: "error", message: "Selecione um arquivo de imagem." };
   }
 
   try {
     const uploaded = await uploadBlogCover(file);
     return {
-      ok: true,
+      status: "success",
       asset: {
         url: uploaded.url,
         width: uploaded.width,
@@ -31,6 +42,6 @@ export async function uploadStudioCover(
     };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Falha no upload.";
-    return { ok: false, message };
+    return { status: "error", message };
   }
 }

@@ -1,3 +1,4 @@
+import { cache } from "react";
 import type { BlogPost } from "@/data/blog";
 import { blogPosts } from "@/data/blog";
 import { getAdminDb, POSTS_COLLECTION } from "@/lib/firebase/admin";
@@ -34,18 +35,51 @@ function toBlogPost(post: StudioPost): BlogPost {
   };
 }
 
+const FIRESTORE_TIMEOUT_MS = 8_000;
+const POSTS_CACHE_MS = 15_000;
+
+let postsCache: { at: number; posts: StudioPost[] } | null = null;
+
+export function clearPostsCache(): void {
+  postsCache = null;
+}
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error("Firestore timeout")), ms);
+    promise.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error: unknown) => {
+        clearTimeout(timer);
+        reject(error);
+      },
+    );
+  });
+}
+
 async function fetchFirestorePosts(): Promise<StudioPost[]> {
   if (!isFirebaseAdminConfigured() || isFirestoreMarkedUnavailable()) return [];
+  if (postsCache && Date.now() - postsCache.at < POSTS_CACHE_MS) {
+    return postsCache.posts;
+  }
 
   try {
-    const snap = await getAdminDb().collection(POSTS_COLLECTION).get();
+    const snap = await withTimeout(
+      getAdminDb().collection(POSTS_COLLECTION).get(),
+      FIRESTORE_TIMEOUT_MS,
+    );
     markFirestoreReady();
-    return snap.docs
+    const posts = snap.docs
       .map((doc) => parseStudioPost(doc.id, doc.data()))
       .filter((post): post is StudioPost => post !== null);
+    postsCache = { at: Date.now(), posts };
+    return posts;
   } catch (error) {
     describeFirestoreError(error);
-    return [];
+    return postsCache?.posts ?? [];
   }
 }
 
@@ -100,7 +134,7 @@ export async function getPublishedFirestorePosts(): Promise<StudioPost[]> {
     .sort((a, b) => (b.publishedAt ?? "").localeCompare(a.publishedAt ?? ""));
 }
 
-export async function getPublishedPosts(): Promise<BlogPost[]> {
+export const getPublishedPosts = cache(async function getPublishedPosts(): Promise<BlogPost[]> {
   const firestorePosts = await getPublishedFirestorePosts();
   const firestoreSlugs = new Set(firestorePosts.map((post) => post.slug));
   const staticRemaining = blogPosts.filter((post) => !firestoreSlugs.has(post.slug));
@@ -108,7 +142,7 @@ export async function getPublishedPosts(): Promise<BlogPost[]> {
   return [...firestorePosts.map(toBlogPost), ...staticRemaining].sort((a, b) =>
     b.publishedAt.localeCompare(a.publishedAt),
   );
-}
+});
 
 export async function getPublishedPostBySlug(slug: string): Promise<BlogPost | undefined> {
   const posts = await getPublishedPosts();
@@ -220,6 +254,7 @@ export async function upsertStudioPost(
   try {
     await ref.set(payload, { merge: true });
     markFirestoreReady();
+    clearPostsCache();
   } catch (error) {
     throw new Error(describeFirestoreError(error));
   }
@@ -234,6 +269,7 @@ export async function deleteStudioPost(id: string): Promise<void> {
   try {
     await getAdminDb().collection(POSTS_COLLECTION).doc(id).delete();
     markFirestoreReady();
+    clearPostsCache();
   } catch (error) {
     throw new Error(describeFirestoreError(error));
   }

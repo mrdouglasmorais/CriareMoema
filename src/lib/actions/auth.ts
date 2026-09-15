@@ -3,6 +3,7 @@
 import { cookies } from "next/headers";
 import { getAdminAuth } from "@/lib/firebase/admin";
 import { getAllowedStudioEmails, isFirebaseAdminConfigured } from "@/lib/firebase/config";
+import { enforceLoadLimit, getRequestIdentity } from "@/lib/integrations/load-gate";
 import {
   STUDIO_SESSION_COOKIE,
   SESSION_MAX_AGE_SECONDS,
@@ -21,6 +22,10 @@ export async function createStudioSession(idToken: string): Promise<ActionResult
   }
 
   const allowed = getAllowedStudioEmails();
+  const load = enforceLoadLimit("auth.login", await getRequestIdentity());
+  if (!load.ok) {
+    return { ok: false, message: load.message };
+  }
 
   try {
     const decoded = await getAdminAuth().verifyIdToken(idToken);

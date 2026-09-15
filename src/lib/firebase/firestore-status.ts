@@ -3,7 +3,10 @@ export const FIRESTORE_SETUP_MESSAGE =
 
 type Availability = "unknown" | "ready" | "unavailable";
 
+const RETRY_AFTER_MS = 15_000;
+
 let availability: Availability = "unknown";
+let unavailableAt = 0;
 let warnedUnavailable = false;
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -35,6 +38,7 @@ export function markFirestoreReady(): void {
 
 export function markFirestoreUnavailable(): void {
   availability = "unavailable";
+  unavailableAt = Date.now();
   if (!warnedUnavailable) {
     warnedUnavailable = true;
     console.warn(FIRESTORE_SETUP_MESSAGE);
@@ -42,7 +46,12 @@ export function markFirestoreUnavailable(): void {
 }
 
 export function isFirestoreMarkedUnavailable(): boolean {
-  return availability === "unavailable";
+  if (availability !== "unavailable") return false;
+  if (Date.now() - unavailableAt >= RETRY_AFTER_MS) {
+    availability = "unknown";
+    return false;
+  }
+  return true;
 }
 
 export function getFirestoreHealth(): { ok: boolean; message: string | null } {

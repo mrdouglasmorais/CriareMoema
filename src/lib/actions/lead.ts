@@ -1,5 +1,6 @@
 "use server";
 
+import { enforceLoadLimit, getRequestIdentity } from "@/lib/integrations/load-gate";
 import { createMoskitDeal } from "@/lib/moskit";
 
 export type LeadFormState =
@@ -24,6 +25,12 @@ export async function submitLead(
   const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRe.test(email)) {
     return { status: "error", message: "E-mail inválido." };
+  }
+
+  const identity = `${email}:${await getRequestIdentity()}`;
+  const load = enforceLoadLimit("contact.lead", identity);
+  if (!load.ok) {
+    return { status: "error", message: load.message };
   }
 
   // ── Moskit CRM ────────────────────────────────────────────────────────────

@@ -6,6 +6,10 @@ export function getFirebaseAuth(): Auth | null {
   const config = getFirebaseClientConfig();
   if (!config) return null;
 
-  const app = getApps().length > 0 ? getApp() : initializeApp(config);
-  return getAuth(app);
+  try {
+    const app = getApps().length > 0 ? getApp() : initializeApp(config);
+    return getAuth(app);
+  } catch {
+    return null;
+  }
 }

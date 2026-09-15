@@ -15,6 +15,17 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: projectRoot,
   },
+  /**
+   * Next 16.3.5 lê `experimental.instantInsights.validationLevel` no render
+   * sem optional chaining. O default interno às vezes chega `undefined` e
+   * derruba `/` com TypeError. Pin explícito; `manual-warning` só valida
+   * rotas que exportam `instant` (não usamos Cache Components).
+   */
+  experimental: {
+    instantInsights: {
+      validationLevel: "manual-warning",
+    },
+  },
   serverExternalPackages: ["firebase-admin", "cloudinary"],
   images: {
     remotePatterns: [

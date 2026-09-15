@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useEffect } from "react";
 import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { studioFieldClass } from "@/components/studio/field-styles";
 import { studioCopy } from "@/data/studio";
-import { uploadStudioCover } from "@/lib/actions/upload";
+import { uploadStudioCover, type UploadCoverState } from "@/lib/actions/upload";
 import { Loader2, Upload } from "lucide-react";
 
 interface CoverUploaderProps {
@@ -18,6 +18,8 @@ interface CoverUploaderProps {
   onChange: (cover: { url: string; width: number; height: number; alt: string }) => void;
 }
 
+const initialUpload: UploadCoverState = { status: "idle" };
+
 export function CoverUploader({
   url,
   width,
@@ -26,34 +28,18 @@ export function CoverUploader({
   cloudinaryReady,
   onChange,
 }: CoverUploaderProps) {
-  const [pending, setPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [state, formAction, pending] = useActionState(uploadStudioCover, initialUpload);
 
-  async function onFile(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    setError(null);
-    setPending(true);
-    try {
-      const formData = new FormData();
-      formData.set("file", file);
-      const result = await uploadStudioCover(formData);
-      if (!result.ok) {
-        setError(result.message);
-        return;
-      }
-      onChange({
-        url: result.asset.url,
-        width: result.asset.width,
-        height: result.asset.height,
-        alt: alt || file.name.replace(/\.[^.]+$/, ""),
-      });
-    } finally {
-      setPending(false);
-      event.target.value = "";
-    }
-  }
+  useEffect(() => {
+    if (state.status !== "success") return;
+    if (state.asset.url === url) return;
+    onChange({
+      url: state.asset.url,
+      width: state.asset.width,
+      height: state.asset.height,
+      alt: alt || "Capa da postagem",
+    });
+  }, [state, url, alt, onChange]);
 
   return (
     <div className="space-y-4">
@@ -62,10 +48,18 @@ export function CoverUploader({
         <div className="flex flex-wrap items-center gap-3">
           <Input
             id="cover-file"
+            name="file"
             type="file"
             accept="image/jpeg,image/png,image/webp"
-            onChange={onFile}
             disabled={!cloudinaryReady || pending}
+            onChange={(event) => {
+              const file = event.currentTarget.files?.[0];
+              if (!file) return;
+              const formData = new FormData();
+              formData.set("file", file);
+              formAction(formData);
+              event.currentTarget.value = "";
+            }}
             className="h-12 cursor-pointer file:mr-3 file:text-amber-200"
           />
           {pending && (
@@ -109,9 +103,9 @@ export function CoverUploader({
         />
       </div>
 
-      {error && (
-        <p className="text-sm text-red-300" role="alert">
-          {error}
+      {state.status === "error" && (
+        <p className="text-sm text-red-300" role="alert" aria-live="assertive">
+          {state.message}
         </p>
       )}
 

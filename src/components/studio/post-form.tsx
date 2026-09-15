@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ContentBlocksEditor } from "@/components/studio/content-blocks-editor";
 import { CoverUploader } from "@/components/studio/cover-uploader";
@@ -60,7 +60,8 @@ function toState(post?: StudioPost): FormState {
 export function PostForm({ post, cloudinaryReady }: PostFormProps) {
   const router = useRouter();
   const [state, setState] = useState<FormState>(() => toState(post));
-  const [pending, setPending] = useState<"draft" | "published" | "delete" | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const [pendingKind, setPendingKind] = useState<"draft" | "published" | "delete" | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const input = useMemo<PostInput>(
@@ -87,38 +88,42 @@ export function PostForm({ post, cloudinaryReady }: PostFormProps) {
     [post?.id, state],
   );
 
-  async function persist(status: "draft" | "published") {
+  function persist(status: "draft" | "published") {
     setError(null);
-    setPending(status);
-    try {
-      const result = await saveStudioPost({ ...input, status });
-      if (!result.ok) {
-        setError(result.message);
-        return;
+    setPendingKind(status);
+    startTransition(async () => {
+      try {
+        const result = await saveStudioPost({ ...input, status });
+        if (!result.ok) {
+          setError(result.message);
+          return;
+        }
+        router.replace(`/studio/posts/${result.post.id}`);
+        router.refresh();
+      } finally {
+        setPendingKind(null);
       }
-      router.replace(`/studio/posts/${result.post.id}`);
-      router.refresh();
-    } finally {
-      setPending(null);
-    }
+    });
   }
 
-  async function onDelete() {
+  function onDelete() {
     if (!post) return;
     const confirmed = window.confirm("Excluir esta postagem? Essa ação não pode ser desfeita.");
     if (!confirmed) return;
-    setPending("delete");
-    try {
-      const result = await removeStudioPost(post.id, post.slug);
-      if (!result.ok) {
-        setError(result.message);
-        return;
+    setPendingKind("delete");
+    startTransition(async () => {
+      try {
+        const result = await removeStudioPost(post.id, post.slug);
+        if (!result.ok) {
+          setError(result.message);
+          return;
+        }
+        router.replace("/studio/posts");
+        router.refresh();
+      } finally {
+        setPendingKind(null);
       }
-      router.replace("/studio/posts");
-      router.refresh();
-    } finally {
-      setPending(null);
-    }
+    });
   }
 
   return (
@@ -129,24 +134,32 @@ export function PostForm({ post, cloudinaryReady }: PostFormProps) {
         void persist("draft");
       }}
     >
+      <div className="space-y-3">
+        <Input
+          id="title"
+          value={state.title}
+          onChange={(event) => {
+            const title = event.target.value;
+            setState((current) => ({
+              ...current,
+              title,
+              slug: current.slugLocked ? current.slug : slugify(title),
+            }));
+          }}
+          className="h-auto border-0 bg-transparent px-0 font-heading text-3xl font-bold tracking-tight text-white shadow-none placeholder:text-white/25 focus-visible:ring-0 sm:text-4xl"
+          placeholder="Sem título"
+          required
+        />
+        <Input
+          id="subtitle"
+          value={state.subtitle}
+          onChange={(event) => setState((current) => ({ ...current, subtitle: event.target.value }))}
+          className="h-auto border-0 bg-transparent px-0 text-lg text-white/55 shadow-none placeholder:text-white/25 focus-visible:ring-0"
+          placeholder="Subtítulo (opcional)"
+        />
+      </div>
+
       <div className="grid gap-5 lg:grid-cols-2">
-        <div className="space-y-2">
-          <Label htmlFor="title">Título</Label>
-          <Input
-            id="title"
-            value={state.title}
-            onChange={(event) => {
-              const title = event.target.value;
-              setState((current) => ({
-                ...current,
-                title,
-                slug: current.slugLocked ? current.slug : slugify(title),
-              }));
-            }}
-            className={studioFieldClass}
-            required
-          />
-        </div>
         <div className="space-y-2">
           <Label htmlFor="slug">Slug (URL)</Label>
           <Input
@@ -161,15 +174,6 @@ export function PostForm({ post, cloudinaryReady }: PostFormProps) {
             }
             className={studioFieldClass}
             required
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="subtitle">Subtítulo</Label>
-          <Input
-            id="subtitle"
-            value={state.subtitle}
-            onChange={(event) => setState((current) => ({ ...current, subtitle: event.target.value }))}
-            className={studioFieldClass}
           />
         </div>
         <div className="space-y-2">
@@ -271,18 +275,18 @@ export function PostForm({ post, cloudinaryReady }: PostFormProps) {
       )}
 
       <div className="flex flex-wrap gap-3">
-        <Button type="submit" variant="glass" size="lg" disabled={pending !== null}>
-          {pending === "draft" ? <Loader2 className="animate-spin" /> : null}
+        <Button type="submit" variant="glass" size="lg" disabled={isPending}>
+          {pendingKind === "draft" ? <Loader2 className="animate-spin" /> : null}
           {studioCopy.saveDraft}
         </Button>
         <Button
           type="button"
           variant="amber"
           size="lg"
-          disabled={pending !== null}
-          onClick={() => void persist("published")}
+          disabled={isPending}
+          onClick={() => persist("published")}
         >
-          {pending === "published" ? <Loader2 className="animate-spin" /> : null}
+          {pendingKind === "published" ? <Loader2 className="animate-spin" /> : null}
           {studioCopy.publish}
         </Button>
         {post && (
@@ -290,10 +294,10 @@ export function PostForm({ post, cloudinaryReady }: PostFormProps) {
             type="button"
             variant="destructive"
             size="lg"
-            disabled={pending !== null}
-            onClick={() => void onDelete()}
+            disabled={isPending}
+            onClick={onDelete}
           >
-            {pending === "delete" ? <Loader2 className="animate-spin" /> : null}
+            {pendingKind === "delete" ? <Loader2 className="animate-spin" /> : null}
             {studioCopy.delete}
           </Button>
         )}

@@ -44,7 +44,9 @@ export function IntegrationChecklist({ status }: IntegrationChecklistProps) {
                 aria-hidden
               />
               {item.label}
-              <span className="sr-only">{ok ? "configurado" : "pendente"}</span>
+              <span className={ok ? "text-emerald-300/80" : "text-white/30"}>
+                {ok ? "configurado" : "pendente"}
+              </span>
             </li>
           );
         })}

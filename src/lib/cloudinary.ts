@@ -5,10 +5,16 @@ const MAX_BYTES = 8 * 1024 * 1024;
 const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
 
 function configureCloudinary(): void {
+  const url = process.env.CLOUDINARY_URL?.trim() ?? "";
+  if (url.startsWith("cloudinary://")) {
+    cloudinary.config({ url, secure: true });
+    return;
+  }
+
   cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME?.trim(),
+    api_key: process.env.CLOUDINARY_API_KEY?.trim(),
+    api_secret: process.env.CLOUDINARY_API_SECRET?.trim(),
     secure: true,
   });
 }
@@ -21,6 +27,36 @@ export function assertAllowedImage(file: File): string | null {
     return "A imagem deve ter no máximo 8 MB.";
   }
   return null;
+}
+
+function uploadBuffer(
+  buffer: Buffer,
+): Promise<{ url: string; width: number; height: number; publicId: string }> {
+  configureCloudinary();
+
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: "criare-moema/blog",
+        resource_type: "image",
+        overwrite: false,
+        unique_filename: true,
+      },
+      (error, result) => {
+        if (error || !result?.secure_url) {
+          reject(error ?? new Error("Cloudinary retornou upload vazio."));
+          return;
+        }
+        resolve({
+          url: result.secure_url,
+          width: result.width,
+          height: result.height,
+          publicId: result.public_id,
+        });
+      },
+    );
+    stream.end(buffer);
+  });
 }
 
 export async function uploadBlogCover(file: File): Promise<{
@@ -38,21 +74,6 @@ export async function uploadBlogCover(file: File): Promise<{
     throw new Error(invalid);
   }
 
-  configureCloudinary();
-
   const buffer = Buffer.from(await file.arrayBuffer());
-  const dataUri = `data:${file.type};base64,${buffer.toString("base64")}`;
-
-  const result = await cloudinary.uploader.upload(dataUri, {
-    folder: "criare-moema/blog",
-    resource_type: "image",
-    overwrite: false,
-  });
-
-  return {
-    url: result.secure_url,
-    width: result.width,
-    height: result.height,
-    publicId: result.public_id,
-  };
+  return uploadBuffer(buffer);
 }
