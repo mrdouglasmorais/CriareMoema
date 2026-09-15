@@ -2,12 +2,11 @@
 
 import { createHash } from "node:crypto";
 import { cookies } from "next/headers";
-import { getAdminAuth } from "@/lib/firebase/admin";
 import {
   getAllowedStudioEmails,
-  isFirebaseAdminConfigured,
   isSessionSecretConfigured,
 } from "@/lib/firebase/config";
+import { verifyFirebaseIdToken } from "@/lib/firebase/verify-id-token";
 import { enforceLoadLimit } from "@/lib/integrations/load-gate";
 import {
   STUDIO_SESSION_COOKIE,
@@ -25,8 +24,11 @@ function loginFailedMessage(error: unknown): string {
   if (/PEM|private key|DECODER|cert/i.test(raw)) {
     return "Firebase Admin com chave inválida. Confira FIREBASE_ADMIN_PRIVATE_KEY na Vercel.";
   }
-  if (/auth\/|id-token|Firebase ID token/i.test(raw)) {
+  if (/auth\/|id-token|Firebase ID token|JWTExpired|JWTClaim|JWS/i.test(raw)) {
     return "Sessão do Firebase expirada. Entre de novo.";
+  }
+  if (raw.includes("projectId")) {
+    return "Firebase projectId ausente no servidor.";
   }
   return "Não foi possível validar o login no servidor.";
 }
@@ -35,10 +37,6 @@ export async function createStudioSession(idToken: string): Promise<ActionResult
   try {
     if (!idToken.trim()) {
       return { ok: false, message: "Token de autenticação ausente." };
-    }
-
-    if (!isFirebaseAdminConfigured()) {
-      return { ok: false, message: "Firebase Admin não configurado no servidor." };
     }
 
     if (!isSessionSecretConfigured()) {
@@ -51,7 +49,7 @@ export async function createStudioSession(idToken: string): Promise<ActionResult
       return { ok: false, message: load.message };
     }
 
-    const decoded = await getAdminAuth().verifyIdToken(idToken);
+    const decoded = await verifyFirebaseIdToken(idToken);
     const email = decoded.email?.toLowerCase();
     if (!email) {
       return { ok: false, message: "A conta não possui e-mail." };
