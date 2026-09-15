@@ -69,7 +69,6 @@ export interface IntegrationStatus {
   firebaseAdmin: boolean;
   cloudinary: boolean;
   sessionSecret: boolean;
-  allowedEmails: boolean;
 }
 
 /** Capa enviada ao Cloudinary (ou URL manual). */

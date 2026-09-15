@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { signOut } from "firebase/auth";
 import { Button } from "@/components/ui/button";
 import { studioCopy } from "@/data/studio";
-import { destroyStudioSession } from "@/lib/actions/auth";
+import { deleteStudioSession } from "@/lib/auth/studio-session-client";
 import { getFirebaseAuth } from "@/lib/firebase/client";
 
 export function LogoutButton() {
@@ -18,7 +18,7 @@ export function LogoutButton() {
       if (auth) {
         await signOut(auth);
       }
-      await destroyStudioSession();
+      await deleteStudioSession();
       router.replace("/studio/login");
       router.refresh();
     });

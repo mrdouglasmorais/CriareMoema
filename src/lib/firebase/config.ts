@@ -75,13 +75,6 @@ export function isCloudinaryConfigured(): boolean {
   );
 }
 
-export function getAllowedStudioEmails(): string[] {
-  return readEnv("STUDIO_ALLOWED_EMAILS")
-    .split(",")
-    .map((email) => email.trim().toLowerCase())
-    .filter(Boolean);
-}
-
 export function getIntegrationStatus(): IntegrationStatus {
   const client = getFirebaseClientConfig();
   return {
@@ -89,7 +82,6 @@ export function getIntegrationStatus(): IntegrationStatus {
     firebaseAdmin: isFirebaseAdminConfigured(),
     cloudinary: isCloudinaryConfigured(),
     sessionSecret: isSessionSecretConfigured(),
-    allowedEmails: getAllowedStudioEmails().length > 0,
   };
 }
 

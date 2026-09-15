@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { Suspense } from "react";
 import { redirect } from "next/navigation";
-import { IntegrationChecklist } from "@/components/studio/integration-checklist";
 import { LoginForm } from "@/components/studio/login-form";
 import { studioCopy } from "@/data/studio";
 import { getStudioSession } from "@/lib/auth/session";
@@ -54,8 +53,6 @@ export default async function StudioLoginPage() {
             <LoginForm firebaseReady={status.firebaseClient} />
           </Suspense>
         </div>
-
-        <IntegrationChecklist status={status} />
       </div>
     </div>
   );

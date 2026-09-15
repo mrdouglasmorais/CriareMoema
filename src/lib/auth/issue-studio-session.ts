@@ -1,20 +1,12 @@
-"use server";
-
 import { createHash } from "node:crypto";
-import { cookies } from "next/headers";
-import {
-  getAllowedStudioEmails,
-  isSessionSecretConfigured,
-} from "@/lib/firebase/config";
+import { isSessionSecretConfigured } from "@/lib/firebase/config";
 import { verifyFirebaseIdToken } from "@/lib/firebase/verify-id-token";
 import { enforceLoadLimit } from "@/lib/integrations/load-gate";
-import {
-  STUDIO_SESSION_COOKIE,
-  SESSION_MAX_AGE_SECONDS,
-  buildSession,
-  signSession,
-} from "@/lib/auth/session";
-import type { ActionResult } from "@/types";
+import { buildSession, signSession } from "@/lib/auth/session-token";
+
+export type IssuedStudioSession =
+  | { ok: true; token: string }
+  | { ok: false; message: string };
 
 function loginFailedMessage(error: unknown): string {
   const raw = error instanceof Error ? error.message : "";
@@ -33,7 +25,7 @@ function loginFailedMessage(error: unknown): string {
   return "Não foi possível validar o login no servidor.";
 }
 
-export async function createStudioSession(idToken: string): Promise<ActionResult> {
+export async function issueStudioSession(idToken: string): Promise<IssuedStudioSession> {
   try {
     if (!idToken.trim()) {
       return { ok: false, message: "Token de autenticação ausente." };
@@ -55,29 +47,9 @@ export async function createStudioSession(idToken: string): Promise<ActionResult
       return { ok: false, message: "A conta não possui e-mail." };
     }
 
-    const allowed = getAllowedStudioEmails();
-    if (allowed.length > 0 && !allowed.includes(email)) {
-      return { ok: false, message: "Este e-mail não tem acesso ao Studio." };
-    }
-
-    const token = signSession(buildSession(decoded.uid, email));
-    const store = await cookies();
-    store.set(STUDIO_SESSION_COOKIE, token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: SESSION_MAX_AGE_SECONDS,
-    });
-
-    return { ok: true };
+    return { ok: true, token: signSession(buildSession(decoded.uid, email)) };
   } catch (error) {
     console.error("[studio.login]", error instanceof Error ? error.message : error);
     return { ok: false, message: loginFailedMessage(error) };
   }
-}
-
-export async function destroyStudioSession(): Promise<void> {
-  const store = await cookies();
-  store.delete(STUDIO_SESSION_COOKIE);
 }
