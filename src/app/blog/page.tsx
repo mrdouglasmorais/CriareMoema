@@ -5,8 +5,9 @@ import { Stagger, StaggerItem } from "@/components/landing/reveal";
 import { PageHero } from "@/components/ui/page-hero";
 import { CtaSection } from "@/components/sections/cta-section";
 import { JsonLd } from "@/components/seo/json-ld";
-import { blogPosts } from "@/data/blog";
+import { getPublishedPosts } from "@/lib/posts/repository";
 import { createPageMetadata } from "@/lib/metadata";
+import { buildBlogCollectionJsonLd } from "@/lib/seo/blog-structured-data";
 import { siteConfig } from "@/lib/site-config";
 import { ArrowRight, Clock } from "lucide-react";
 
@@ -27,24 +28,14 @@ export const metadata: Metadata = createPageMetadata({
   ],
 });
 
-const breadcrumbLd = {
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Início", item: siteConfig.url },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "Blog",
-      item: `${siteConfig.url}/blog`,
-    },
-  ],
-};
+export const revalidate = 60;
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const posts = await getPublishedPosts();
+
   return (
     <>
-      <JsonLd data={[breadcrumbLd]} />
+      <JsonLd data={buildBlogCollectionJsonLd(posts)} />
       <main id="conteudo-principal" className="min-w-0 overflow-x-clip">
 
         <PageHero
@@ -61,7 +52,7 @@ export default function BlogPage() {
             { label: "Blog" },
           ]}
           stats={[
-            { value: `${blogPosts.length}`, label: "artigos publicados" },
+            { value: `${posts.length}`, label: "artigos publicados" },
             { value: "5'", label: "leitura média" },
             { value: "100%", label: "conteúdo original" },
           ]}
@@ -76,7 +67,7 @@ export default function BlogPage() {
         >
           <div className="mx-auto max-w-6xl px-4 sm:px-6">
             <Stagger className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-              {blogPosts.map((post, i) => {
+              {posts.map((post, i) => {
                 const num = String(i + 1).padStart(2, "0");
                 return (
                   <StaggerItem key={post.slug}>

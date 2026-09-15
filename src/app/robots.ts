@@ -12,6 +12,7 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
+      disallow: ["/studio", "/studio/"],
     },
     sitemap: `${base}/sitemap.xml`,
     host: base.replace(/^https?:\/\//, ""),

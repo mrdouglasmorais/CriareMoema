@@ -1,0 +1,176 @@
+query ListClients @auth(level: USER) {
+  clients(orderBy: [{ fullName: ASC }]) {
+    id
+    fullName
+    email
+    phone
+    address
+    cpfCnpj
+    createdAt
+  }
+}
+
+query GetClient($id: UUID!) @auth(level: USER) {
+  client(id: $id) {
+    id
+    fullName
+    email
+    phone
+    address
+    cpfCnpj
+    projects_on_client(orderBy: [{ startDate: DESC }]) {
+      id
+      title
+      status
+      startDate
+    }
+  }
+}
+
+query ListProjects @auth(level: USER) {
+  projects(orderBy: [{ startDate: DESC }]) {
+    id
+    title
+    status
+    startDate
+    client {
+      id
+      fullName
+      email
+      phone
+    }
+  }
+}
+
+query GetProject($id: UUID!) @auth(level: USER) {
+  project(id: $id) {
+    id
+    title
+    status
+    startDate
+    client {
+      id
+      fullName
+      email
+      phone
+      address
+      cpfCnpj
+    }
+    items_on_project {
+      id
+      name
+      price
+      quantity
+    }
+    quotes_on_project(orderBy: [{ issueDate: DESC }]) {
+      id
+      totalValue
+      issueDate
+      validityDate
+    }
+    installations_on_project(orderBy: [{ scheduledDate: DESC }]) {
+      id
+      scheduledDate
+      status
+    }
+  }
+}
+
+mutation CreateClient(
+  $fullName: String!
+  $email: String!
+  $phone: String!
+  $address: String
+  $cpfCnpj: String
+) @auth(level: USER) {
+  client_insert(
+    data: {
+      fullName: $fullName
+      email: $email
+      phone: $phone
+      address: $address
+      cpfCnpj: $cpfCnpj
+    }
+  )
+}
+
+mutation UpdateClient(
+  $id: UUID!
+  $fullName: String!
+  $email: String!
+  $phone: String!
+  $address: String
+  $cpfCnpj: String
+) @auth(level: USER) {
+  client_update(
+    id: $id
+    data: {
+      fullName: $fullName
+      email: $email
+      phone: $phone
+      address: $address
+      cpfCnpj: $cpfCnpj
+    }
+  )
+}
+
+mutation CreateProject($title: String!, $startDate: Date!, $clientId: UUID!, $status: ProjectStatus)
+  @auth(level: USER) {
+  project_insert(
+    data: {
+      title: $title
+      startDate: $startDate
+      clientId: $clientId
+      status: $status
+      updatedAt_expr: "request.time"
+    }
+  )
+}
+
+mutation UpdateProjectStatus($id: UUID!, $status: ProjectStatus!) @auth(level: USER) {
+  project_update(
+    id: $id
+    data: { status: $status, updatedAt_expr: "request.time" }
+  )
+}
+
+mutation AddProjectItem($projectId: UUID!, $name: String!, $price: Float!, $quantity: Int!)
+  @auth(level: USER) {
+  item_insert(
+    data: { projectId: $projectId, name: $name, price: $price, quantity: $quantity }
+  )
+}
+
+mutation CreateQuote(
+  $projectId: UUID!
+  $totalValue: Float!
+  $issueDate: Date!
+  $validityDate: Date!
+) @auth(level: USER) {
+  quote_insert(
+    data: {
+      projectId: $projectId
+      totalValue: $totalValue
+      issueDate: $issueDate
+      validityDate: $validityDate
+    }
+  )
+}
+
+mutation ScheduleInstallation(
+  $projectId: UUID!
+  $scheduledDate: Timestamp!
+  $status: InstallationStatus
+) @auth(level: USER) {
+  installation_insert(
+    data: {
+      projectId: $projectId
+      scheduledDate: $scheduledDate
+      status: $status
+    }
+  )
+}
+
+mutation UpdateInstallationStatus($id: UUID!, $status: InstallationStatus!) @auth(level: USER) {
+  installation_update(id: $id, data: { status: $status })
+}

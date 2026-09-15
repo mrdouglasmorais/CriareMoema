@@ -1,11 +1,12 @@
 import type { MetadataRoute } from "next";
 import { ambientes } from "@/data/ambientes";
-import { blogPosts } from "@/data/blog";
+import { getPublishedPosts } from "@/lib/posts/repository";
 import { siteConfig } from "@/lib/site-config";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteConfig.url.replace(/\/$/, "");
   const now = new Date();
+  const publishedPosts = await getPublishedPosts();
 
   const ambienteUrls: MetadataRoute.Sitemap = ambientes.map((ambiente) => ({
     url: `${base}/ambientes/${ambiente.slug}`,
@@ -14,7 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.85,
   }));
 
-  const blogUrls: MetadataRoute.Sitemap = blogPosts.map((post) => ({
+  const blogUrls: MetadataRoute.Sitemap = publishedPosts.map((post) => ({
     url: `${base}/blog/${post.slug}`,
     lastModified: new Date(post.updatedAt ?? post.publishedAt),
     changeFrequency: "monthly",

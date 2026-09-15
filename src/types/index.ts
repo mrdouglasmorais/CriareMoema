@@ -1,3 +1,5 @@
+import type { BlogBlock } from "@/data/blog";
+
 /** Tipos globais reutilizados entre componentes e data files. */
 
 /** Qualquer componente que aceita className extra. */
@@ -50,3 +52,72 @@ export type FormStatus = "idle" | "pending" | "success" | "error";
 export type ActionResult =
   | { ok: true }
   | { ok: false; message: string };
+
+/** Status editorial de uma postagem gerida no Studio. */
+export type PostStatus = "draft" | "published";
+
+/** Sessão HMAC do Studio — não expõe o token do Firebase no cookie. */
+export interface StudioSession {
+  uid: string;
+  email: string;
+  exp: number;
+}
+
+/** Estado das integrações necessárias para o Studio. */
+export interface IntegrationStatus {
+  firebaseClient: boolean;
+  firebaseAdmin: boolean;
+  cloudinary: boolean;
+  sessionSecret: boolean;
+  allowedEmails: boolean;
+}
+
+/** Capa enviada ao Cloudinary (ou URL manual). */
+export interface CoverImageAsset {
+  url: string;
+  width: number;
+  height: number;
+}
+
+/** Postagem persistida no Firestore (Studio). */
+export interface StudioPost {
+  id: string;
+  slug: string;
+  title: string;
+  subtitle: string;
+  excerpt: string;
+  content: BlogBlock[];
+  publishedAt: string | null;
+  updatedAt: string;
+  createdAt: string;
+  readingMinutes: number;
+  category: string;
+  seoTitle: string;
+  seoDescription: string;
+  keywords: string[];
+  coverImage: string;
+  coverImageWidth: number;
+  coverImageHeight: number;
+  coverImageAlt: string;
+  status: PostStatus;
+  authorEmail: string;
+}
+
+/** Payload de criação/edição enviado pelo formulário do Studio. */
+export interface PostInput {
+  id?: string;
+  slug: string;
+  title: string;
+  subtitle: string;
+  excerpt: string;
+  content: BlogBlock[];
+  category: string;
+  seoTitle: string;
+  seoDescription: string;
+  keywords: string[];
+  coverImage: string;
+  coverImageWidth: number;
+  coverImageHeight: number;
+  coverImageAlt: string;
+  status: PostStatus;
+}

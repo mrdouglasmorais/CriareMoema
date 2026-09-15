@@ -1,0 +1,123 @@
+query ListPublishedPosts @auth(level: PUBLIC, insecureReason: "O blog público lista apenas postagens publicadas.") {
+  posts(
+    where: { status: { eq: PUBLISHED } }
+    orderBy: [{ publishedAt: DESC }]
+  ) {
+    id
+    slug
+    title
+    subtitle
+    excerpt
+    category
+    status
+    seoTitle
+    seoDescription
+    keywords
+    coverImage
+    coverImageWidth
+    coverImageHeight
+    coverImageAlt
+    readingMinutes
+    publishedAt
+    updatedAt
+    createdAt
+    author {
+      email
+      displayName
+    }
+    postBlocks_on_post(orderBy: [{ sortOrder: ASC }]) {
+      id
+      sortOrder
+      type
+      text
+      headingLevel
+      items
+    }
+  }
+}
+
+query GetPublishedPostBySlug($slug: String!)
+  @auth(level: PUBLIC, insecureReason: "Artigo publicado é público por slug.") {
+  posts(where: { slug: { eq: $slug }, status: { eq: PUBLISHED } }, limit: 1) {
+    id
+    slug
+    title
+    subtitle
+    excerpt
+    category
+    status
+    seoTitle
+    seoDescription
+    keywords
+    coverImage
+    coverImageWidth
+    coverImageHeight
+    coverImageAlt
+    readingMinutes
+    publishedAt
+    updatedAt
+    createdAt
+    author {
+      email
+      displayName
+    }
+    postBlocks_on_post(orderBy: [{ sortOrder: ASC }]) {
+      id
+      sortOrder
+      type
+      text
+      headingLevel
+      items
+    }
+  }
+}
+
+query ListStudioPosts @auth(level: USER) {
+  posts(orderBy: [{ updatedAt: DESC }]) {
+    id
+    slug
+    title
+    category
+    status
+    publishedAt
+    updatedAt
+    author {
+      email
+    }
+  }
+}
+
+query GetStudioPost($id: UUID!) @auth(level: USER) {
+  post(id: $id) {
+    id
+    slug
+    title
+    subtitle
+    excerpt
+    category
+    status
+    seoTitle
+    seoDescription
+    keywords
+    coverImage
+    coverImageWidth
+    coverImageHeight
+    coverImageAlt
+    readingMinutes
+    publishedAt
+    updatedAt
+    createdAt
+    author {
+      email
+      displayName
+    }
+    postBlocks_on_post(orderBy: [{ sortOrder: ASC }]) {
+      id
+      sortOrder
+      type
+      text
+      headingLevel
+      items
+    }
+  }
+}

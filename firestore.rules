@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // O site e o Studio usam Firebase Admin no servidor.
+    // Nenhum cliente público escreve no banco.
+    match /posts/{postId} {
+      allow read: if resource.data.status == "published";
+      allow write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

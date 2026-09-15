@@ -1,0 +1,108 @@
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum PostBlockType {
+  PARAGRAPH
+  HEADING
+  LIST
+  CALLOUT
+}
+
+type Author @table(name: "author") {
+  id: String! @default(expr: "auth.uid")
+  email: String! @col(dataType: "varchar(180)") @unique
+  displayName: String @col(dataType: "varchar(120)")
+  createdAt: Timestamp! @default(expr: "request.time")
+}
+
+type Post @table(name: "post") {
+  id: UUID! @default(expr: "uuidV4()")
+  slug: String! @unique @col(dataType: "varchar(80)")
+  title: String! @col(dataType: "varchar(200)")
+  subtitle: String @col(dataType: "varchar(240)")
+  excerpt: String!
+  category: String! @col(dataType: "varchar(80)")
+  status: PostStatus! @default(value: DRAFT)
+  seoTitle: String @col(dataType: "varchar(70)")
+  seoDescription: String @col(dataType: "varchar(170)")
+  keywords: [String!]
+  locale: String! @default(value: "pt-BR") @col(dataType: "varchar(10)")
+  coverImage: String
+  coverImageWidth: Int
+  coverImageHeight: Int
+  coverImageAlt: String
+  readingMinutes: Int! @default(value: 1)
+  publishedAt: Date
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+  author: Author
+}
+
+type PostBlock @table(name: "post_block") {
+  id: UUID! @default(expr: "uuidV4()")
+  post: Post!
+  sortOrder: Int!
+  type: PostBlockType!
+  text: String
+  headingLevel: Int
+  items: [String!]
+}
+
+enum ProjectStatus {
+  DRAFT
+  APPROVED
+  IN_PRODUCTION
+  INSTALLED
+}
+
+enum InstallationStatus {
+  SCHEDULED
+  IN_PROGRESS
+  FINISHED
+}
+
+type Client @table(name: "client") {
+  id: UUID! @default(expr: "uuidV4()")
+  fullName: String! @col(dataType: "varchar(180)")
+  email: String! @col(dataType: "varchar(180)")
+  phone: String! @col(dataType: "varchar(32)")
+  address: String
+  cpfCnpj: String @col(dataType: "varchar(20)")
+  createdAt: Timestamp! @default(expr: "request.time")
+}
+
+type Project @table(name: "project") {
+  id: UUID! @default(expr: "uuidV4()")
+  title: String! @col(dataType: "varchar(200)")
+  status: ProjectStatus! @default(value: DRAFT)
+  startDate: Date!
+  client: Client!
+  createdAt: Timestamp! @default(expr: "request.time")
+  updatedAt: Timestamp! @default(expr: "request.time")
+}
+
+type Item @table(name: "item") {
+  id: UUID! @default(expr: "uuidV4()")
+  name: String! @col(dataType: "varchar(200)")
+  price: Float!
+  quantity: Int!
+  project: Project!
+}
+
+type Quote @table(name: "quote") {
+  id: UUID! @default(expr: "uuidV4()")
+  totalValue: Float!
+  issueDate: Date!
+  validityDate: Date!
+  project: Project!
+  createdAt: Timestamp! @default(expr: "request.time")
+}
+
+type Installation @table(name: "installation") {
+  id: UUID! @default(expr: "uuidV4()")
+  scheduledDate: Timestamp!
+  status: InstallationStatus! @default(value: SCHEDULED)
+  project: Project!
+}

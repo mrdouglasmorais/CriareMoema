@@ -1,0 +1,13 @@
+specVersion: "v1"
+serviceId: "criare-moema"
+location: "us-central1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "criaremoema"
+      cloudSql:
+        instanceId: "criare-moema-sql"
+        schemaValidation: "COMPATIBLE"
+connectorDirs:
+  - "./connector"

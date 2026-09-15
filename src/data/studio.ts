@@ -1,0 +1,46 @@
+export const studioCopy = {
+  name: "Studio",
+  productName: "Studio Criare",
+  loginTitle: "Área interna",
+  loginSubtitle: "Entre com a conta autorizada para criar e publicar postagens.",
+  loginCta: "Entrar",
+  loginPending: "Entrando…",
+  logout: "Sair",
+  dashboardEyebrow: "Área logada",
+  dashboardTitle: "Studio editorial",
+  dashboardDescription:
+    "Crie, edite e publique postagens. O conteúdo publicado entra no blog público automaticamente.",
+  newPost: "Nova postagem",
+  posts: "Postagens",
+  emptyPosts: "Nenhuma postagem no banco ainda. Crie a primeira para integrar ao blog.",
+  draft: "Rascunho",
+  published: "Publicado",
+  saveDraft: "Salvar rascunho",
+  publish: "Publicar no blog",
+  delete: "Excluir",
+  backToPosts: "Voltar às postagens",
+  viewBlog: "Ver blog público",
+  coverHint: "JPG, PNG ou WebP até 8 MB, idealmente 1200px ou mais na largura — o Google exige imagem no BlogPosting.",
+  seoTitleHint: "30–70 caracteres. Aparece na aba e no resultado do Google.",
+  seoDescriptionHint: "70–170 caracteres. É o snippet da busca.",
+  keywordsHint: "Pelo menos 2 termos reais de busca, separados por vírgula.",
+  coverUrlFallback: "Ou cole uma URL / caminho local (ex.: /catalog/cat-04003.jpg)",
+  missingConfig:
+    "Integrações incompletas. Preencha o .env.local com Firebase, Cloudinary e e-mails autorizados.",
+  firestoreDisabled:
+    "O banco Firestore ainda não foi criado no projeto criare-moema. No Console do Firebase: Build → Firestore Database → Create database (modo Native). O blog público continua com os artigos estáticos até o banco existir.",
+} as const;
+
+export const postCategories = [
+  "Trend Report",
+  "Para Arquitetos",
+  "Projetos",
+  "Materiais",
+  "Guia",
+] as const;
+
+export const studioNav = [
+  { href: "/studio", label: "Visão geral" },
+  { href: "/studio/posts", label: "Postagens" },
+  { href: "/studio/posts/novo", label: "Nova postagem" },
+] as const;

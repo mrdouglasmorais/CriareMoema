@@ -1,0 +1,10 @@
+connectorId: "studio"
+generate:
+  javascriptSdk:
+    outputDir: "../../src/lib/dataconnect-generated"
+    package: "@criare/dataconnect"
+    packageJsonDir: "../.."
+  adminNodeSdk:
+    outputDir: "../../src/lib/dataconnect-admin-generated"
+    package: "@criare/dataconnect-admin"
+    packageJsonDir: "../.."

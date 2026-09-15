@@ -1,0 +1,150 @@
+mutation UpsertAuthor($email: String!, $displayName: String)
+  @auth(level: USER) {
+  author_upsert(
+    data: {
+      id_expr: "auth.uid"
+      email: $email
+      displayName: $displayName
+    }
+  )
+}
+
+mutation CreatePost(
+  $slug: String!
+  $title: String!
+  $subtitle: String
+  $excerpt: String!
+  $category: String!
+  $status: PostStatus!
+  $seoTitle: String
+  $seoDescription: String
+  $keywords: [String!]
+  $coverImage: String
+  $coverImageWidth: Int
+  $coverImageHeight: Int
+  $coverImageAlt: String
+  $readingMinutes: Int!
+  $publishedAt: Date
+) @auth(level: USER) {
+  post_insert(
+    data: {
+      slug: $slug
+      title: $title
+      subtitle: $subtitle
+      excerpt: $excerpt
+      category: $category
+      status: $status
+      seoTitle: $seoTitle
+      seoDescription: $seoDescription
+      keywords: $keywords
+      coverImage: $coverImage
+      coverImageWidth: $coverImageWidth
+      coverImageHeight: $coverImageHeight
+      coverImageAlt: $coverImageAlt
+      readingMinutes: $readingMinutes
+      publishedAt: $publishedAt
+      authorId_expr: "auth.uid"
+      updatedAt_expr: "request.time"
+    }
+  )
+}
+
+mutation UpdatePost(
+  $id: UUID!
+  $slug: String!
+  $title: String!
+  $subtitle: String
+  $excerpt: String!
+  $category: String!
+  $status: PostStatus!
+  $seoTitle: String
+  $seoDescription: String
+  $keywords: [String!]
+  $coverImage: String
+  $coverImageWidth: Int
+  $coverImageHeight: Int
+  $coverImageAlt: String
+  $readingMinutes: Int!
+  $publishedAt: Date
+) @auth(level: USER) {
+  post_update(
+    id: $id
+    data: {
+      slug: $slug
+      title: $title
+      subtitle: $subtitle
+      excerpt: $excerpt
+      category: $category
+      status: $status
+      seoTitle: $seoTitle
+      seoDescription: $seoDescription
+      keywords: $keywords
+      coverImage: $coverImage
+      coverImageWidth: $coverImageWidth
+      coverImageHeight: $coverImageHeight
+      coverImageAlt: $coverImageAlt
+      readingMinutes: $readingMinutes
+      publishedAt: $publishedAt
+      updatedAt_expr: "request.time"
+    }
+  )
+}
+
+mutation AddPostBlock(
+  $postId: UUID!
+  $sortOrder: Int!
+  $type: PostBlockType!
+  $text: String
+  $headingLevel: Int
+  $items: [String!]
+) @auth(level: USER) {
+  postBlock_insert(
+    data: {
+      postId: $postId
+      sortOrder: $sortOrder
+      type: $type
+      text: $text
+      headingLevel: $headingLevel
+      items: $items
+    }
+  )
+}
+
+mutation ReplacePostBlock(
+  $id: UUID!
+  $sortOrder: Int!
+  $type: PostBlockType!
+  $text: String
+  $headingLevel: Int
+  $items: [String!]
+) @auth(level: USER) {
+  postBlock_update(
+    id: $id
+    data: {
+      sortOrder: $sortOrder
+      type: $type
+      text: $text
+      headingLevel: $headingLevel
+      items: $items
+    }
+  )
+}
+
+mutation DeletePostBlock($id: UUID!) @auth(level: USER) {
+  postBlock_delete(id: $id)
+}
+
+mutation DeletePost($id: UUID!) @auth(level: USER) {
+  post_delete(id: $id)
+}
+
+mutation PublishPost($id: UUID!, $publishedAt: Date!) @auth(level: USER) {
+  post_update(
+    id: $id
+    data: {
+      status: PUBLISHED
+      publishedAt: $publishedAt
+      updatedAt_expr: "request.time"
+    }
+  )
+}

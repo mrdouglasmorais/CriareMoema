@@ -132,6 +132,8 @@ export interface PageMetadataInput {
   ogImageHeight?: number;
   /** Alt da imagem OG/Twitter. */
   ogImageAlt?: string;
+  /** MIME da imagem OG. */
+  ogImageType?: string;
   /** Palavras-chave; padrão: `siteConfig.seoKeywords`. */
   keywords?: readonly string[] | string;
   noIndex?: boolean;
@@ -168,6 +170,7 @@ export function createPageMetadata({
   ogImageWidth = OG_IMAGE_WIDTH,
   ogImageHeight = OG_IMAGE_HEIGHT,
   ogImageAlt = siteConfig.ogImageAlt,
+  ogImageType = "image/png",
   keywords,
   noIndex = false,
   article,
@@ -228,7 +231,7 @@ export function createPageMetadata({
           width: ogImageWidth,
           height: ogImageHeight,
           alt: ogImageAlt,
-          type: "image/png",
+          type: ogImageType,
         },
       ],
     },

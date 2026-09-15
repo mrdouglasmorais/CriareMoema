@@ -5,8 +5,16 @@ import { notFound } from "next/navigation";
 import { Reveal } from "@/components/landing/reveal";
 import { CtaSection } from "@/components/sections/cta-section";
 import { JsonLd } from "@/components/seo/json-ld";
-import { blogPosts, getAllBlogSlugs, getBlogPostBySlug, type BlogBlock } from "@/data/blog";
+import type { BlogBlock } from "@/data/blog";
+import {
+  getAllPublishedSlugs,
+  getPublishedPostBySlug,
+  getPublishedPosts,
+} from "@/lib/posts/repository";
+import { imageMimeType, toIsoDateTime } from "@/lib/posts/content-text";
+import { slugify } from "@/lib/posts/slug";
 import { createPageMetadata } from "@/lib/metadata";
+import { buildBlogPostJsonLd } from "@/lib/seo/blog-structured-data";
 import { siteConfig } from "@/lib/site-config";
 import { ArrowLeft, ArrowRight, Clock } from "lucide-react";
 
@@ -14,13 +22,15 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export function generateStaticParams() {
-  return getAllBlogSlugs();
+export const revalidate = 60;
+
+export async function generateStaticParams() {
+  return getAllPublishedSlugs();
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post = getBlogPostBySlug(slug);
+  const post = await getPublishedPostBySlug(slug);
   if (!post) return {};
 
   return createPageMetadata({
@@ -29,10 +39,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     path: `/blog/${slug}`,
     keywords: post.keywords,
     ogImage: post.coverImage,
+    ogImageWidth: post.coverImageWidth,
+    ogImageHeight: post.coverImageHeight,
     ogImageAlt: post.coverImageAlt,
+    ogImageType: imageMimeType(post.coverImage),
     article: {
-      publishedTime: post.publishedAt,
-      modifiedTime: post.updatedAt ?? post.publishedAt,
+      publishedTime: toIsoDateTime(post.publishedAt),
+      modifiedTime: toIsoDateTime(post.updatedAt ?? post.publishedAt),
+      authors: [siteConfig.name],
+      section: post.category,
+      tags: post.keywords,
     },
   });
 }
@@ -50,8 +66,10 @@ function BlogContent({ blocks }: { blocks: BlogBlock[] }) {
         }
         if (block.type === "heading") {
           const Tag = `h${block.level}` as "h2" | "h3";
+          const headingId = slugify(block.text) || `secao-${i + 1}`;
           return (
             <Tag
+              id={headingId}
               key={i}
               className={
                 block.level === 2
@@ -99,77 +117,16 @@ function BlogContent({ blocks }: { blocks: BlogBlock[] }) {
 
 export default async function BlogPostPage({ params }: Props) {
   const { slug } = await params;
-  const post = getBlogPostBySlug(slug);
+  const post = await getPublishedPostBySlug(slug);
   if (!post) notFound();
 
-  const outrosPosts = blogPosts.filter((p) => p.slug !== slug).slice(0, 2);
-
-  const breadcrumbLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Início", item: siteConfig.url },
-      { "@type": "ListItem", position: 2, name: "Blog", item: `${siteConfig.url}/blog` },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: post.title,
-        item: `${siteConfig.url}/blog/${slug}`,
-      },
-    ],
-  };
-
-  const postUrl = `${siteConfig.url}/blog/${slug}`;
-  const articleLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "@id": `${postUrl}#article`,
-    headline: post.title,
-    name: post.title,
-    description: post.seoDescription,
-    url: postUrl,
-    inLanguage: siteConfig.language,
-    image: {
-      "@type": "ImageObject",
-      url: new URL(post.coverImage, siteConfig.url).toString(),
-      caption: post.coverImageAlt,
-    },
-    datePublished: post.publishedAt,
-    dateModified: post.updatedAt ?? post.publishedAt,
-    author: {
-      "@type": "Organization",
-      "@id": `${siteConfig.url}#organization`,
-      name: siteConfig.name,
-      url: siteConfig.url,
-    },
-    publisher: {
-      "@type": "Organization",
-      "@id": `${siteConfig.url}#organization`,
-      name: siteConfig.name,
-      logo: {
-        "@type": "ImageObject",
-        url: new URL(siteConfig.organization.logoPath, siteConfig.url).toString(),
-        width: 200,
-        height: 200,
-      },
-    },
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": postUrl,
-    },
-    isPartOf: {
-      "@type": "Blog",
-      "@id": `${siteConfig.url}/blog#blog`,
-      name: `Blog ${siteConfig.name}`,
-      url: `${siteConfig.url}/blog`,
-    },
-    keywords: post.keywords,
-    articleSection: "Design de Interiores",
-  };
+  const outrosPosts = (await getPublishedPosts())
+    .filter((item) => item.slug !== slug)
+    .slice(0, 2);
 
   return (
     <>
-      <JsonLd data={[breadcrumbLd, articleLd]} />
+      <JsonLd data={buildBlogPostJsonLd(post)} />
       <main id="conteudo-principal" className="min-w-0 overflow-x-clip">
 
         {/* ── Hero cinematográfico ─────────────────────────────────────── */}
