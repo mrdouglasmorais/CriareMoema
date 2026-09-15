@@ -9,8 +9,11 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const requestHeaders = new Headers(request.headers);
-  requestHeaders.set("x-studio-route", "1");
+  // Server Actions POSTam na própria rota. Reescrever headers aqui
+  // (x-forwarded-host / host) faz o Next 16 abortar com 500 (CSRF E80).
+  if (request.headers.has("next-action")) {
+    return NextResponse.next();
+  }
 
   const isLogin = pathname === "/studio/login";
   const token = request.cookies.get(STUDIO_SESSION_COOKIE)?.value ?? "";
@@ -26,9 +29,7 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/studio", request.url));
   }
 
-  return NextResponse.next({
-    request: { headers: requestHeaders },
-  });
+  return NextResponse.next();
 }
 
 export const config = {

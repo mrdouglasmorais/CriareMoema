@@ -25,6 +25,13 @@ const nextConfig: NextConfig = {
     instantInsights: {
       validationLevel: "manual-warning",
     },
+    /**
+     * Sem isto, um `x-forwarded-host` diferente do `Origin` (www vs apex,
+     * ou o host interno da Vercel) aborta a Server Action com 500 (E80).
+     */
+    serverActions: {
+      allowedOrigins: ["www.criaremoema.com.br", "criaremoema.com.br"],
+    },
   },
   serverExternalPackages: ["firebase-admin", "cloudinary"],
   images: {

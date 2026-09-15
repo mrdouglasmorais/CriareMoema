@@ -13,6 +13,23 @@ function readEnv(name: string): string {
   return process.env[name]?.trim() ?? "";
 }
 
+/** Vercel/UI costuma colar a PEM entre aspas ou com `\n` literal. */
+export function readAdminPrivateKey(): string {
+  let key = process.env.FIREBASE_ADMIN_PRIVATE_KEY ?? "";
+  key = key.trim();
+  if (
+    (key.startsWith('"') && key.endsWith('"')) ||
+    (key.startsWith("'") && key.endsWith("'"))
+  ) {
+    key = key.slice(1, -1).trim();
+  }
+  return key.replace(/\\n/g, "\n").replace(/\r\n/g, "\n").trim();
+}
+
+export function isSessionSecretConfigured(): boolean {
+  return readEnv("STUDIO_SESSION_SECRET").length >= 16;
+}
+
 export function getFirebaseClientConfig(): FirebaseClientConfig | null {
   // Next só injeta NEXT_PUBLIC_* no browser com acesso estático.
   const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY?.trim() ?? "";
@@ -38,11 +55,13 @@ export function getFirebaseClientConfig(): FirebaseClientConfig | null {
 
 export function isFirebaseAdminConfigured(): boolean {
   const projectId =
-    readEnv("FIREBASE_ADMIN_PROJECT_ID") || readEnv("NEXT_PUBLIC_FIREBASE_PROJECT_ID");
+    process.env.FIREBASE_ADMIN_PROJECT_ID?.trim() ||
+    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID?.trim() ||
+    "";
+  const clientEmail = process.env.FIREBASE_ADMIN_CLIENT_EMAIL?.trim() ?? "";
+  const privateKey = readAdminPrivateKey();
   return Boolean(
-    projectId &&
-      readEnv("FIREBASE_ADMIN_CLIENT_EMAIL") &&
-      readEnv("FIREBASE_ADMIN_PRIVATE_KEY"),
+    projectId && clientEmail && privateKey.includes("BEGIN PRIVATE KEY"),
   );
 }
 
@@ -69,7 +88,7 @@ export function getIntegrationStatus(): IntegrationStatus {
     firebaseClient: client !== null,
     firebaseAdmin: isFirebaseAdminConfigured(),
     cloudinary: isCloudinaryConfigured(),
-    sessionSecret: Boolean(readEnv("STUDIO_SESSION_SECRET")),
+    sessionSecret: isSessionSecretConfigured(),
     allowedEmails: getAllowedStudioEmails().length > 0,
   };
 }
