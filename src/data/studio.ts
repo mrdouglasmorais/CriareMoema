@@ -16,6 +16,16 @@ export const studioCopy = {
   changePasswordNew: "Nova senha",
   changePasswordConfirm: "Confirmar nova senha",
   changePasswordSuccess: "Senha atualizada. Entrando…",
+  changePasswordUpdated: "Senha atualizada no Firebase.",
+  resetPasswordLink: "Esqueci a senha",
+  resetPasswordCta: "Enviar e-mail de redefinição",
+  resetPasswordPending: "Enviando…",
+  resetPasswordHint:
+    "O Firebase envia um link para o e-mail da conta. Abra o link e defina a nova senha.",
+  resetPasswordSent: "Se a conta existir, o Firebase enviou o e-mail de redefinição.",
+  accountTitle: "Conta",
+  accountEyebrow: "Acesso",
+  accountDescription: "Altere a senha desta conta no Firebase. A próxima entrada usa a senha nova.",
   logout: "Sair",
   dashboardEyebrow: "Área logada",
   dashboardTitle: "Studio editorial",
@@ -54,4 +64,5 @@ export const studioNav = [
   { href: "/studio", label: "Visão geral" },
   { href: "/studio/posts", label: "Postagens" },
   { href: "/studio/posts/novo", label: "Nova postagem" },
+  { href: "/studio/conta", label: "Conta" },
 ] as const;

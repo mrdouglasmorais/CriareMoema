@@ -61,7 +61,12 @@ export function StudioShell({ email, children }: StudioShellProps) {
             </ul>
           </nav>
           <div className="hidden border-t border-white/8 px-6 py-5 lg:block">
-            <p className="truncate text-xs text-white/40">{email}</p>
+            <Link
+              href="/studio/conta"
+              className="block truncate text-xs text-white/40 transition-colors hover:text-amber-300"
+            >
+              {email}
+            </Link>
             <div className="mt-3 flex items-center gap-3">
               <LogoutButton />
               <Link
@@ -75,7 +80,12 @@ export function StudioShell({ email, children }: StudioShellProps) {
         </aside>
         <div className="flex min-w-0 flex-1 flex-col">
           <div className="flex items-center justify-between border-b border-white/8 px-4 py-3 lg:hidden">
-            <p className="truncate text-xs text-white/40">{email}</p>
+            <Link
+              href="/studio/conta"
+              className="truncate text-xs text-white/40 transition-colors hover:text-amber-300"
+            >
+              {email}
+            </Link>
             <LogoutButton />
           </div>
           <main id="conteudo-principal" className="flex-1 px-4 py-8 sm:px-8">
